@@ -63,7 +63,6 @@ Source13: http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-docu.pdf.bz2
 Source14: http://www.linuxprinting.org/download/printing/photo_print.bz2
 Source15: http://printing.kde.org/downloads/pdfdistiller.bz2
 Source16: cjktexttops.bz2
-Source17: snmp.c.bz2
 # Nice level for now. bug #16387
 Source18: cups.sysconfig
 Patch2: cups-1.1.20-nopassword.patch
@@ -334,9 +333,6 @@ bzcat %{SOURCE14} > photo_print
 bzcat %{SOURCE15} > pdf
 # Load the "cjktexttops" filter
 bzcat %{SOURCE16} > cjktexttops
-# Replace the "snmp" backend by a new version to fix
-# http://www.cups.org/str.php?L1742
-bzcat %{SOURCE17} > backend/snmp.c
 
 
 
