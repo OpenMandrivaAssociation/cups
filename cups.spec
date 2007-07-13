@@ -10,7 +10,7 @@
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.2.11
+%define cupsversion 1.2.12
 %define cupsminorversion %nil
 %define cupsextraversion %nil
 %define cupsrelease %mkrel 2
