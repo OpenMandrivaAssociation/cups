@@ -13,7 +13,7 @@
 %define cupsversion 1.2.12
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 2
+%define cupsrelease %mkrel 3
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -113,7 +113,7 @@ printer is connected to or which host a queue for a network
 printer). It can also be used on CUPS clients so that they simply pick
 up broadcasted printer information from other CUPS servers and do not
 need to be assigned to a specific CUPS server by an
-/etc/cups/client.conf file.
+%{_sysconfdir}/cups/client.conf file.
 
 %package common
 Summary: Common Unix Printing System - Common stuff
@@ -132,7 +132,7 @@ The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. It contains the command line utilities for
 printing and administration (lpr, lpq, lprm, lpadmin, lpc, ...), man
 pages, locales, and a sample configuration file for daemon-less CUPS
-clients (/etc/cups/client.conf).
+clients (%{_sysconfdir}/cups/client.conf).
 
 This package you need for both CUPS clients and servers. 
 
@@ -435,7 +435,7 @@ mkdir -p %{buildroot}%{_prefix}/lib/cups/driver
 mkdir -p %{buildroot}%{_sysconfdir}/cups/ssl
 
 # Make a directory for authentication certificates
-mkdir -p %{buildroot}/var/run/cups/certs
+mkdir -p %{buildroot}%{_var}/run/cups/certs
 
 # Install additional tools
 install -m 755 poll_ppd_base %{buildroot}%{_bindir}
@@ -478,7 +478,7 @@ service printer
 	server		= %{_prefix}/lib/cups/daemon/cups-lpd
 	server_args	= -o document-format=application/octet-stream
 	passenv		=
-	env		= TMPDIR=/var/spool/cups/tmp
+	env		= TMPDIR=%{_var}/spool/cups/tmp
 	disable		= yes
 }
 EOF
@@ -572,7 +572,7 @@ ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsdisable
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsenable
 
 # Remove links to the startup script, we make our own ones with chkconfig
-rm -rf %{buildroot}/etc/rc?.d/[SK]*
+rm -rf %{buildroot}%{_sysconfdir}/rc?.d/[SK]*
 # Remove superflouus man page stuff
 rm -rf %{buildroot}%{_mandir}/cat
 rm -rf %{buildroot}%{_mandir}/cat?
@@ -589,9 +589,9 @@ install -m644 config.h %{buildroot}%{_includedir}/cups/
 
 # Create dummy config files /etc/cups/printers.conf,
 # /etc/cups/classes.conf, and /etc/cups/client.conf
-touch %buildroot%{_sysconfdir}/cups/printers.conf
-touch %buildroot%{_sysconfdir}/cups/classes.conf
-touch %buildroot%{_sysconfdir}/cups/client.conf
+touch %{buildroot}%{_sysconfdir}/cups/printers.conf
+touch %{buildroot}%{_sysconfdir}/cups/classes.conf
+touch %{buildroot}%{_sysconfdir}/cups/client.conf
 
 # Create .ini file for the PHP bindings
 install -d %{buildroot}%{_sysconfdir}/php.d
@@ -617,7 +617,7 @@ if [ -d %{_libdir}/cups ] && ! [ -h %{_libdir}/cups ]; then
 	mv %{_libdir}/cups %{_prefix}/lib/cups
     else
 	mv %{_libdir}/cups %{_libdir}/cups.rpmsave
-	echo 'Moved %{_libdir}/cups to %{_libdir}/cups.rpmsave' 1>&2
+	#echo 'Moved %{_libdir}/cups to %{_libdir}/cups.rpmsave' 1>&2
     fi
 fi
 %endif
@@ -625,14 +625,11 @@ fi
 
 %post
 # Make sure group ownerships are correct
-chgrp -R sys /etc/cups /var/*/cups
+chgrp -R sys %{_sysconfdir}/cups %{_var}/*/cups
 # Let CUPS daemon be automatically started at boot time
 %_post_service cups
 
 %post common
-# Set permissions/ownerships for lppasswd
-chown root.sys %{_bindir}/lppasswd
-chmod 6755 %{_bindir}/lppasswd
 # The lpc updates-alternative links were not correctly set in older CUPS
 # packages, therefore remove the entry before making a new one when updating
 %{_sbindir}/update-alternatives --remove lpc %{_sbindir}/lpc-cups || :
@@ -694,7 +691,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc *.txt
-%attr(511,lp,sys) /var/run/cups/certs
+%attr(511,lp,sys) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/sysconfig/cups
 %ghost %config(noreplace) %{_sysconfdir}/cups/printers.conf
@@ -731,7 +728,7 @@ rm -rf %{buildroot}
 %{_prefix}/lib/cups/backend/pdf
 %dir %{_prefix}/lib/cups/driver
 %{_datadir}/cups
-%{_var}/log/cups
+%attr(0755,root,sys) %{_var}/log/cups
 # Set ownerships of spool directory which is normally done by 'make install'
 # Because RPM does 'make install' as normal user, this has to be done here
 %dir %attr(0710,lp,sys) %{_var}/spool/cups
@@ -755,7 +752,7 @@ rm -rf %{buildroot}
 %{_bindir}/*cups
 %{_bindir}/lphelp
 %{_bindir}/lpoptions
-%{_bindir}/lppasswd
+%attr(6755,root,sys) %{_bindir}/lppasswd
 %{_bindir}/photo_print
 %{_bindir}/poll_ppd_base
 %{_bindir}/cupstestppd
@@ -789,5 +786,4 @@ rm -rf %{buildroot}
 %doc scripting/php/README
 %attr(0755,root,root) %{_libdir}/php/extensions/*
 %config(noreplace) %{_sysconfdir}/php.d/*
-
 
