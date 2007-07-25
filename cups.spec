@@ -13,7 +13,7 @@
 %define cupsversion 1.2.12
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 3
+%define cupsrelease %mkrel 4
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -759,7 +759,6 @@ rm -rf %{buildroot}
 %{_bindir}/cupstestdsc
 %{_bindir}/enable
 %{_bindir}/disable
-%{_bindir}/cups-config
 %{_datadir}/locale/*/*
 %{_mandir}/man?/*
 
@@ -776,6 +775,7 @@ rm -rf %{buildroot}
 %multiarch %{multiarch_includedir}/cups/*
 %{_libdir}/*.a
 %{_libdir}/*.so
+%{_bindir}/cups-config
 
 %files serial
 %defattr(-,root,root)
@@ -786,4 +786,3 @@ rm -rf %{buildroot}
 %doc scripting/php/README
 %attr(0755,root,root) %{_libdir}/php/extensions/*
 %config(noreplace) %{_sysconfdir}/php.d/*
-
