@@ -634,18 +634,18 @@ chgrp -R sys %{_sysconfdir}/cups %{_var}/*/cups
 # packages, therefore remove the entry before making a new one when updating
 %{_sbindir}/update-alternatives --remove lpc %{_sbindir}/lpc-cups || :
 # Set up update-alternatives entries
-%{_sbindir}/update-alternatives --install %{_bindir}/lpr lpr %{_bindir}/lpr-cups 10 --slave %{_mandir}/man1/lpr.1.bz2 lpr.1.bz2 %{_mandir}/man1/lpr-cups.1.bz2
-%{_sbindir}/update-alternatives --install %{_bindir}/lpq lpq %{_bindir}/lpq-cups 10 --slave %{_mandir}/man1/lpq.1.bz2 lpq.1.bz2 %{_mandir}/man1/lpq-cups.1.bz2
-%{_sbindir}/update-alternatives --install %{_bindir}/lprm lprm %{_bindir}/lprm-cups 10 --slave %{_mandir}/man1/lprm.1.bz2 lprm.1.bz2 %{_mandir}/man1/lprm-cups.1.bz2
-%{_sbindir}/update-alternatives --install %{_bindir}/lp lp %{_bindir}/lp-cups 10 --slave %{_mandir}/man1/lp.1.bz2 lp.1.bz2 %{_mandir}/man1/lp-cups.1.bz2
-%{_sbindir}/update-alternatives --install %{_bindir}/cancel cancel %{_bindir}/cancel-cups 10 --slave %{_mandir}/man1/cancel.1.bz2 cancel.1.bz2 %{_mandir}/man1/cancel-cups.1.bz2
-%{_sbindir}/update-alternatives --install %{_bindir}/lpstat lpstat %{_bindir}/lpstat-cups 10 --slave %{_mandir}/man1/lpstat.1.bz2 lpstat.1.bz2 %{_mandir}/man1/lpstat-cups.1.bz2
-%{_sbindir}/update-alternatives --install %{_sbindir}/accept accept %{_sbindir}/accept-cups 10 --slave %{_mandir}/man8/accept.8.bz2 accept.8.bz2 %{_mandir}/man8/accept-cups.8.bz2
-%{_sbindir}/update-alternatives --install %{_sbindir}/disable disable %{_sbindir}/disable-cups 10 --slave %{_mandir}/man8/disable.8.bz2 disable.8.bz2 %{_mandir}/man8/disable-cups.8.bz2
-%{_sbindir}/update-alternatives --install %{_sbindir}/enable enable %{_sbindir}/enable-cups 10 --slave %{_mandir}/man8/enable.8.bz2 enable.8.bz2 %{_mandir}/man8/enable-cups.8.bz2
-%{_sbindir}/update-alternatives --install %{_sbindir}/lpc lpc %{_sbindir}/lpc-cups 10 --slave %{_mandir}/man8/lpc.8.bz2 lpc.8.bz2 %{_mandir}/man8/lpc-cups.8.bz2
-%{_sbindir}/update-alternatives --install %{_sbindir}/lpmove lpmove %{_sbindir}/lpmove-cups 10 --slave %{_mandir}/man8/lpmove.8.bz2 lpmove.8.bz2 %{_mandir}/man8/lpmove-cups.8.bz2
-%{_sbindir}/update-alternatives --install %{_sbindir}/reject reject %{_sbindir}/reject-cups 10 --slave %{_mandir}/man8/reject.8.bz2 reject.8.bz2 %{_mandir}/man8/reject-cups.8.bz2
+%{_sbindir}/update-alternatives --install %{_bindir}/lpr lpr %{_bindir}/lpr-cups 10 --slave %{_mandir}/man1/lpr.1.lzma lpr.1.lzma %{_mandir}/man1/lpr-cups.1.lzma
+%{_sbindir}/update-alternatives --install %{_bindir}/lpq lpq %{_bindir}/lpq-cups 10 --slave %{_mandir}/man1/lpq.1.lzma lpq.1.lzma %{_mandir}/man1/lpq-cups.1.lzma
+%{_sbindir}/update-alternatives --install %{_bindir}/lprm lprm %{_bindir}/lprm-cups 10 --slave %{_mandir}/man1/lprm.1.lzma lprm.1.lzma %{_mandir}/man1/lprm-cups.1.lzma
+%{_sbindir}/update-alternatives --install %{_bindir}/lp lp %{_bindir}/lp-cups 10 --slave %{_mandir}/man1/lp.1.lzma lp.1.lzma %{_mandir}/man1/lp-cups.1.lzma
+%{_sbindir}/update-alternatives --install %{_bindir}/cancel cancel %{_bindir}/cancel-cups 10 --slave %{_mandir}/man1/cancel.1.lzma cancel.1.lzma %{_mandir}/man1/cancel-cups.1.lzma
+%{_sbindir}/update-alternatives --install %{_bindir}/lpstat lpstat %{_bindir}/lpstat-cups 10 --slave %{_mandir}/man1/lpstat.1.lzma lpstat.1.lzma %{_mandir}/man1/lpstat-cups.1.lzma
+%{_sbindir}/update-alternatives --install %{_sbindir}/accept accept %{_sbindir}/accept-cups 10 --slave %{_mandir}/man8/accept.8.lzma accept.8.lzma %{_mandir}/man8/accept-cups.8.lzma
+%{_sbindir}/update-alternatives --install %{_sbindir}/disable disable %{_sbindir}/disable-cups 10 --slave %{_mandir}/man8/disable.8.lzma disable.8.lzma %{_mandir}/man8/disable-cups.8.lzma
+%{_sbindir}/update-alternatives --install %{_sbindir}/enable enable %{_sbindir}/enable-cups 10 --slave %{_mandir}/man8/enable.8.lzma enable.8.lzma %{_mandir}/man8/enable-cups.8.lzma
+%{_sbindir}/update-alternatives --install %{_sbindir}/lpc lpc %{_sbindir}/lpc-cups 10 --slave %{_mandir}/man8/lpc.8.lzma lpc.8.lzma %{_mandir}/man8/lpc-cups.8.lzma
+%{_sbindir}/update-alternatives --install %{_sbindir}/lpmove lpmove %{_sbindir}/lpmove-cups 10 --slave %{_mandir}/man8/lpmove.8.lzma lpmove.8.lzma %{_mandir}/man8/lpmove-cups.8.lzma
+%{_sbindir}/update-alternatives --install %{_sbindir}/reject reject %{_sbindir}/reject-cups 10 --slave %{_mandir}/man8/reject.8.lzma reject.8.lzma %{_mandir}/man8/reject-cups.8.lzma
 
 %post -n %{libname} -p /sbin/ldconfig
 
