@@ -13,7 +13,7 @@
 %define cupsversion 1.2.12
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 5
+%define cupsrelease %mkrel 6
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -100,7 +100,6 @@ BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
 ##### SUB-PACKAGES #####
 
 %description
-
 CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -124,7 +123,6 @@ Requires: %{libname} >= %{version}-%{release} rpm >= 3.0.4-6mdk /usr/sbin/update
 Provides: lpddaemon
 
 %description common
-
 CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -145,7 +143,6 @@ Obsoletes: libcups1
 Provides: libcups1 = %{version}
 
 %description -n %{libname}
-
 CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -169,7 +166,6 @@ Obsoletes: cups-devel, libcups1-devel
 Provides: cups-devel = %{version}, libcups1-devel = %{version}
 
 %description -n %{libname}-devel
-
 CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -185,7 +181,6 @@ Group: System/Servers
 Requires: %{name} >= %{version}-%{release}
 
 %description serial
-
 CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -204,11 +199,8 @@ Obsoletes: php4-cups
 Provides: php4-cups
 
 %description -n php-cups
-
 Provides bindings to the functions of libcups, to give direct access
 to the CUPS printing environment from PHP programs.
-
-
 
 ##### PREP #####
 
