@@ -3,17 +3,17 @@
 %if %{svnsnapshot}
 %define cupsnameext %nil
 %define cupssvnrevision 5497
-%define cupsversion 1.2
+%define cupsversion 1.3
 %define cupsminorversion .0
 %define cupsextraversion svn-r%{cupssvnrevision}
 %define cupsrelease %mkrel 0.%{cupssvnrevision}.1
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.2.12
+%define cupsversion 1.3.0
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 6
+%define cupsrelease %mkrel 1
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -68,7 +68,7 @@ Source18: cups.sysconfig
 Patch2: cups-1.1.20-nopassword.patch
 Patch3: cups-1.1.23-64bit-fixes.patch
 Patch9: cups-1.1.6-lp-lpr.patch
-Patch10: cups-1.2.10-recommended.patch
+Patch10: cups-1.3.0-recommended.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -694,6 +694,7 @@ rm -rf %{buildroot}
 %config(noreplace) %attr(644,root,sys) %{_sysconfdir}/cups/mime.types
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ppd
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ssl
+%config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/snmp.conf
 %if %mdkver >= 200700
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/dbus*/system.d/cups.conf
 %endif
