@@ -121,7 +121,7 @@ need to be assigned to a specific CUPS server by an
 Summary: Common Unix Printing System - Common stuff
 License: GPL
 Group: System/Servers
-Requires: %{libname} >= %{version}-%{release} rpm >= 3.0.4-6mdk /usr/sbin/update-alternatives openssl net-tools
+Requires: %{libname} >= %{version}-%{release} rpm >= 3.0.4-6mdk update-alternatives openssl net-tools
 # To satisfy LSB/FHS
 Provides: lpddaemon
 
