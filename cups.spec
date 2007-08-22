@@ -35,7 +35,7 @@ Name:		%{cupsbasename}%{cupsnameext}
 Version:	%{cupsversion}%{cupsminorversion}
 Release:	%{cupsrelease}
 License:	GPL
-Group:		System/Servers
+Group:		System/Printing
 %define real_version %{version}
 
 ##### SOURCE FILES #####
@@ -120,7 +120,7 @@ need to be assigned to a specific CUPS server by an
 %package common
 Summary: Common Unix Printing System - Common stuff
 License: GPL
-Group: System/Servers
+Group: System/Printing
 Requires: %{libname} >= %{version}-%{release} rpm >= 3.0.4-6mdk update-alternatives openssl net-tools
 # To satisfy LSB/FHS
 Provides: lpddaemon
@@ -140,7 +140,7 @@ This package you need for both CUPS clients and servers.
 %package -n %{libname}
 Summary: Common Unix Printing System - CUPS library
 License: LGPL
-Group: System/Servers
+Group: System/Libraries
 Requires: openssl net-tools
 Obsoletes: libcups1
 Provides: libcups1 = %{version}
@@ -180,7 +180,7 @@ services using the main CUPS library "libcups".
 %package serial
 Summary: Common Unix Printing System - Backend for serial port printers
 License: GPL
-Group: System/Servers
+Group: System/Printing
 Requires: %{name} >= %{version}-%{release}
 
 %description serial
