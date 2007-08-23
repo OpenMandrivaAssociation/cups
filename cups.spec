@@ -735,7 +735,6 @@ rm -rf %{buildroot}
 %dir %attr(775,lp,sys) %{_var}/cache/cups
 # Desktop icons
 %{_datadir}/applications/*
-%{_datadir}/icons/*/*/*/*.png
 %ifarch x86_64
 # Compatibility link, will be removed soon
 %{_libdir}/cups
