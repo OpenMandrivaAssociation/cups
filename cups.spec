@@ -13,7 +13,7 @@
 %define cupsversion 1.3.0
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -78,7 +78,7 @@ Patch11: str2472.patch
 Url: http://www.cups.org
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires: %{libname} >= %{version}-%{release} %{name}-common >= %{version}-%{release} openssl net-tools
-Requires: printer-testpages xinetd
+Requires: printer-testpages
 # Take care that device files are created with correct permissions
 Requires: udev dynamic
 # For desktop menus
