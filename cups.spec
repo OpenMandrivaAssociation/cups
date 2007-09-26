@@ -351,7 +351,7 @@ WANT_AUTOCONF_2_5=1 autoconf
 export DONT_STRIP=1
 export CFLAGS="-g"
 export CXXFLAGS="-g"
-./configure --enable-ssl --enable-libpaper --enable-static --enable-install_static --with-cups-user=lp --with-cups-group=sys --with-system-groups="lpadmin root" --enable-debug=yes --with-docdir=%{_datadir}/cups/doc
+./configure --enable-ssl --enable-libpaper --enable-static --enable-install_static --with-cups-user=lp --with-cups-group=sys --with-system-groups="lpadmin root" --enable-debug=yes --with-docdir=%{_datadir}/cups/doc --with-icondir=%{_datadir}/icons
 # Let Makefiles not execute the /usr/bin/strip command
 export STRIP=":"
 # Remove "-s" (stripping) option from "install" command used for binaries
@@ -360,7 +360,7 @@ perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
 %else
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
-./configure --enable-ssl --enable-libpaper --enable-static --enable-install_static --with-cups-user=lp --with-cups-group=sys --with-system-groups="lpadmin root" --with-docdir=%{_datadir}/cups/doc
+./configure --enable-ssl --enable-libpaper --enable-static --enable-install_static --with-cups-user=lp --with-cups-group=sys --with-system-groups="lpadmin root" --with-docdir=%{_datadir}/cups/doc --with-icondir=%{_datadir}/icons
 #configure2_5x --enable-ssl --with-docdir=%{_datadir}/cups/doc
 export STRIP="/usr/bin/strip"
 %endif
