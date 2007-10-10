@@ -69,9 +69,6 @@ Patch2: cups-1.1.20-nopassword.patch
 Patch3: cups-1.1.23-64bit-fixes.patch
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
-# Adds language fallbacks while using browser-supplied ones if they are not
-# found.
-Patch11: str2472.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -238,9 +235,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch9 -p0
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
-cd scheduler
-%patch11 -p0
-cd ..
 
 %if 0
 # Fix libdir for 64-bit architectures
