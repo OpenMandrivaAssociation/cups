@@ -338,8 +338,10 @@ bzcat %{SOURCE16} > cjktexttops
 # has to be given because the default setting is broken. "aclocal" and 
 # "autoconf" are needed if we have a Subversion snapshot or patched the
 # files of the build system.
+%if %{svnsnapshot}
 aclocal
 WANT_AUTOCONF_2_5=1 autoconf
+%endif
 # Debug mode
 %if %debug
 export DONT_STRIP=1
