@@ -280,10 +280,6 @@ perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" scheduler/Makefile
 perl -p -i -e "s/ -o \\$.CUPS_USER.//" systemv/Makefile
 perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" systemv/Makefile
 
-# Accept readily filtered print jobs (e. g. from Windows clients)
-perl -p -i -e 's:\#application/octet-stream:application/octet-stream:' conf/mime.*
-#endif
-
 # Correct hard-coded path for pam_appl.h
 #perl -p -i -e 's:pam/pam_appl.h:security/pam_appl.h:' config-scripts/cups-pam.m4 */*.[ch]*
 
@@ -347,7 +343,18 @@ WANT_AUTOCONF_2_5=1 autoconf
 export DONT_STRIP=1
 export CFLAGS="-g"
 export CXXFLAGS="-g"
-./configure --enable-ssl --enable-libpaper --enable-static --enable-install_static --with-cups-user=lp --with-cups-group=sys --with-system-groups="lpadmin root" --enable-debug=yes --with-docdir=%{_datadir}/cups/doc --with-icondir=%{_datadir}/icons
+./configure \
+    --enable-debug=yes \
+    --enable-install_static \
+    --enable-libpaper \
+    --enable-raw-printing \
+    --enable-ssl \
+    --enable-static \
+    --with-cups-group=sys \
+    --with-cups-user=lp \
+    --with-docdir=%{_datadir}/cups/doc \
+    --with-icondir=%{_datadir}/icons \
+    --with-system-groups="lpadmin root"
 # Let Makefiles not execute the /usr/bin/strip command
 export STRIP=":"
 # Remove "-s" (stripping) option from "install" command used for binaries
@@ -356,7 +363,17 @@ perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
 %else
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
-./configure --enable-ssl --enable-libpaper --enable-static --enable-install_static --with-cups-user=lp --with-cups-group=sys --with-system-groups="lpadmin root" --with-docdir=%{_datadir}/cups/doc --with-icondir=%{_datadir}/icons
+./configure \
+    --enable-install_static \
+    --enable-libpaper \
+    --enable-raw-printing \
+    --enable-ssl \
+    --enable-static \
+    --with-cups-group=sys \
+    --with-cups-user=lp \
+    --with-docdir=%{_datadir}/cups/doc \
+    --with-icondir=%{_datadir}/icons \
+    --with-system-groups="lpadmin root"
 #configure2_5x --enable-ssl --with-docdir=%{_datadir}/cups/doc
 export STRIP="/usr/bin/strip"
 %endif
