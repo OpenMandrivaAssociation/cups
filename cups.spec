@@ -13,7 +13,7 @@
 %define cupsversion 1.3.4
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
