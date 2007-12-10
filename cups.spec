@@ -13,7 +13,7 @@
 %define cupsversion 1.3.4
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 3
+%define cupsrelease %mkrel 4
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -632,7 +632,8 @@ ln -s %{_datadir}/ppd %{buildroot}%{_datadir}/cups/model/3-distribution
 # Common printer driver dirs
 mkdir -p %{buildroot}%{_libdir}/printdriver
 mkdir -p %{buildroot}/opt/lib/printdriver
-mkdir -p %{buildroot}/usr/local/lib/printdriver
+# We can't enforce this. Bug #35993
+mkdir -p %{buildroot}/usr/local/lib/printdriver || :
 # End of 28383
 
 ##### PRE/POST INSTALL SCRIPTS #####
