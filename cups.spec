@@ -75,7 +75,6 @@ Patch12: cups-1.3.0-CVE-2007-4352-5392-5393.patch
 ##### ADDITIONAL DEFINITIONS #####
 
 Url: http://www.cups.org
-BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires: %{libname} >= %{version}-%{release} %{name}-common >= %{version}-%{release} openssl net-tools
 Requires: printer-testpages
 # Take care that device files are created with correct permissions
