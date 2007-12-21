@@ -73,6 +73,7 @@ Patch10: cups-1.3.0-recommended.patch
 ##### ADDITIONAL DEFINITIONS #####
 
 Url: http://www.cups.org
+BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires: %{libname} >= %{version}-%{release} %{name}-common >= %{version}-%{release} openssl net-tools
 Requires: printer-testpages
 # Take care that device files are created with correct permissions
