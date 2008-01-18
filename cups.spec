@@ -718,7 +718,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc *.txt
-%attr(511,lp,sys) %{_var}/run/cups/certs
+%attr(511,lp,lpadmin) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/sysconfig/cups
 %ghost %config(noreplace) %{_sysconfdir}/cups/printers.conf
@@ -759,9 +759,9 @@ rm -rf %{buildroot}
 %attr(0755,root,sys) %{_var}/log/cups
 # Set ownerships of spool directory which is normally done by 'make install'
 # Because RPM does 'make install' as normal user, this has to be done here
-%dir %attr(0710,lp,sys) %{_var}/spool/cups
-%dir %attr(01770,lp,sys) %{_var}/spool/cups/tmp
-%dir %attr(775,lp,sys) %{_var}/cache/cups
+%dir %attr(0710,root,sys) %{_var}/spool/cups
+%dir %attr(01770,root,sys) %{_var}/spool/cups/tmp
+%dir %attr(775,root,sys) %{_var}/cache/cups
 # Bug #28383 dirs
 %dir %{_datadir}/ppd
 %dir /opt/share/ppd
