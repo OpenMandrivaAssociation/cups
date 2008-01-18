@@ -43,26 +43,26 @@ Group:		System/Printing
 Source: ftp://ftp.easysw.com/pub/cups/%{cupsversion}/%{cupstarballname}-source.tar.bz2
 
 # Small C program to get list of all installed PPD files
-Source1: poll_ppd_base.c.bz2
+Source1: poll_ppd_base.c
 # Small C program to list the printer-specific options of a particular printer
-Source2: lphelp.c.bz2
+Source2: lphelp.c
 # Complete replacement for startup script to have it the
 # Mandriva Linux way
 Source5: cups.startup
 # Script for cleaning up the PPD files
-Source6: cleanppd.pl.bz2
+Source6: cleanppd.pl
 # Perl script for automatic configuration of CUPS, especially access
 # restrictions and broadcasting
-Source7: correctcupsconfig.bz2
+Source7: correctcupsconfig
 # Backend filter for nprint (Novell client) from Mark Horn
 # (mark@hornclan.com)
-Source11: http://www.hornclan.com/~mark/cups/nprint.2002011801.bz2
+Source11: http://www.hornclan.com/~mark/cups/nprint.2002011801
 # AppleTalk/netatalk backend for CUPS
 Source12: http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-backend.tar.bz2
 Source13: http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-docu.pdf.bz2
-Source14: http://www.linuxprinting.org/download/printing/photo_print.bz2
-Source15: http://printing.kde.org/downloads/pdfdistiller.bz2
-Source16: cjktexttops.bz2
+Source14: http://www.linuxprinting.org/download/printing/photo_print
+Source15: http://printing.kde.org/downloads/pdfdistiller
+Source16: cjktexttops
 # Nice level for now. bug #16387
 Source18: cups.sysconfig
 Patch2: cups-1.1.20-nopassword.patch
@@ -307,20 +307,20 @@ done
 %endif
 
 # Load additional tools
-bzcat %{SOURCE1} > poll_ppd_base.c
-bzcat %{SOURCE2} > lphelp.c
+cp %{SOURCE1} poll_ppd_base.c
+cp %{SOURCE2} lphelp.c
 # Load nprint backend
-bzcat %{SOURCE11} > nprint
+cp %{SOURCE11} nprint
 # Load AppleTalk "pap" backend
 %setup -q -T -D -a 12 -n %{cupstarballname}
 # Load the "pap" documentation
 bzcat %{SOURCE13} > pap-docu.pdf
 # Load the "photo_print" utility
-bzcat %{SOURCE14} > photo_print
+cp %{SOURCE14} photo_print
 # Load the "pdfdistiller" utility
-bzcat %{SOURCE15} > pdf
+cp %{SOURCE15} pdf
 # Load the "cjktexttops" filter
-bzcat %{SOURCE16} > cjktexttops
+cp %{SOURCE16} cjktexttops
 
 
 
@@ -502,7 +502,7 @@ install -m 644 %{SOURCE18} %{buildroot}%{_sysconfdir}/sysconfig/cups
 rm -f %{buildroot}%{_sysconfdir}/init.d/cups
 
 # Install script for automatic CUPS configuration
-bzcat %{SOURCE7} > %{buildroot}%{_sbindir}/correctcupsconfig
+cp %{SOURCE7} %{buildroot}%{_sbindir}/correctcupsconfig
 chmod a+rx %{buildroot}%{_sbindir}/correctcupsconfig
 
 # Install PPDs
@@ -510,7 +510,7 @@ mkdir -p %{buildroot}%{_datadir}/cups/model
 install -m 755 ppd/*.ppd %{buildroot}%{_datadir}/cups/model
 
 # Uncompress Perl script for cleaning up manufacturer entries in PPD files
-bzcat %{SOURCE6} > ./cleanppd.pl
+cp %{SOURCE6} ./cleanppd.pl
 chmod a+rx ./cleanppd.pl
 # Do the clean-up
 find %{buildroot}%{_datadir}/cups/model -name "*.ppd" -exec ./cleanppd.pl '{}' \;
