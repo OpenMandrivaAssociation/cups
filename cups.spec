@@ -618,8 +618,6 @@ sed -i s/htmlview/xdg-open/ %{buildroot}%{_datadir}/applications/*.desktop
 # http://qa.mandriva.com/show_bug.cgi?id=28383
 # Common PPD dirs
 mkdir -p %{buildroot}%{_datadir}/ppd
-mkdir -p %{buildroot}/opt/share/ppd
-mkdir -p %{buildroot}/usr/local/share/ppd
 
 # Make CUPS know them
 ln -s /usr/local/share/ppd %{buildroot}%{_datadir}/cups/model/1-local-admin
@@ -629,9 +627,6 @@ ln -s %{_datadir}/ppd %{buildroot}%{_datadir}/cups/model/3-distribution
 # Common printer driver dirs
 mkdir -p %{buildroot}%{_libdir}/printdriver
 mkdir -p %{buildroot}/opt/lib/printdriver
-# We can't enforce this. Bug #35993
-mkdir -p %{buildroot}/usr/local/lib/printdriver || :
-# End of 28383
 
 ##### PRE/POST INSTALL SCRIPTS #####
 
@@ -653,6 +648,14 @@ fi
 %post
 # Make sure group ownerships are correct
 chgrp -R sys %{_sysconfdir}/cups %{_var}/*/cups
+
+# We can't enforce this. Bug #35993
+for d in /opt/share/ppd /usr/local/share/ppd /usr/local/lib/printdriver
+do
+  [ ! -e $d ] && mkdir -p $d || :
+done
+# End of 28383
+
 # Let CUPS daemon be automatically started at boot time
 %_post_service cups
 
@@ -765,10 +768,8 @@ rm -rf %{buildroot}
 # Bug #28383 dirs
 %dir %{_datadir}/ppd
 %dir /opt/share/ppd
-%dir /usr/local/share/ppd
 %dir %{_libdir}/printdriver
 %dir /opt/lib/printdriver
-%dir /usr/local/lib/printdriver
 # Desktop icons
 %{_datadir}/applications/*
 %{_datadir}/icons/hicolor/*/apps/cups.png
