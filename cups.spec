@@ -626,7 +626,7 @@ ln -s %{_datadir}/ppd %{buildroot}%{_datadir}/cups/model/3-distribution
 
 # Common printer driver dirs
 mkdir -p %{buildroot}%{_libdir}/printdriver
-mkdir -p %{buildroot}/opt/lib/printdriver
+# Other dirs can't be handled here, but on %post instead.
 
 ##### PRE/POST INSTALL SCRIPTS #####
 
@@ -650,7 +650,7 @@ fi
 chgrp -R sys %{_sysconfdir}/cups %{_var}/*/cups
 
 # We can't enforce this. Bug #35993
-for d in /opt/share/ppd /usr/local/share/ppd /usr/local/lib/printdriver
+for d in /opt/share/ppd /opt/lib/printdriver /usr/local/share/ppd /usr/local/lib/printdriver
 do
   [ ! -e $d ] && mkdir -p $d || :
 done
@@ -767,9 +767,7 @@ rm -rf %{buildroot}
 %dir %attr(775,root,sys) %{_var}/cache/cups
 # Bug #28383 dirs
 %dir %{_datadir}/ppd
-%dir /opt/share/ppd
 %dir %{_libdir}/printdriver
-%dir /opt/lib/printdriver
 # Desktop icons
 %{_datadir}/applications/*
 %{_datadir}/icons/hicolor/*/apps/cups.png
