@@ -69,6 +69,8 @@ Patch2: cups-1.1.20-nopassword.patch
 Patch3: cups-1.1.23-64bit-fixes.patch
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
+Patch11: str2703.patch
+
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -235,6 +237,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch9 -p0
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
+%patch11 -p0
 
 %if 0
 # Fix libdir for 64-bit architectures
