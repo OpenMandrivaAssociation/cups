@@ -65,8 +65,6 @@ Source15: http://printing.kde.org/downloads/pdfdistiller
 Source16: cjktexttops
 # Nice level for now. bug #16387
 Source18: cups.sysconfig
-Patch2: cups-1.1.20-nopassword.patch
-Patch3: cups-1.1.23-64bit-fixes.patch
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
 
@@ -224,12 +222,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # Do NEVER use cups.suse (this package is for Mandriva)
 #cp -f data/cups.pam data/cups.suse
 
-# Do changes that it is possible to use the CUPS WWW interface and
-# KUPS also when root has no password (makes CUPS more convenient for
-# home users without network
-#patch2 -p0
-# 64-bit fixes
-#patch3 -p1
 # Replace the job title "(stdin)" by "STDIM" when one prints out of 
 # standard input with "lp" or "lpr". This caused problems when printing
 # to a printer on a Windows server via Samba.
