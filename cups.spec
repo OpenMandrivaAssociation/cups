@@ -13,7 +13,7 @@
 %define cupsversion 1.3.6
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -786,7 +786,25 @@ rm -rf %{buildroot}
 %{_bindir}/cupstestdsc
 %{_bindir}/enable
 %{_bindir}/disable
-%{_datadir}/locale/*/*
+%lang(da) %{_datadir}/locale/da/cups_da.po
+%lang(de) %{_datadir}/locale/de/cups_de.po
+%lang(es) %{_datadir}/locale/es/cups_es.po
+%lang(et) %{_datadir}/locale/et/cups_et.po
+%lang(fi) %{_datadir}/locale/fi/cups_fi.po
+%lang(fr) %{_datadir}/locale/fr/cups_fr.po
+%lang(he) %{_datadir}/locale/he/cups_he.po
+%lang(it) %{_datadir}/locale/it/cups_it.po
+%lang(ja) %{_datadir}/locale/ja/cups_ja.po
+%lang(ko) %{_datadir}/locale/ko/cups_ko.po
+%lang(nl) %{_datadir}/locale/nl/cups_nl.po
+%lang(no) %{_datadir}/locale/no/cups_no.po
+%lang(pl) %{_datadir}/locale/pl/cups_pl.po
+%lang(pt) %{_datadir}/locale/pt/cups_pt.po
+%lang(pt_BR) %{_datadir}/locale/pt_BR/cups_pt_BR.po
+%lang(ru) %{_datadir}/locale/ru/cups_ru.po
+%lang(sv) %{_datadir}/locale/sv/cups_sv.po
+%lang(zh) %{_datadir}/locale/zh/cups_zh.po
+%lang(zh_TW) %{_datadir}/locale/zh_TW/cups_zh_TW.po
 %{_mandir}/man?/*
 
 #####%{libname}
