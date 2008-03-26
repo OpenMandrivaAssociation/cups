@@ -13,7 +13,7 @@
 %define cupsversion 1.3.6
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 3
+%define cupsrelease %mkrel 4
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -68,6 +68,7 @@ Source18: cups.sysconfig
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
 Patch17: cups-1.3.6-disconnected-usb-increases-cpu-usage.patch
+Patch18: cups-1.3.6-CVE-2008-0047.patch
 
 
 ##### ADDITIONAL DEFINITIONS #####
@@ -230,6 +231,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
 %patch17 -p1 -b .disconnected-usb-increases-cpu-usage
+%patch18 -p1 -b .CVE-2008-0047.patch
 
 %if 0
 # Fix libdir for 64-bit architectures
