@@ -13,7 +13,7 @@
 %define cupsversion 1.3.6
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 5
+%define cupsrelease %mkrel 6
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -75,7 +75,6 @@ Patch19: cups-1.3.6-CVE-2008-1373.patch
 ##### ADDITIONAL DEFINITIONS #####
 
 Url: http://www.cups.org
-BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires: %{libname} >= %{version}-%{release} %{name}-common >= %{version}-%{release} openssl net-tools
 Requires: printer-testpages
 # Take care that device files are created with correct permissions
@@ -96,6 +95,8 @@ BuildRequires:	libpaper-devel
 BuildRequires:	libgnutls-devel
 BuildRequires:	php-devel >= 5.1.0 php-cli
 BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
+Requires: portreserve
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 
 
@@ -500,6 +501,10 @@ install -d %{buildroot}%{_sysconfdir}/sysconfig
 install -m 644 %{SOURCE18} %{buildroot}%{_sysconfdir}/sysconfig/cups
 rm -f %{buildroot}%{_sysconfdir}/init.d/cups
 
+# https://qa.mandriva.com/show_bug.cgi?id=23846
+install -d %{buildroot}%{_sysconfdir}/portreserve
+echo "ipp" > %{buildroot}%{_sysconfdir}/portreserve/cups
+
 # Install script for automatic CUPS configuration
 cp %{SOURCE7} %{buildroot}%{_sbindir}/correctcupsconfig
 chmod a+rx %{buildroot}%{_sbindir}/correctcupsconfig
@@ -738,6 +743,7 @@ rm -rf %{buildroot}
 %{_initrddir}/cups
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %attr(644,root,root) %config(noreplace) %{_sysconfdir}/xinetd.d/cups-lpd
+%attr(644,root,root) %config(noreplace) %{_sysconfdir}/portreserve/cups
 %dir %{_prefix}/lib/cups
 %{_prefix}/lib/cups/cgi-bin
 %{_prefix}/lib/cups/daemon
