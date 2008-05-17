@@ -68,6 +68,8 @@ Source18: cups.sysconfig
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
 Patch19: cups-1.3.6-CVE-2008-1373.patch
+# fhimpe: fix test suite failure: http://www.cups.org/str.php?L2806
+Patch20: cups-1.3.7-str2806.patch
 
 
 ##### ADDITIONAL DEFINITIONS #####
@@ -231,6 +233,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
 %patch19 -p1 -b .CVE-2008-1373.patch
+%patch20 -p1 -b .str2806.patch
 
 %if 0
 # Fix libdir for 64-bit architectures
@@ -401,6 +404,13 @@ make CHOWN=":" STRIP="$STRIP" OPTIM="$REAL_CFLAGS" \
 # Compile additional tools
 gcc -opoll_ppd_base -I. -I./cups -L./cups -lcups poll_ppd_base.c
 gcc -olphelp -I. -I./cups -L./cups -lcups lphelp.c
+
+%check
+%make test << EOF
+
+EOF
+
+
 
 ##### INSTALL #####
 
