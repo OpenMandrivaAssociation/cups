@@ -67,7 +67,6 @@ Source16: cjktexttops
 Source18: cups.sysconfig
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
-Patch17: cups-1.3.6-disconnected-usb-increases-cpu-usage.patch
 Patch18: cups-1.3.6-CVE-2008-0047.patch
 Patch19: cups-1.3.6-CVE-2008-1373.patch
 
@@ -232,7 +231,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch9 -p0
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
-%patch17 -p1 -b .disconnected-usb-increases-cpu-usage
 %patch18 -p1 -b .CVE-2008-0047.patch
 %patch19 -p1 -b .CVE-2008-1373.patch
 
