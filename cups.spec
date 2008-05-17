@@ -70,6 +70,7 @@ Patch10: cups-1.3.0-recommended.patch
 Patch19: cups-1.3.6-CVE-2008-1373.patch
 # fhimpe: fix test suite failure: http://www.cups.org/str.php?L2806
 Patch20: cups-1.3.7-str2806.patch
+Patch21: cups-1.3.7-CVE-2008-1722.patch
 
 
 ##### ADDITIONAL DEFINITIONS #####
@@ -234,6 +235,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch10 -p1 -b .recommended
 %patch19 -p1 -b .CVE-2008-1373.patch
 %patch20 -p1 -b .str2806.patch
+%patch21 -p1 -b .CVE-2008-1722
 
 %if 0
 # Fix libdir for 64-bit architectures
