@@ -34,7 +34,7 @@ Summary:	Common Unix Printing System - Server package
 Name:		%{cupsbasename}%{cupsnameext}
 Version:	%{cupsversion}%{cupsminorversion}
 Release:	%{cupsrelease}
-License:	GPL
+License:	GPLv2 and LGPLv2
 Group:		System/Printing
 %define real_version %{version}
 
@@ -119,7 +119,7 @@ need to be assigned to a specific CUPS server by an
 
 %package common
 Summary: Common Unix Printing System - Common stuff
-License: GPL
+License: GPLv2
 Group: System/Printing
 Requires: %{libname} >= %{version}-%{release} rpm >= 3.0.4-6mdk update-alternatives openssl net-tools
 # To satisfy LSB/FHS
@@ -139,7 +139,7 @@ This package you need for both CUPS clients and servers.
 
 %package -n %{libname}
 Summary: Common Unix Printing System - CUPS library
-License: LGPL
+License: LGPLv2
 Group: System/Libraries
 Requires: openssl net-tools
 Obsoletes: libcups1
@@ -159,7 +159,7 @@ needed by Samba.
 
 %package -n %{libname}-devel
 Summary: Common Unix Printing System - Development environment "libcups"
-License: LGPL
+License: LGPLv2
 Group: Development/C
 Requires: cups-common = %{version}-%{release}
 Requires: %{libname} >= %{version}-%{release} openssl openssl-devel
@@ -179,7 +179,7 @@ services using the main CUPS library "libcups".
 
 %package serial
 Summary: Common Unix Printing System - Backend for serial port printers
-License: GPL
+License: GPLv2
 Group: System/Printing
 Requires: %{name} >= %{version}-%{release}
 
@@ -196,7 +196,7 @@ to install this package when one has no serial port printer.
 
 %package -n php-cups
 Summary: PHP bindings for the libcups library
-License: GPL
+License: GPLv2
 Group: Development/PHP
 Obsoletes: php4-cups
 Provides: php4-cups
