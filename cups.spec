@@ -286,7 +286,7 @@ perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" systemv/Makefile
 
 # Work around bug on Mandriva compilation cluster (32-bit machine has
 # /usr/lib64 directory)
-perl -p -i -e 's:(libdir=")\$exec_prefix/lib64("):$1%{_libdir}$2:' config-scripts/cups-directories.m4
+perl -p -i -e 's:(libdir=")\$exec_prefix/lib64("):$1%{_libdir}$2:' config-scripts/cups-directories.m4 configure
 
 # Let's look at the compilation command lines.
 perl -p -i -e "s,^.SILENT:,," Makedefs.in
