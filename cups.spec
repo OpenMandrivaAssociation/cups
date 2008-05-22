@@ -13,7 +13,7 @@
 %define cupsversion 1.3.7
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -72,6 +72,8 @@ Patch19: cups-1.3.6-CVE-2008-1373.patch
 Patch20: cups-1.3.7-str2806.patch
 Patch21: cups-1.3.7-CVE-2008-1722.patch
 
+# fhimpe: taken from Fedora to compile with gcc 4.3
+Patch30: cups-1.3.7-peercred.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -236,6 +238,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch19 -p1 -b .CVE-2008-1373.patch
 %patch20 -p1 -b .str2806.patch
 %patch21 -p1 -b .CVE-2008-1722
+%patch30 -p1 -b .peercred
 
 %if 0
 # Fix libdir for 64-bit architectures
