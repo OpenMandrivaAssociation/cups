@@ -715,8 +715,6 @@ if [ "$1" = 0 ]; then
   %{_sbindir}/update-alternatives --remove reject %{_sbindir}/reject-cups
 fi
 
-%preun -n %{libname} -p /sbin/ldconfig
-
 %postun
 %_postun_groupdel lpadmin
 
