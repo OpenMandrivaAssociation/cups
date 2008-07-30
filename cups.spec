@@ -10,10 +10,10 @@
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.3.7
+%define cupsversion 1.3.8
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 4
+%define cupsrelease %mkrel 1
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -68,15 +68,10 @@ Source18: cups.sysconfig
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
 Patch19: cups-1.3.6-CVE-2008-1373.patch
-# fhimpe: fix test suite failure: http://www.cups.org/str.php?L2806
-Patch20: cups-1.3.7-str2806.patch
-Patch21: cups-1.3.7-CVE-2008-1722.patch
 
 # fhimpe: taken from Fedora to compile with gcc 4.3
 Patch30: cups-1.3.7-peercred.patch
 
-# fix #41073, crash on missing backend file: http://www.cups.org/str.php?L2865
-Patch31: cups-1.3.7-str2865.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -239,10 +234,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
 %patch19 -p1 -b .CVE-2008-1373.patch
-%patch20 -p1 -b .str2806.patch
-%patch21 -p1 -b .CVE-2008-1722
 %patch30 -p1 -b .peercred
-%patch31 -p0 -b .missing_backend
 
 %if 0
 # Fix libdir for 64-bit architectures
@@ -822,6 +814,7 @@ rm -rf %{buildroot}
 %lang(fi) %{_datadir}/locale/fi/cups_fi.po
 %lang(fr) %{_datadir}/locale/fr/cups_fr.po
 %lang(he) %{_datadir}/locale/he/cups_he.po
+%lang(id) %{_datadir}/locale/id/cups_id.po
 %lang(it) %{_datadir}/locale/it/cups_it.po
 %lang(ja) %{_datadir}/locale/ja/cups_ja.po
 %lang(ko) %{_datadir}/locale/ko/cups_ko.po
