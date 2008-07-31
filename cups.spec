@@ -104,9 +104,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 ##### SUB-PACKAGES #####
 
 %description
-CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
 The Common Unix Printing System provides a portable printing layer for 
 UNIX(TM) operating systems. It has been developed by Easy Software Products 
 to promote a standard printing solution for all UNIX vendors and users. 
