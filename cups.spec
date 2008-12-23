@@ -13,7 +13,7 @@
 %define cupsversion 1.3.9
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -230,7 +230,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch9 -p0
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
-%patch19 -p1 -b .CVE-2008-1373.patch
+%patch19 -p0 -b .CVE-2008-1373.patch
 %patch30 -p1 -b .peercred
 
 %if 0
