@@ -95,6 +95,8 @@ BuildRequires:	libpaper-devel
 BuildRequires:	libgnutls-devel
 BuildRequires:	php-devel >= 5.1.0 php-cli
 BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
+BuildRequires:	poppler
+BuildRequires:	ghostscript
 Requires: portreserve
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
