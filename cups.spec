@@ -70,7 +70,7 @@ Patch10: cups-1.3.0-recommended.patch
 
 # fhimpe: taken from Fedora to compile with gcc 4.3
 Patch30: cups-1.3.7-peercred.patch
-
+Patch31: cups-1.3.10-testsuite-increase-wait-timeout.diff
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -230,6 +230,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
 %patch30 -p1 -b .peercred
+%patch31 -p0 -b .testsuite-increase-wait-timeout
 
 %if 0
 # Fix libdir for 64-bit architectures
