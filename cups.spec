@@ -81,6 +81,7 @@ Requires: printer-testpages
 Requires: udev dynamic
 # For desktop menus
 Requires: xdg-utils
+Requires:	poppler
 BuildRequires:	autoconf2.5
 BuildRequires:	openssl-devel
 BuildRequires:	libpam-devel
@@ -96,7 +97,7 @@ BuildRequires:	libgnutls-devel
 BuildRequires:	php-devel >= 5.1.0 php-cli
 BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
 BuildRequires:	poppler
-BuildRequires:	ghostscript
+BuildRequires:	acl-devel
 Requires: portreserve
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -352,7 +353,8 @@ export CXXFLAGS="-g"
     --with-cups-user=lp \
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
-    --with-system-groups="lpadmin root"
+    --with-system-groups="lpadmin root" \
+    --with-pdftops=pdftops
 # Let Makefiles not execute the /usr/bin/strip command
 export STRIP=":"
 # Remove "-s" (stripping) option from "install" command used for binaries
@@ -371,7 +373,8 @@ export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
     --with-cups-user=lp \
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
-    --with-system-groups="lpadmin root"
+    --with-system-groups="lpadmin root" \
+    --with-pdftops=pdftops
 #configure2_5x --enable-ssl --with-docdir=%{_datadir}/cups/doc
 export STRIP="/usr/bin/strip"
 %endif
@@ -404,10 +407,10 @@ make CHOWN=":" STRIP="$STRIP" OPTIM="$REAL_CFLAGS" \
 gcc -opoll_ppd_base -I. -I./cups -L./cups -lcups poll_ppd_base.c
 gcc -olphelp -I. -I./cups -L./cups -lcups lphelp.c
 
-%check
-%make test << EOF
-
-EOF
+#%%check
+#%%make test << EOF
+#
+#EOF
 
 
 
