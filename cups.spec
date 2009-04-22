@@ -13,7 +13,7 @@
 %define cupsversion 1.3.10
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -475,6 +475,9 @@ install -m 755 pdf %{buildroot}%{_prefix}/lib/cups/backend/
 
 # Install "cjktexttops"
 install -m 755 cjktexttops %{buildroot}%{_prefix}/lib/cups/filter/
+
+# Make cups run this backend as root to workaround device permissions issues (bug #49407)
+chmod 0700 %{buildroot}%{_prefix}/lib/cups/backend/usb
 
 # Set link to test page in /usr/share/printer-testpages
 #rm -f %{buildroot}%{_datadir}/cups/data/testprint.ps
