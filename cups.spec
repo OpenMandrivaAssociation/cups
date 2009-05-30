@@ -13,7 +13,7 @@
 %define cupsversion 1.3.10
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 2
+%define cupsrelease %mkrel 3
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -67,6 +67,7 @@ Source16: cjktexttops
 Source18: cups.sysconfig
 Patch9: cups-1.1.6-lp-lpr.patch
 Patch10: cups-1.3.0-recommended.patch
+Patch11: cups-1.3.10-gnutls-2.8.patch
 
 # fhimpe: taken from Fedora to compile with gcc 4.3
 Patch30: cups-1.3.7-peercred.patch
@@ -232,6 +233,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch9 -p0
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
+%patch11 -p0 -b .gnutls
 %patch30 -p1 -b .peercred
 %patch31 -p0 -b .testsuite-increase-wait-timeout
 
@@ -337,6 +339,8 @@ cp %{SOURCE16} cjktexttops
 aclocal
 WANT_AUTOCONF_2_5=1 autoconf
 %endif
+aclocal
+autoconf
 # Debug mode
 %if %debug
 export DONT_STRIP=1
