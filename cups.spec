@@ -2,18 +2,18 @@
 %define cupsbasename cups
 %if %{svnsnapshot}
 %define cupsnameext %nil
-%define cupssvnrevision 5497
-%define cupsversion 1.3
+%define cupssvnrevision 8703
+%define cupsversion 1.4
 %define cupsminorversion .0
 %define cupsextraversion svn-r%{cupssvnrevision}
 %define cupsrelease %mkrel 0.%{cupssvnrevision}.1
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.3.10
+%define cupsversion 1.4.0
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 4
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -65,13 +65,83 @@ Source15: http://printing.kde.org/downloads/pdfdistiller
 Source16: cjktexttops
 # Nice level for now. bug #16387
 Source18: cups.sysconfig
-Patch9: cups-1.1.6-lp-lpr.patch
-Patch10: cups-1.3.0-recommended.patch
-Patch11: cups-1.3.10-gnutls-2.8.patch
+Patch10: cups-1.4.0-recommended.patch
 
 # fhimpe: taken from Fedora to compile with gcc 4.3
+# Without this patch, build fails with:
+# auth.c:485: error: storage size of 'peercred' isn't known
 Patch30: cups-1.3.7-peercred.patch
-Patch31: cups-1.3.10-testsuite-increase-wait-timeout.diff
+# fhimpe: make installed binary files writeable as root
+Patch32: cups-1.4-permissions.patch
+
+# Fedora patches:
+# don't gzip man pages
+Patch1001: cups-no-gzip-man.patch
+# use correct libdir
+Patch1003: cups-multilib.patch
+# http://www.cups.org/str.php?L2831
+Patch1004: cups-str2831.patch
+# Ignore .rpmnew and .rpmsave banner files.
+Patch1006: cups-banners.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=194005
+# disabled: breaks build on x86_64
+Patch1007: cups-serverbin-compat.patch
+# Don't export in SSLLIBS to cups-config.
+Patch1008: cups-no-export-ssllibs.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=197214
+# disabled for now because there is no pstopaps yet in mdv
+Patch1009: cups-paps.patch
+# Add '--help' option to lpr command (RH bug #206380, STR #1989).
+Patch1012: cups-lpr-help.patch
+# Write a pid file (RH bug #132987).
+Patch1014: cups-pid.patch
+# Send QueueChanged D-Bus signal on all job state changes.
+Patch1016: cups-eggcups.patch
+# Don't use getpass() (RH bug #125133).
+Patch1017: cups-getpass.patch
+# Increased PPD timeout in copy_model() (RH bug #216065)
+Patch1018: cups-driverd-timeout.patch
+Patch1020: cups-logrotate.patch
+# cups-polld: reinit the resolver if we haven't yet resolved the
+# hostname (RH bug #354071).
+Patch1023: cups-res_init.patch
+# Fixed lpadmin for remote 1.3.x servers (RH bug #506977, STR #3231).
+Patch1025: cups-filter-debug.patch
+# Prevent ipp backend looping with bad IPP devices (RH bug #476424,
+#STR #3262).
+Patch1034: cups-str3262.patch
+# Cheaply restore compatibility with 1.1.x by having cups_get_sdests()
+# perform a CUPS_GET_CLASSES request if it is not sure it is talking
+# to CUPS 1.2 or later (RH bug #512866).
+Patch1035: cups-cups-get-classes.patch
+# build against avahi (RH bug #245824).
+Patch1037: cups-avahi.patch
+# Fixed MIME type rules for image/jpeg and image/x-bitmap
+#(RH bug #516438, STR #3284).
+Patch1039: cups-str3284.patch
+# Fixed cupsGetNamedDest() so it does not fall back to the default
+#  printer when a destination has been named (RH bug #516439, STR #3285).
+Patch1040: cups-str3285.patch
+# Fixed ppds.dat handling of drv files (RH bug #515027, STR #3279).
+Patch1041: cups-str3279.patch
+# Avoid empty BrowseLocalProtocols setting (RH bug #516460, STR #3287).
+Patch1042: cups-str3287.patch
+# Fixed JobKillDelay handling for cancelled jobs (RH bug #518026,
+#  STR #3292).
+Patch1043: cups-str3292.patch
+# Prevent infinite loop in ppdc (STR #3293).
+Patch1044: cups-str3293.patch
+# Fixed document-format-supported attribute when
+#  application/octet-stream is enabled (RH bug #516507, STR #3308, patch
+#  from Jiri Popelka).
+Patch1045: cups-str3308.patch
+# Prevent infinite loop in cupsDoIORequest when processing HTTP
+# errors (RH bug #518065, RH bug #519663, STR #3311).
+Patch1046: cups-str3311.patch
+# Fixed admin.cgi crash when modifying a class (RH bug #519724,
+#  STR #3312, patch from Jiri Popelka).
+Patch1047: cups-str3312.patch
+
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -99,7 +169,12 @@ BuildRequires:	php-devel >= 5.1.0 php-cli
 BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
 BuildRequires:	poppler
 BuildRequires:	acl-devel
-Requires: portreserve
+Buildrequires:  xinetd
+BuildRequires:	avahi-compat-libdns_sd-devel
+Requires: 	portreserve
+Provides:	cupsddk-drivers
+Obsoletes:	cupsddk-drivers < 1.2.3-5
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 
@@ -227,15 +302,39 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # Do NEVER use cups.suse (this package is for Mandriva)
 #cp -f data/cups.pam data/cups.suse
 
-# Replace the job title "(stdin)" by "STDIM" when one prints out of 
-# standard input with "lp" or "lpr". This caused problems when printing
-# to a printer on a Windows server via Samba.
-%patch9 -p0
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
-%patch11 -p0 -b .gnutls
 %patch30 -p1 -b .peercred
-%patch31 -p0 -b .testsuite-increase-wait-timeout
+%patch32 -p1 -b .permissions
+
+# fedora patches
+%patch1001 -p1 -b .no-gzip-man
+%patch1003 -p1 -b .multilib
+%patch1004 -p1 -b .str2831
+%patch1006 -p1 -b .banners
+#%patch1007 -p1 -b .serverbin-compat
+%patch1008 -p1 -b .no-export-ssllibs
+#%patch1009 -p1 -b .paps
+%patch1012 -p1 -b .lpr-help
+%patch1014 -p1 -b .pid
+%patch1016 -p1 -b .eggcups
+%patch1017 -p1 -b .getpass
+%patch1018 -p1 -b .driverd-timeout
+%patch1020 -p1 -b .logrotate
+%patch1023 -p1 -b .res_init
+%patch1025 -p1 -b .filter-debug
+%patch1034 -p1 -b .str3262
+%patch1035 -p1 -b .cups-get-classes
+%patch1037 -p1 -b .avahi
+%patch1039 -p1 -b .str3284
+%patch1040 -p1 -b .str3285
+%patch1041 -p1 -b .str3279
+%patch1042 -p1 -b .str3287
+%patch1043 -p1 -b .str3292
+%patch1044 -p1 -b .str3293
+%patch1045 -p1 -b .str3308
+%patch1046 -p1 -b .str3311
+%patch1047 -p1 -b .str3312
 
 %if 0
 # Fix libdir for 64-bit architectures
@@ -348,7 +447,6 @@ export CFLAGS="-g"
 export CXXFLAGS="-g"
 ./configure \
     --enable-debug=yes \
-    --enable-install_static \
     --enable-libpaper \
     --enable-raw-printing \
     --enable-ssl \
@@ -368,7 +466,6 @@ perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
 ./configure \
-    --enable-install_static \
     --enable-libpaper \
     --enable-raw-printing \
     --enable-ssl \
@@ -411,8 +508,8 @@ make CHOWN=":" STRIP="$STRIP" OPTIM="$REAL_CFLAGS" \
 gcc -opoll_ppd_base -I. -I./cups -L./cups -lcups poll_ppd_base.c
 gcc -olphelp -I. -I./cups -L./cups -lcups lphelp.c
 
-#%%check
-#%%make test << EOF
+%check
+#%make test << EOF
 #
 #EOF
 
@@ -487,28 +584,6 @@ chmod 0700 %{buildroot}%{_prefix}/lib/cups/backend/usb
 #rm -f %{buildroot}%{_datadir}/cups/data/testprint.ps
 ln -s %{_datadir}/printer-testpages/testprint.ps %{buildroot}%{_datadir}/cups/data/testprint-mdv.ps
 
-# entry for xinetd (disabled by default)
-install -d %{buildroot}%{_sysconfdir}/xinetd.d
-cat <<EOF >%{buildroot}%{_sysconfdir}/xinetd.d/cups-lpd
-# default: off
-# description: The cups-lpd mini daemon enable cups accepting jobs from a \
-#       remote LPD client (for example a machine with an older distribution \
-#       than Linux Mandrake 7.2 or with a commercial Unix).
-service printer
-{
-	socket_type	= stream
-	protocol	= tcp
-	wait		= no
-	user		= lp
-	group		= sys
-	server		= %{_prefix}/lib/cups/daemon/cups-lpd
-	server_args	= -o document-format=application/octet-stream
-	passenv		=
-	env		= TMPDIR=%{_var}/spool/cups/tmp
-	disable		= yes
-}
-EOF
-
 # Install startup script
 install -d %{buildroot}%{_initrddir}
 install -m 755 %{SOURCE5} %{buildroot}%{_initrddir}/cups
@@ -526,7 +601,7 @@ chmod a+rx %{buildroot}%{_sbindir}/correctcupsconfig
 
 # Install PPDs
 mkdir -p %{buildroot}%{_datadir}/cups/model
-install -m 755 ppd/*.ppd %{buildroot}%{_datadir}/cups/model
+#install -m 755 ppd/*.ppd %{buildroot}%{_datadir}/cups/model
 
 # Uncompress Perl script for cleaning up manufacturer entries in PPD files
 cp %{SOURCE6} ./cleanppd.pl
@@ -536,9 +611,9 @@ find %{buildroot}%{_datadir}/cups/model -name "*.ppd" -exec ./cleanppd.pl '{}' \
 
 # bzip2 all man pages already now, so that we can link man pages without
 # RPM breaking it. Links need to be deleted and afterwards regenerated
-rm -f %{buildroot}%{_mandir}/man8/cupsdisable.8.gz
-rm -f %{buildroot}%{_mandir}/man8/reject.8.gz
-bzme -F %{buildroot}%{_mandir}/man*/*.[0-9n].gz
+rm -f %{buildroot}%{_mandir}/man8/cupsdisable.8
+rm -f %{buildroot}%{_mandir}/man8/reject.8
+#bzme -F %{buildroot}%{_mandir}/man*/*.[0-9n].gz
 
 # Set compatibility links for the man pages and executables
 ln -s %{_sbindir}/cupsenable %{buildroot}%{_bindir}/enable
@@ -546,15 +621,15 @@ ln -s %{_sbindir}/cupsdisable %{buildroot}%{_bindir}/disable
 ln -s %{_sbindir}/cupsenable %{buildroot}%{_sbindir}/enable
 ln -s %{_sbindir}/cupsdisable %{buildroot}%{_sbindir}/disable
 %if %manpagelinks
-ln -s %{_mandir}/man8/cupsenable.8.bz2 %{buildroot}%{_mandir}/man8/cupsdisable.8.bz2
-ln -s %{_mandir}/man8/cupsdisable.8.bz2 %{buildroot}%{_mandir}/man8/disable.8.bz2
-ln -s %{_mandir}/man8/cupsenable.8.bz2 %{buildroot}%{_mandir}/man8/enable.8.bz2
-ln -s %{_mandir}/man8/accept.8.bz2 %{buildroot}%{_mandir}/man8/reject.8.bz2
+ln -s %{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/cupsdisable.8
+ln -s %{_mandir}/man8/cupsdisable.8 %{buildroot}%{_mandir}/man8/disable.8
+ln -s %{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/enable.8
+ln -s %{_mandir}/man8/accept.8 %{buildroot}%{_mandir}/man8/reject.8
 %else
-cp %{buildroot}%{_mandir}/man8/cupsenable.8.bz2 %{buildroot}%{_mandir}/man8/cupsdisable.8.bz2
-cp %{buildroot}%{_mandir}/man8/cupsdisable.8.bz2 %{buildroot}%{_mandir}/man8/disable.8.bz2
-cp %{buildroot}%{_mandir}/man8/cupsenable.8.bz2 %{buildroot}%{_mandir}/man8/enable.8.bz2
-cp %{buildroot}%{_mandir}/man8/accept.8.bz2 %{buildroot}%{_mandir}/man8/reject.8.bz2
+cp %{buildroot}%{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/cupsdisable.8
+cp %{buildroot}%{_mandir}/man8/cupsdisable.8 %{buildroot}%{_mandir}/man8/disable.8
+cp %{buildroot}%{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/enable.8
+cp %{buildroot}%{_mandir}/man8/accept.8 %{buildroot}%{_mandir}/man8/reject.8
 %endif
 
 %ifarch x86_64
@@ -582,20 +657,20 @@ ln -s %{_prefix}/lib/cups %{buildroot}%{_libdir}/cups
   mv reject reject-cups
 )
 ( cd %{buildroot}%{_mandir}/man1
-  mv lpr.1.bz2 lpr-cups.1.bz2
-  mv lpq.1.bz2 lpq-cups.1.bz2
-  mv lprm.1.bz2 lprm-cups.1.bz2
-  mv lp.1.bz2 lp-cups.1.bz2
-  mv cancel.1.bz2 cancel-cups.1.bz2
-  mv lpstat.1.bz2 lpstat-cups.1.bz2
+  mv lpr.1 lpr-cups.1
+  mv lpq.1 lpq-cups.1
+  mv lprm.1 lprm-cups.1
+  mv lp.1 lp-cups.1
+  mv cancel.1 cancel-cups.1
+  mv lpstat.1 lpstat-cups.1
 )
 ( cd %{buildroot}%{_mandir}/man8
-  mv accept.8.bz2 accept-cups.8.bz2
-  mv disable.8.bz2 disable-cups.8.bz2
-  mv enable.8.bz2 enable-cups.8.bz2
-  mv lpc.8.bz2 lpc-cups.8.bz2
-  mv lpmove.8.bz2 lpmove-cups.8.bz2
-  mv reject.8.bz2 reject-cups.8.bz2
+  mv accept.8 accept-cups.8
+  mv disable.8 disable-cups.8
+  mv enable.8 enable-cups.8
+  mv lpc.8 lpc-cups.8
+  mv lpmove.8 lpmove-cups.8
+  mv reject.8 reject-cups.8
 )
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/reject-cups
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsdisable
@@ -749,8 +824,8 @@ rm -rf %{buildroot}
 %ghost %config(noreplace) %{_sysconfdir}/cups/classes.conf
 %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf.default
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/interfaces
-%config(noreplace) %attr(644,root,sys) %{_sysconfdir}/cups/mime.convs
-%config(noreplace) %attr(644,root,sys) %{_sysconfdir}/cups/mime.types
+#%config(noreplace) %attr(644,root,sys) %{_sysconfdir}/cups/mime.convs
+#%config(noreplace) %attr(644,root,sys) %{_sysconfdir}/cups/mime.types
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ppd
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ssl
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/snmp.conf
@@ -811,6 +886,11 @@ rm -rf %{buildroot}
 %attr(6755,root,sys) %{_bindir}/lppasswd
 %{_bindir}/photo_print
 %{_bindir}/poll_ppd_base
+%{_bindir}/ppdc
+%{_bindir}/ppdhtml
+%{_bindir}/ppdi
+%{_bindir}/ppdmerge
+%{_bindir}/ppdpo
 %{_bindir}/cupstestppd
 %{_bindir}/cupstestdsc
 %{_bindir}/enable
@@ -818,11 +898,12 @@ rm -rf %{buildroot}
 %lang(da) %{_datadir}/locale/da/cups_da.po
 %lang(de) %{_datadir}/locale/de/cups_de.po
 %lang(es) %{_datadir}/locale/es/cups_es.po
-%lang(et) %{_datadir}/locale/et/cups_et.po
+#%lang(et) %{_datadir}/locale/et/cups_et.po
+%lang(eu) %{_datadir}/locale/eu/cups_eu.po
 %lang(fi) %{_datadir}/locale/fi/cups_fi.po
 %lang(fr) %{_datadir}/locale/fr/cups_fr.po
-%lang(he) %{_datadir}/locale/he/cups_he.po
-%lang(id) %{_datadir}/locale/id/cups_id.po
+#%lang(he) %{_datadir}/locale/he/cups_he.po
+#%lang(id) %{_datadir}/locale/id/cups_id.po
 %lang(it) %{_datadir}/locale/it/cups_it.po
 %lang(ja) %{_datadir}/locale/ja/cups_ja.po
 %lang(ko) %{_datadir}/locale/ko/cups_ko.po
@@ -842,6 +923,10 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_libdir}/libcups.so.*
 %{_libdir}/libcupsimage.so.*
+%{_libdir}/libcupscgi.so.1
+%{_libdir}/libcupsdriver.so.1
+%{_libdir}/libcupsmime.so.1
+%{_libdir}/libcupsppdc.so.1
 
 #####%{libname}-devel
 %files -n %{libname}-devel
