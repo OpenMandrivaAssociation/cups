@@ -105,8 +105,6 @@ Patch1020: cups-logrotate.patch
 # cups-polld: reinit the resolver if we haven't yet resolved the
 # hostname (RH bug #354071).
 Patch1023: cups-res_init.patch
-# Fixed lpadmin for remote 1.3.x servers (RH bug #506977, STR #3231).
-Patch1025: cups-filter-debug.patch
 # Cheaply restore compatibility with 1.1.x by having cups_get_sdests()
 # perform a CUPS_GET_CLASSES request if it is not sure it is talking
 # to CUPS 1.2 or later (RH bug #512866).
@@ -293,7 +291,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch1018 -p1 -b .driverd-timeout
 %patch1020 -p1 -b .logrotate
 %patch1023 -p1 -b .res_init
-%patch1025 -p1 -b .filter-debug
 %patch1035 -p1 -b .cups-get-classes
 %patch1037 -p1 -b .avahi
 
