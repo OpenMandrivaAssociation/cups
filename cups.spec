@@ -54,6 +54,7 @@ Source6: cleanppd.pl
 # Perl script for automatic configuration of CUPS, especially access
 # restrictions and broadcasting
 Source7: correctcupsconfig
+Source9: cups.logrotate
 # Backend filter for nprint (Novell client) from Mark Horn
 # (mark@hornclan.com)
 Source11: http://www.hornclan.com/~mark/cups/nprint.2002011801
@@ -99,6 +100,7 @@ Patch1016: cups-eggcups.patch
 Patch1017: cups-getpass.patch
 # Increased PPD timeout in copy_model() (RH bug #216065)
 Patch1018: cups-driverd-timeout.patch
+# Don't do logrotation in cups, so that logrotate can take care of it
 Patch1020: cups-logrotate.patch
 # cups-polld: reinit the resolver if we haven't yet resolved the
 # hostname (RH bug #354071).
@@ -515,6 +517,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/cups/ssl
 # Make a directory for authentication certificates
 mkdir -p %{buildroot}%{_var}/run/cups/certs
 
+# Make a directory for logrotate configuration
+mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
+
 # Install additional tools
 install -m 755 poll_ppd_base %{buildroot}%{_bindir}
 install -m 755 lphelp %{buildroot}%{_bindir}
@@ -534,6 +539,9 @@ install -m 755 pdf %{buildroot}%{_prefix}/lib/cups/backend/
 
 # Install "cjktexttops"
 install -m 755 cjktexttops %{buildroot}%{_prefix}/lib/cups/filter/
+
+# Install logrotate configuration
+install -c -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/logrotate.d/cups
 
 # Make cups run this backend as root to workaround device permissions issues (bug #49407)
 chmod 0700 %{buildroot}%{_prefix}/lib/cups/backend/usb
@@ -792,6 +800,7 @@ rm -rf %{buildroot}
 %endif
 %{_initrddir}/cups
 %config(noreplace) %{_sysconfdir}/pam.d/cups
+%config(noreplace) %{_sysconfdir}/logrotate.d/cups
 %attr(644,root,root) %config(noreplace) %{_sysconfdir}/xinetd.d/cups-lpd
 %attr(644,root,root) %config(noreplace) %{_sysconfdir}/portreserve/cups
 %dir %{_prefix}/lib/cups
