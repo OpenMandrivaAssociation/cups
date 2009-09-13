@@ -10,10 +10,10 @@
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.4.0
+%define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 2
+%define cupsrelease %mkrel 1
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -79,8 +79,6 @@ Patch32: cups-1.4-permissions.patch
 Patch1001: cups-no-gzip-man.patch
 # use correct libdir
 Patch1003: cups-multilib.patch
-# http://www.cups.org/str.php?L2831
-Patch1004: cups-str2831.patch
 # Ignore .rpmnew and .rpmsave banner files.
 Patch1006: cups-banners.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=194005
@@ -89,7 +87,7 @@ Patch1007: cups-serverbin-compat.patch
 # Don't export in SSLLIBS to cups-config.
 Patch1008: cups-no-export-ssllibs.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=197214
-# disabled for now because there is no pstopaps yet in mdv
+# disabled for now because there is no pstoaps yet in mdv
 Patch1009: cups-paps.patch
 # Add '--help' option to lpr command (RH bug #206380, STR #1989).
 Patch1012: cups-lpr-help.patch
@@ -107,40 +105,12 @@ Patch1020: cups-logrotate.patch
 Patch1023: cups-res_init.patch
 # Fixed lpadmin for remote 1.3.x servers (RH bug #506977, STR #3231).
 Patch1025: cups-filter-debug.patch
-# Prevent ipp backend looping with bad IPP devices (RH bug #476424,
-#STR #3262).
-Patch1034: cups-str3262.patch
 # Cheaply restore compatibility with 1.1.x by having cups_get_sdests()
 # perform a CUPS_GET_CLASSES request if it is not sure it is talking
 # to CUPS 1.2 or later (RH bug #512866).
 Patch1035: cups-cups-get-classes.patch
 # build against avahi (RH bug #245824).
 Patch1037: cups-avahi.patch
-# Fixed MIME type rules for image/jpeg and image/x-bitmap
-#(RH bug #516438, STR #3284).
-Patch1039: cups-str3284.patch
-# Fixed cupsGetNamedDest() so it does not fall back to the default
-#  printer when a destination has been named (RH bug #516439, STR #3285).
-Patch1040: cups-str3285.patch
-# Fixed ppds.dat handling of drv files (RH bug #515027, STR #3279).
-Patch1041: cups-str3279.patch
-# Avoid empty BrowseLocalProtocols setting (RH bug #516460, STR #3287).
-Patch1042: cups-str3287.patch
-# Fixed JobKillDelay handling for cancelled jobs (RH bug #518026,
-#  STR #3292).
-Patch1043: cups-str3292.patch
-# Prevent infinite loop in ppdc (STR #3293).
-Patch1044: cups-str3293.patch
-# Fixed document-format-supported attribute when
-#  application/octet-stream is enabled (RH bug #516507, STR #3308, patch
-#  from Jiri Popelka).
-Patch1045: cups-str3308.patch
-# Prevent infinite loop in cupsDoIORequest when processing HTTP
-# errors (RH bug #518065, RH bug #519663, STR #3311).
-Patch1046: cups-str3311.patch
-# Fixed admin.cgi crash when modifying a class (RH bug #519724,
-#  STR #3312, patch from Jiri Popelka).
-Patch1047: cups-str3312.patch
 
 
 ##### ADDITIONAL DEFINITIONS #####
@@ -310,7 +280,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
 %patch1003 -p1 -b .multilib
-%patch1004 -p1 -b .str2831
 %patch1006 -p1 -b .banners
 #%patch1007 -p1 -b .serverbin-compat
 %patch1008 -p1 -b .no-export-ssllibs
@@ -323,18 +292,8 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch1020 -p1 -b .logrotate
 %patch1023 -p1 -b .res_init
 %patch1025 -p1 -b .filter-debug
-%patch1034 -p1 -b .str3262
 %patch1035 -p1 -b .cups-get-classes
 %patch1037 -p1 -b .avahi
-%patch1039 -p1 -b .str3284
-%patch1040 -p1 -b .str3285
-%patch1041 -p1 -b .str3279
-%patch1042 -p1 -b .str3287
-%patch1043 -p1 -b .str3292
-%patch1044 -p1 -b .str3293
-%patch1045 -p1 -b .str3308
-%patch1046 -p1 -b .str3311
-%patch1047 -p1 -b .str3312
 
 %if 0
 # Fix libdir for 64-bit architectures
@@ -509,10 +468,9 @@ gcc -opoll_ppd_base -I. -I./cups -L./cups -lcups poll_ppd_base.c
 gcc -olphelp -I. -I./cups -L./cups -lcups lphelp.c
 
 %check
-#%make test << EOF
-#
-#EOF
+%make test << EOF
 
+EOF
 
 
 ##### INSTALL #####
