@@ -74,6 +74,8 @@ Patch10: cups-1.4.0-recommended.patch
 Patch30: cups-1.3.7-peercred.patch
 # fhimpe: make installed binary files writeable as root
 Patch32: cups-1.4-permissions.patch
+# fhimpe: fix build on x86_64 due to conflicting declarations
+Patch33: cups-1.4.1-side_cb-decl.patch
 
 # Fedora patches:
 # don't gzip man pages
@@ -276,6 +278,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch10 -p1 -b .recommended
 %patch30 -p1 -b .peercred
 %patch32 -p1 -b .permissions
+%patch33 -p1 -b .side_cb
 
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
