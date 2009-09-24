@@ -13,7 +13,7 @@
 %define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -27,6 +27,11 @@
 # Links in the man page directories get deleted due to a bug in Mandriva's
 # RPM helper script. So we copy the man pages for now
 %define manpagelinks 0
+
+%define bootstrap 0
+%{?_without_bootstrap: %global bootstrap 0}
+%{?_with_bootstrap: %global bootstrap 1}
+
 
 ##### GENERAL STUFF #####
 
@@ -124,7 +129,9 @@ Requires: printer-testpages
 Requires: udev dynamic
 # For desktop menus
 Requires: xdg-utils
+%if !%bootstrap
 Requires:	poppler
+%endif
 BuildRequires:	autoconf2.5
 BuildRequires:	openssl-devel
 BuildRequires:	libpam-devel
@@ -139,7 +146,9 @@ BuildRequires:	libpaper-devel
 BuildRequires:	libgnutls-devel
 BuildRequires:	php-devel >= 5.1.0 php-cli
 BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
-BuildRequires:	poppler
+%if !%bootstrap
+buildRequires:	poppler
+%endif
 BuildRequires:	acl-devel
 Buildrequires:  xinetd
 BuildRequires:	avahi-compat-libdns_sd-devel
@@ -417,7 +426,10 @@ export CXXFLAGS="-g"
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
+%if !%bootstrap
     --with-pdftops=pdftops
+%endif
+
 # Let Makefiles not execute the /usr/bin/strip command
 export STRIP=":"
 # Remove "-s" (stripping) option from "install" command used for binaries
@@ -436,7 +448,10 @@ export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
+%if !%bootstrap
     --with-pdftops=pdftops
+%endif
+
 #configure2_5x --enable-ssl --with-docdir=%{_datadir}/cups/doc
 export STRIP="/usr/bin/strip"
 %endif
