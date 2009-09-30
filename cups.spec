@@ -81,6 +81,14 @@ Patch30: cups-1.3.7-peercred.patch
 Patch32: cups-1.4-permissions.patch
 # fhimpe: fix build on x86_64 due to conflicting declarations
 Patch33: cups-1.4.1-side_cb-decl.patch
+# Debian/Ubuntu patch: make the USB
+# backend supporting both printer access via libusb and via the usblp kernel
+# module. Make it also printing via libusb if the URI for the queue was
+# generated via usblp and vice versa. This should solve most USB printing
+# problems which occured on the transition to CUPS 1.4.x (Launchpad #420015,
+# #436495; bugs.debian.org: #546558, #545288, #545453)
+# (disabled for now because of unresolved symbol errors. Patch34 includes patch33!)
+Patch34: cups-1.4.1-both-usblp-and-libusb.patch
 
 # Fedora patches:
 # don't gzip man pages
@@ -118,7 +126,8 @@ Patch1023: cups-res_init.patch
 Patch1035: cups-cups-get-classes.patch
 # build against avahi (RH bug #245824).
 Patch1037: cups-avahi.patch
-
+# Don't use cached PPD for raw queue (RH bug #526405)
+Patch1039: cups-str3356.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -288,6 +297,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch30 -p1 -b .peercred
 %patch32 -p1 -b .permissions
 %patch33 -p1 -b .side_cb
+#%patch34 -p1 -b .usb
 
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
@@ -305,6 +315,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch1023 -p1 -b .res_init
 %patch1035 -p1 -b .cups-get-classes
 %patch1037 -p1 -b .avahi
+%patch1039 -p1 -b .str3356
 
 %if 0
 # Fix libdir for 64-bit architectures
