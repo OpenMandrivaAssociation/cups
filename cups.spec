@@ -13,7 +13,7 @@
 %define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 2
+%define cupsrelease %mkrel 3
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -79,15 +79,12 @@ Patch10: cups-1.4.0-recommended.patch
 Patch30: cups-1.3.7-peercred.patch
 # fhimpe: make installed binary files writeable as root
 Patch32: cups-1.4-permissions.patch
-# fhimpe: fix build on x86_64 due to conflicting declarations
-Patch33: cups-1.4.1-side_cb-decl.patch
 # Debian/Ubuntu patch: make the USB
 # backend supporting both printer access via libusb and via the usblp kernel
 # module. Make it also printing via libusb if the URI for the queue was
 # generated via usblp and vice versa. This should solve most USB printing
 # problems which occured on the transition to CUPS 1.4.x (Launchpad #420015,
 # #436495; bugs.debian.org: #546558, #545288, #545453)
-# (disabled for now because of unresolved symbol errors. Patch34 includes patch33!)
 Patch34: cups-1.4.1-both-usblp-and-libusb.patch
 
 # Fedora patches:
@@ -161,6 +158,7 @@ buildRequires:	poppler
 BuildRequires:	acl-devel
 Buildrequires:  xinetd
 BuildRequires:	avahi-compat-libdns_sd-devel
+BuildRequires:	libusb-devel
 Requires: 	portreserve
 Provides:	cupsddk-drivers
 Obsoletes:	cupsddk-drivers < 1.2.3-5
@@ -296,8 +294,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch10 -p1 -b .recommended
 %patch30 -p1 -b .peercred
 %patch32 -p1 -b .permissions
-%patch33 -p1 -b .side_cb
-#%patch34 -p1 -b .usb
+%patch34 -p1 -b .usb
 
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
