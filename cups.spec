@@ -13,7 +13,7 @@
 %define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 4
+%define cupsrelease %mkrel 5
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -162,6 +162,7 @@ BuildRequires:	libusb-devel
 Requires: 	portreserve
 Provides:	cupsddk-drivers
 Obsoletes:	cupsddk-drivers < 1.2.3-5
+Obsoletes:	cupsddk < 1.4.0
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -190,7 +191,7 @@ Requires: %{libname} >= %{version}-%{release} rpm >= 3.0.4-6mdk update-alternati
 Provides: lpddaemon
 
 %description common
-CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
 The Common Unix Printing System provides a portable printing layer for
@@ -210,7 +211,7 @@ Obsoletes: libcups1
 Provides: libcups1 = %{version}
 
 %description -n %{libname}
-CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
 The Common Unix Printing System provides a portable printing layer for
@@ -231,9 +232,10 @@ Provides: libcups-devel = %{version}-%{release}
 Provides: libcups2_1-devel = %{version}-%{release}
 Obsoletes: cups-devel, libcups1-devel
 Provides: cups-devel = %{version}, libcups1-devel = %{version}
+Conflicts: cupsddk < 1.4.0
 
 %description -n %{libname}-devel
-CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
 The Common Unix Printing System provides a portable printing layer for
@@ -248,7 +250,7 @@ Group: System/Printing
 Requires: %{name} >= %{version}-%{release}
 
 %description serial
-CUPS 1.2 is fully compatible with CUPS-1.1 machines in the network and
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
 The Common Unix Printing System provides a portable printing layer for
