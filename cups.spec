@@ -13,7 +13,7 @@
 %define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 5
+%define cupsrelease %mkrel 6
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -132,7 +132,7 @@ Url: http://www.cups.org
 Requires: %{libname} >= %{version}-%{release} %{name}-common >= %{version}-%{release} openssl net-tools
 Requires: printer-testpages
 # Take care that device files are created with correct permissions
-Requires: udev dynamic
+Requires: udev 
 # For desktop menus
 Requires: xdg-utils
 %if !%bootstrap
