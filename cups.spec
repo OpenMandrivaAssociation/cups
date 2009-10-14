@@ -13,7 +13,7 @@
 %define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 6
+%define cupsrelease %mkrel 7
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -106,6 +106,9 @@ Patch1009: cups-paps.patch
 Patch1012: cups-lpr-help.patch
 # Write a pid file (RH bug #132987).
 Patch1014: cups-pid.patch
+# Fixed orientation of page labels when printing text in landscape
+# mode (RH bug #520141, STR #3334).
+Patch1015: cups-page-label.patch
 # Send QueueChanged D-Bus signal on all job state changes.
 Patch1016: cups-eggcups.patch
 # Don't use getpass() (RH bug #125133).
@@ -307,6 +310,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 #%patch1009 -p1 -b .paps
 %patch1012 -p1 -b .lpr-help
 %patch1014 -p1 -b .pid
+%patch1015 -p1 -b .page-label
 %patch1016 -p1 -b .eggcups
 %patch1017 -p1 -b .getpass
 %patch1018 -p1 -b .driverd-timeout
