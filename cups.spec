@@ -86,6 +86,11 @@ Patch32: cups-1.4-permissions.patch
 # problems which occured on the transition to CUPS 1.4.x (Launchpad #420015,
 # #436495; bugs.debian.org: #546558, #545288, #545453)
 Patch34: cups-1.4.1-both-usblp-and-libusb.patch
+# Ubuntu patch, Launchpad #449586: Do not use host
+# names for broadcasting print queues and managing print queues broadcasted
+# from other servers by default. Many networks do not have valid host names
+# for all machines
+Patch35: cups-1.4.1-no-hostname-broadcast.patch
 
 # Fedora patches:
 # don't gzip man pages
@@ -138,6 +143,7 @@ Requires: printer-testpages
 Requires: udev 
 # For desktop menus
 Requires: xdg-utils
+Suggests: avahi
 %if !%bootstrap
 Requires:	poppler
 %endif
@@ -300,6 +306,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch30 -p1 -b .peercred
 %patch32 -p1 -b .permissions
 %patch34 -p1 -b .usb
+%patch35 -p1 -b .broadcast
 
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
@@ -430,6 +437,7 @@ export DONT_STRIP=1
 export CFLAGS="-g"
 export CXXFLAGS="-g"
 ./configure \
+    --enable-avahi \
     --enable-debug=yes \
     --enable-libpaper \
     --enable-raw-printing \
@@ -453,6 +461,7 @@ perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
 ./configure \
+    --enable-avahi \
     --enable-libpaper \
     --enable-raw-printing \
     --enable-ssl \
@@ -839,9 +848,11 @@ rm -rf %{buildroot}
 %{_prefix}/lib/cups/filter
 %{_prefix}/lib/cups/monitor
 %dir %{_prefix}/lib/cups/backend
+%{_prefix}/lib/cups/backend/dnssd
 %{_prefix}/lib/cups/backend/http
 %{_prefix}/lib/cups/backend/ipp
 %{_prefix}/lib/cups/backend/lpd
+%{_prefix}/lib/cups/backend/mdns
 %{_prefix}/lib/cups/backend/nprint
 %{_prefix}/lib/cups/backend/pap
 %{_prefix}/lib/cups/backend/parallel
