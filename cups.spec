@@ -13,7 +13,7 @@
 %define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 8
+%define cupsrelease %mkrel 9
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -156,7 +156,6 @@ BuildRequires:	libdbus-devel >= 0.50
 %endif
 BuildRequires:	glibc
 BuildRequires:	htmldoc
-BuildRequires:	libpaper-devel
 #BuildRequires:  libdbus-1-devel
 BuildRequires:	libgnutls-devel
 BuildRequires:	php-devel >= 5.1.0 php-cli
@@ -439,7 +438,7 @@ export CXXFLAGS="-g"
 ./configure \
     --enable-avahi \
     --enable-debug=yes \
-    --enable-libpaper \
+    --disable-libpaper \
     --enable-raw-printing \
     --enable-ssl \
     --enable-static \
@@ -462,7 +461,7 @@ export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
 ./configure \
     --enable-avahi \
-    --enable-libpaper \
+    --disable-libpaper \
     --enable-raw-printing \
     --enable-ssl \
     --enable-static \
