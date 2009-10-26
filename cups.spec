@@ -13,7 +13,7 @@
 %define cupsversion 1.4.1
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 9
+%define cupsrelease %mkrel 10
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -51,6 +51,8 @@ Source: ftp://ftp.easysw.com/pub/cups/%{cupsversion}/%{cupstarballname}-source.t
 Source1: poll_ppd_base.c
 # Small C program to list the printer-specific options of a particular printer
 Source2: lphelp.c
+# Let printers have an ACL allowing rw for user lp, as our CUPS runs backends as lp:sys (bug 49407)
+Source3: 69-printers_lp_user_fix.rules
 # Complete replacement for startup script to have it the
 # Mandriva Linux way
 Source5: cups.startup
@@ -580,9 +582,6 @@ install -m 755 cjktexttops %{buildroot}%{_prefix}/lib/cups/filter/
 # Install logrotate configuration
 install -c -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/logrotate.d/cups
 
-# Make cups run this backend as root to workaround device permissions issues (bug #49407)
-chmod 0700 %{buildroot}%{_prefix}/lib/cups/backend/usb
-
 # Set link to test page in /usr/share/printer-testpages
 #rm -f %{buildroot}%{_datadir}/cups/data/testprint.ps
 ln -s %{_datadir}/printer-testpages/testprint.ps %{buildroot}%{_datadir}/cups/data/testprint-mdv.ps
@@ -597,6 +596,11 @@ rm -f %{buildroot}%{_sysconfdir}/init.d/cups
 # https://qa.mandriva.com/show_bug.cgi?id=23846
 install -d %{buildroot}%{_sysconfdir}/portreserve
 echo "ipp" > %{buildroot}%{_sysconfdir}/portreserve/cups
+
+# Install udev rules for letting backends access the printer devices.  Once
+# CUPS runs backends as group 'lp', instead of 'sys, we may remove this.
+mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
+install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/udev/rules.d/
 
 # Install script for automatic CUPS configuration
 cp %{SOURCE7} %{buildroot}%{_sbindir}/correctcupsconfig
@@ -878,6 +882,7 @@ rm -rf %{buildroot}
 # Compatibility link, will be removed soon
 %{_libdir}/cups
 %endif
+%{_sysconfdir}/udev/rules.d/*
 
 #####cups-common
 %files common
