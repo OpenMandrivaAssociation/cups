@@ -10,10 +10,10 @@
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.4.1
+%define cupsversion 1.4.2
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 12
+%define cupsrelease %mkrel 1
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -133,8 +133,6 @@ Patch1023: cups-res_init.patch
 Patch1035: cups-cups-get-classes.patch
 # build against avahi (RH bug #245824).
 Patch1037: cups-avahi.patch
-# Don't use cached PPD for raw queue (RH bug #526405)
-Patch1039: cups-str3356.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -326,7 +324,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch1023 -p1 -b .res_init
 %patch1035 -p1 -b .cups-get-classes
 %patch1037 -p1 -b .avahi
-%patch1039 -p1 -b .str3356
 
 %if 0
 # Fix libdir for 64-bit architectures
