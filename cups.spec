@@ -13,7 +13,7 @@
 %define cupsversion 1.4.2
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 5
+%define cupsrelease %mkrel 6
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -51,8 +51,6 @@ Source: ftp://ftp.easysw.com/pub/cups/%{cupsversion}/%{cupstarballname}-source.t
 Source1: poll_ppd_base.c
 # Small C program to list the printer-specific options of a particular printer
 Source2: lphelp.c
-# Let printers have an ACL allowing rw for user lp, as our CUPS runs backends as lp:sys (bug 49407)
-Source3: 69-printers_lp_user_fix.rules
 # Complete replacement for startup script to have it the
 # Mandriva Linux way
 Source5: cups.startup
