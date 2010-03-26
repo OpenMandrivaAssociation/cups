@@ -592,11 +592,6 @@ rm -f %{buildroot}%{_sysconfdir}/init.d/cups
 install -d %{buildroot}%{_sysconfdir}/portreserve
 echo "ipp" > %{buildroot}%{_sysconfdir}/portreserve/cups
 
-# Install udev rules for letting backends access the printer devices.  Once
-# CUPS runs backends as group 'lp', instead of 'sys, we may remove this.
-mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
-install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/udev/rules.d/
-
 # Install script for automatic CUPS configuration
 cp %{SOURCE7} %{buildroot}%{_sbindir}/correctcupsconfig
 chmod a+rx %{buildroot}%{_sbindir}/correctcupsconfig
@@ -877,7 +872,6 @@ rm -rf %{buildroot}
 # Compatibility link, will be removed soon
 %{_libdir}/cups
 %endif
-%{_sysconfdir}/udev/rules.d/*
 
 #####cups-common
 %files common
