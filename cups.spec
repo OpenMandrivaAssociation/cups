@@ -10,10 +10,10 @@
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.4.2
+%define cupsversion 1.4.3
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 6
+%define cupsrelease %mkrel 1
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -85,7 +85,7 @@ Patch32: cups-1.4-permissions.patch
 # generated via usblp and vice versa. This should solve most USB printing
 # problems which occured on the transition to CUPS 1.4.x (Launchpad #420015,
 # #436495; bugs.debian.org: #546558, #545288, #545453)
-Patch34: cups-1.4.1-both-usblp-and-libusb.patch
+Patch34: cups-1.4.3-both-usblp-and-libusb.patch
 # Ubuntu patch, Launchpad #449586: Do not use host
 # names for broadcasting print queues and managing print queues broadcasted
 # from other servers by default. Many networks do not have valid host names
@@ -504,7 +504,11 @@ gcc -opoll_ppd_base -I. -I./cups -L./cups -lcups poll_ppd_base.c
 gcc -olphelp -I. -I./cups -L./cups -lcups lphelp.c
 
 %check
-%make test << EOF
+export LC_ALL=C
+export LC_MESSAGES=C
+export LANG=C
+export LANGUAGE=C
+make test << EOF
 
 EOF
 
