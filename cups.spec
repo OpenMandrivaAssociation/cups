@@ -907,7 +907,7 @@ rm -rf %{buildroot}
 %lang(fi) %{_datadir}/locale/fi/cups_fi.po
 %lang(fr) %{_datadir}/locale/fr/cups_fr.po
 #%lang(he) %{_datadir}/locale/he/cups_he.po
-#%lang(id) %{_datadir}/locale/id/cups_id.po
+%lang(id) %{_datadir}/locale/id/cups_id.po
 %lang(it) %{_datadir}/locale/it/cups_it.po
 %lang(ja) %{_datadir}/locale/ja/cups_ja.po
 %lang(ko) %{_datadir}/locale/ko/cups_ko.po
