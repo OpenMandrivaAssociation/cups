@@ -13,7 +13,7 @@
 %define cupsversion 1.4.3
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -165,6 +165,7 @@ BuildRequires:	acl-devel
 Buildrequires:  xinetd
 BuildRequires:	avahi-compat-libdns_sd-devel
 BuildRequires:	libusb-devel
+BuildRequires:	krb-devel
 Requires: 	portreserve
 Provides:	cupsddk-drivers
 Obsoletes:	cupsddk-drivers < 1.2.3-5
