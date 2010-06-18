@@ -13,7 +13,7 @@
 %define cupsversion 1.4.3
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 2
+%define cupsrelease %mkrel 3
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -131,6 +131,10 @@ Patch1023: cups-res_init.patch
 Patch1035: cups-cups-get-classes.patch
 # build against avahi (RH bug #245824).
 Patch1037: cups-avahi.patch
+Patch1038: cups-CVE-2010-0302.patch
+Patch1039: str3510.patch
+Patch1040: str3516.patch
+Patch1041: str3577.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -323,6 +327,10 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch1023 -p1 -b .res_init
 %patch1035 -p1 -b .cups-get-classes
 %patch1037 -p1 -b .avahi
+%patch1038 -p1 -b .CVE-2010-0302
+%patch1039 -p1 -b .str3510
+%patch1040 -p1 -b .str3516
+%patch1041 -p0 -b .str3577
 
 %if 0
 # Fix libdir for 64-bit architectures
