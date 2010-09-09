@@ -10,10 +10,10 @@
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.4.3
+%define cupsversion 1.4.4
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 3
+%define cupsrelease %mkrel 1
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -90,7 +90,7 @@ Patch34: cups-1.4.3-both-usblp-and-libusb.patch
 # names for broadcasting print queues and managing print queues broadcasted
 # from other servers by default. Many networks do not have valid host names
 # for all machines
-Patch35: cups-1.4.1-no-hostname-broadcast.patch
+Patch35: cups-1.4.4-no-hostname-broadcast.patch
 
 # Fedora patches:
 # don't gzip man pages
@@ -113,11 +113,11 @@ Patch1012: cups-lpr-help.patch
 Patch1014: cups-pid.patch
 # Fixed orientation of page labels when printing text in landscape
 # mode (RH bug #520141, STR #3334).
-Patch1015: cups-page-label.patch
+Patch1015: cups-1.4.4-page-label.patch
 # Send QueueChanged D-Bus signal on all job state changes.
 Patch1016: cups-eggcups.patch
 # Don't use getpass() (RH bug #125133).
-Patch1017: cups-getpass.patch
+Patch1017: cups-1.4.4-getpass.patch
 # Increased PPD timeout in copy_model() (RH bug #216065)
 Patch1018: cups-driverd-timeout.patch
 # Don't do logrotation in cups, so that logrotate can take care of it
@@ -131,10 +131,6 @@ Patch1023: cups-res_init.patch
 Patch1035: cups-cups-get-classes.patch
 # build against avahi (RH bug #245824).
 Patch1037: cups-avahi.patch
-Patch1038: cups-CVE-2010-0302.patch
-Patch1039: str3510.patch
-Patch1040: str3516.patch
-Patch1041: str3577.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -327,10 +323,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch1023 -p1 -b .res_init
 %patch1035 -p1 -b .cups-get-classes
 %patch1037 -p1 -b .avahi
-%patch1038 -p1 -b .CVE-2010-0302
-%patch1039 -p1 -b .str3510
-%patch1040 -p1 -b .str3516
-%patch1041 -p0 -b .str3577
 
 %if 0
 # Fix libdir for 64-bit architectures
