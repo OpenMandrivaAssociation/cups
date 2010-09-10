@@ -13,7 +13,7 @@
 %define cupsversion 1.4.4
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 1
+%define cupsrelease %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -22,7 +22,7 @@
 
 # Turning this on lets CUPS to be built in debug mode (with debugger
 # symbols)
-%define debug 0
+%define debug 1
 
 # Links in the man page directories get deleted due to a bug in Mandriva's
 # RPM helper script. So we copy the man pages for now
