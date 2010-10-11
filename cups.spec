@@ -73,10 +73,6 @@ Source16: cjktexttops
 Source18: cups.sysconfig
 Patch10: cups-1.4.0-recommended.patch
 
-# fhimpe: taken from Fedora to compile with gcc 4.3
-# Without this patch, build fails with:
-# auth.c:485: error: storage size of 'peercred' isn't known
-Patch30: cups-1.3.7-peercred.patch
 # fhimpe: make installed binary files writeable as root
 Patch32: cups-1.4-permissions.patch
 # Debian/Ubuntu patch: make the USB
@@ -98,39 +94,38 @@ Patch1001: cups-no-gzip-man.patch
 # use correct libdir
 Patch1003: cups-multilib.patch
 # Ignore .rpmnew and .rpmsave banner files.
-Patch1006: cups-banners.patch
+Patch1005: cups-banners.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=194005
 # disabled: breaks build on x86_64
-Patch1007: cups-serverbin-compat.patch
+Patch1006: cups-serverbin-compat.patch
 # Don't export in SSLLIBS to cups-config.
-Patch1008: cups-no-export-ssllibs.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=197214
-# disabled for now because there is no pstoaps yet in mdv
-Patch1009: cups-paps.patch
+Patch1007: cups-no-export-ssllibs.patch
 # Add '--help' option to lpr command (RH bug #206380, STR #1989).
-Patch1012: cups-lpr-help.patch
+Patch1009: cups-lpr-help.patch
+# Fix compilation of peer credentials support.
+Patch1010: cups-1.3.7-peercred.patch
 # Write a pid file (RH bug #132987).
-Patch1014: cups-pid.patch
+Patch1011: cups-pid.patch
 # Fixed orientation of page labels when printing text in landscape
 # mode (RH bug #520141, STR #3334).
-Patch1015: cups-1.4.4-page-label.patch
+Patch1012: cups-1.4.4-page-label.patch
 # Send QueueChanged D-Bus signal on all job state changes.
-Patch1016: cups-eggcups.patch
+Patch1013: cups-eggcups.patch
 # Don't use getpass() (RH bug #125133).
-Patch1017: cups-1.4.4-getpass.patch
+Patch1014: cups-1.4.4-getpass.patch
 # Increased PPD timeout in copy_model() (RH bug #216065)
-Patch1018: cups-driverd-timeout.patch
+Patch1015: cups-driverd-timeout.patch
 # Don't do logrotation in cups, so that logrotate can take care of it
-Patch1020: cups-logrotate.patch
+Patch1017: cups-logrotate.patch
 # cups-polld: reinit the resolver if we haven't yet resolved the
 # hostname (RH bug #354071).
-Patch1023: cups-res_init.patch
+Patch1020: cups-res_init.patch
 # Cheaply restore compatibility with 1.1.x by having cups_get_sdests()
 # perform a CUPS_GET_CLASSES request if it is not sure it is talking
 # to CUPS 1.2 or later (RH bug #512866).
-Patch1035: cups-cups-get-classes.patch
+Patch1023: cups-cups-get-classes.patch
 # build against avahi (RH bug #245824).
-Patch1037: cups-avahi.patch
+Patch1024: cups-avahi.patch
 
 ##### ADDITIONAL DEFINITIONS #####
 
@@ -301,7 +296,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
-%patch30 -p1 -b .peercred
 %patch32 -p1 -b .permissions
 %patch34 -p1 -b .usb
 %patch35 -p1 -b .broadcast
@@ -309,20 +303,20 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
 %patch1003 -p1 -b .multilib
-%patch1006 -p1 -b .banners
-#%patch1007 -p1 -b .serverbin-compat
-%patch1008 -p1 -b .no-export-ssllibs
-#%patch1009 -p1 -b .paps
-%patch1012 -p1 -b .lpr-help
-%patch1014 -p1 -b .pid
-%patch1015 -p1 -b .page-label
-%patch1016 -p1 -b .eggcups
-%patch1017 -p1 -b .getpass
-%patch1018 -p1 -b .driverd-timeout
-%patch1020 -p1 -b .logrotate
-%patch1023 -p1 -b .res_init
-%patch1035 -p1 -b .cups-get-classes
-%patch1037 -p1 -b .avahi
+%patch1005 -p1 -b .banners
+#%patch1006 -p1 -b .serverbin-compat
+%patch1007 -p1 -b .no-export-ssllibs
+%patch1009 -p1 -b .lpr-help
+%patch1010 -p1 -b .peercred
+%patch1011 -p1 -b .pid
+%patch1012 -p1 -b .page-label
+%patch1013 -p1 -b .eggcups
+%patch1014 -p1 -b .getpass
+%patch1015 -p1 -b .driverd-timeout
+%patch1017 -p1 -b .logrotate
+%patch1020 -p1 -b .res_init
+%patch1023 -p1 -b .cups-get-classes
+%patch1024 -p1 -b .avahi
 
 %if 0
 # Fix libdir for 64-bit architectures
