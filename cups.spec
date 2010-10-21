@@ -6,14 +6,14 @@
 %define cupsversion 1.4
 %define cupsminorversion .0
 %define cupsextraversion svn-r%{cupssvnrevision}
-%define cupsrelease %mkrel 0.%{cupssvnrevision}.1
+%define release %mkrel 0.%{cupssvnrevision}.1
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
 %define cupsversion 1.4.4
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define cupsrelease %mkrel 2
+%define release %mkrel 3
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -38,7 +38,7 @@
 Summary:	Common Unix Printing System - Server package
 Name:		%{cupsbasename}%{cupsnameext}
 Version:	%{cupsversion}%{cupsminorversion}
-Release:	%{cupsrelease}
+Release:	%{release}
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 %define real_version %{version}
