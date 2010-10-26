@@ -13,7 +13,7 @@
 %define cupsversion 1.4.4
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define release %mkrel 3
+%define release %mkrel 4
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -87,6 +87,10 @@ Patch34: cups-1.4.3-both-usblp-and-libusb.patch
 # from other servers by default. Many networks do not have valid host names
 # for all machines
 Patch35: cups-1.4.4-no-hostname-broadcast.patch
+# Suse patch, Novell bug #617026, Mandriva bug #61009
+# reverts changes by CUPS STR #3461 as band-aid workaround
+# to avoid https://bugzilla.novell.com/show_bug.cgi?id=617026 for now
+Patch36: cups-1.4.4-str3461-1.4.reverted.patch
 
 # Fedora patches:
 # don't gzip man pages
@@ -299,6 +303,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch32 -p1 -b .permissions
 %patch34 -p1 -b .usb
 %patch35 -p1 -b .broadcast
+%patch36 -p1 -b .str3461-revert
 
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
