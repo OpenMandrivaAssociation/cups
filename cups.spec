@@ -10,10 +10,10 @@
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
-%define cupsversion 1.4.4
+%define cupsversion 1.4.5
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define release %mkrel 5
+%define release %mkrel 1
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -314,7 +314,7 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 %patch1009 -p1 -b .lpr-help
 %patch1010 -p1 -b .peercred
 %patch1011 -p1 -b .pid
-%patch1012 -p1 -b .page-label
+%patch1012 -p0 -b .page-label
 %patch1013 -p1 -b .eggcups
 %patch1014 -p1 -b .getpass
 %patch1015 -p1 -b .driverd-timeout
