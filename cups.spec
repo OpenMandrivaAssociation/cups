@@ -13,7 +13,7 @@
 %define cupsversion 1.4.6
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define release %mkrel 1
+%define release %mkrel 2
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -936,7 +936,7 @@ rm -rf %{buildroot}
 %files -n %{libname}-devel
 %defattr(-,root,root)
 %{_includedir}/cups/*
-%multiarch %{multiarch_includedir}/cups/*
+%{multiarch_includedir}/cups/*
 %{_libdir}/*.a
 %{_libdir}/*.so
 %{_bindir}/cups-config
