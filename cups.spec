@@ -13,7 +13,7 @@
 %define cupsversion 1.4.6
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define release %mkrel 2
+%define release %mkrel 3
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -31,6 +31,8 @@
 %define bootstrap 0
 %{?_without_bootstrap: %global bootstrap 0}
 %{?_with_bootstrap: %global bootstrap 1}
+
+%define _with_systemd 1
 
 
 ##### GENERAL STUFF #####
@@ -69,6 +71,7 @@ Source13: http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-docu.pdf.bz2
 Source14: http://www.linuxprinting.org/download/printing/photo_print
 Source15: http://printing.kde.org/downloads/pdfdistiller
 Source16: cjktexttops
+Source17: cups.service
 # Nice level for now. bug #16387
 Source18: cups.sysconfig
 Patch10: cups-1.4.0-recommended.patch
@@ -165,6 +168,9 @@ Buildrequires:  xinetd
 BuildRequires:	avahi-compat-libdns_sd-devel
 BuildRequires:	libusb-devel
 BuildRequires:	krb-devel
+%if %{_with_systemd}
+BuildRequires:	systemd-units
+%endif
 Requires: 	portreserve
 Provides:	cupsddk-drivers
 Obsoletes:	cupsddk-drivers < 1.2.3-5
@@ -408,6 +414,8 @@ cp %{SOURCE14} photo_print
 cp %{SOURCE15} pdf
 # Load the "cjktexttops" filter
 cp %{SOURCE16} cjktexttops
+# systemd service
+cp %{SOURCE17} cups.service
 
 
 
@@ -580,6 +588,12 @@ install -m 755 cjktexttops %{buildroot}%{_prefix}/lib/cups/filter/
 
 # Install logrotate configuration
 install -c -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/logrotate.d/cups
+
+%if %{_with_systemd}
+# systemd
+mkdir -p %{buildroot}/lib/systemd/system
+install -m644 cups.service %{buildroot}/lib/systemd/system
+%endif
 
 # Set link to test page in /usr/share/printer-testpages
 #rm -f %{buildroot}%{_datadir}/cups/data/testprint.ps
@@ -875,6 +889,9 @@ rm -rf %{buildroot}
 %ifarch x86_64
 # Compatibility link, will be removed soon
 %{_libdir}/cups
+%endif
+%if %{_with_systemd}
+/lib/systemd/system/cups.service
 %endif
 
 #####cups-common
