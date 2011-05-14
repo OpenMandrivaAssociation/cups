@@ -13,7 +13,7 @@
 %define cupsversion 1.4.6
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define release %mkrel 3
+%define release %mkrel 4
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -238,6 +238,7 @@ needed by Samba.
 Summary: Common Unix Printing System - Development environment "libcups"
 License: LGPLv2
 Group: Development/C
+Requires: libgnutls-devel
 Requires: cups-common = %{version}-%{release}
 Requires: %{libname} >= %{version}-%{release} openssl openssl-devel
 Provides: libcups-devel = %{version}-%{release}
