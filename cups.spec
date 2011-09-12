@@ -6,7 +6,7 @@
 %define cupsversion 1.4
 %define cupsminorversion .0
 %define cupsextraversion svn-r%{cupssvnrevision}
-%define release %mkrel 0.%{cupssvnrevision}.1
+%define release %mkrel 0.%{cupssvnrevision}.2
 %else
 %define cupsnameext %nil
 %define cupssvnrevision %nil
