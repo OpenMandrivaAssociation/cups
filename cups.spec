@@ -148,6 +148,7 @@ Suggests: avahi
 Requires:	poppler
 %endif
 BuildRequires:	autoconf2.5
+BuildRequires:	xdg-utils
 BuildRequires:	openssl-devel
 BuildRequires:	libpam-devel
 BuildRequires:	libopenslp-devel, libldap-devel
@@ -161,7 +162,7 @@ BuildRequires:	libgnutls-devel
 BuildRequires:	php-devel >= 5.1.0 php-cli
 BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
 %if !%bootstrap
-buildRequires:	poppler
+BuildRequires:	poppler
 %endif
 BuildRequires:	acl-devel
 Buildrequires:  xinetd
@@ -465,6 +466,7 @@ perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
 %else
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
+export LDFLAGS="%{ldflags}"
 ./configure \
     --enable-avahi \
     --disable-libpaper \
@@ -476,6 +478,7 @@ export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
+    --enable-relro \
 %if !%bootstrap
     --with-pdftops=pdftops
 %endif
@@ -512,6 +515,7 @@ make CHOWN=":" STRIP="$STRIP" OPTIM="$REAL_CFLAGS" \
 gcc -opoll_ppd_base -I. -I./cups -L./cups -lcups poll_ppd_base.c
 gcc -olphelp -I. -I./cups -L./cups -lcups lphelp.c
 
+%if !%bootstrap
 %check
 export LC_ALL=C
 export LC_MESSAGES=C
@@ -521,6 +525,7 @@ make test << EOF
 
 EOF
 
+%endif
 
 ##### INSTALL #####
 
