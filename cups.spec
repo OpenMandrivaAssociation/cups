@@ -28,7 +28,7 @@
 # RPM helper script. So we copy the man pages for now
 %define manpagelinks 0
 
-%define bootstrap 0
+%define bootstrap 1
 %{?_without_bootstrap: %global bootstrap 0}
 %{?_with_bootstrap: %global bootstrap 1}
 
