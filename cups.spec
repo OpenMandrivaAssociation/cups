@@ -13,7 +13,7 @@
 %define cupsversion 1.4.8
 %define cupsminorversion %nil
 %define cupsextraversion %nil
-%define release %mkrel 3
+%define release %mkrel 4
 %endif
 %define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
 
@@ -28,7 +28,7 @@
 # RPM helper script. So we copy the man pages for now
 %define manpagelinks 0
 
-%define bootstrap 1
+%define bootstrap 0
 %{?_without_bootstrap: %global bootstrap 0}
 %{?_with_bootstrap: %global bootstrap 1}
 
