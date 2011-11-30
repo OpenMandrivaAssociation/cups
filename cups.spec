@@ -1,53 +1,23 @@
-%define svnsnapshot 0
-%define cupsbasename cups
-%if %{svnsnapshot}
-%define cupsnameext %nil
-%define cupssvnrevision 8703
-%define cupsversion 1.4
-%define cupsminorversion .0
-%define cupsextraversion svn-r%{cupssvnrevision}
-%define release %mkrel 0.%{cupssvnrevision}.2
-%else
-%define cupsnameext %nil
-%define cupssvnrevision %nil
-%define cupsversion 1.4.8
-%define cupsminorversion %nil
-%define cupsextraversion %nil
-%define release %mkrel 6
-%endif
-%define cupstarballname %{cupsbasename}-%{cupsversion}%{cupsextraversion}
-
 %define major	2
-%define libname	%mklibname %{cupsbasename} %{major}%{cupsnameext}
+%define libname %mklibname %{name} %{major}
+%define develname %mklibname %{name} -d
 
-# Turning this on lets CUPS to be built in debug mode (with debugger
-# symbols)
-%define debug 1
-
-# Links in the man page directories get deleted due to a bug in Mandriva's
-# RPM helper script. So we copy the man pages for now
-%define manpagelinks 0
+# Turning this on lets CUPS to be built in debug mode (with debugger symbols)
+%define debug 0
 
 %define bootstrap 0
-%{?_without_bootstrap: %global bootstrap 0}
-%{?_with_bootstrap: %global bootstrap 1}
-
+%if !%{bootstrap}
 %define _with_systemd 1
-
-
-##### GENERAL STUFF #####
+%endif
 
 Summary:	Common Unix Printing System - Server package
-Name:		%{cupsbasename}%{cupsnameext}
-Version:	%{cupsversion}%{cupsminorversion}
-Release:	%{release}
+Name:		cups
+Version:	1.4.8
+Release:	7
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
-%define real_version %{version}
-
-##### SOURCE FILES #####
-
-Source: ftp://ftp.easysw.com/pub/cups/%{cupsversion}/%{cupstarballname}-source.tar.bz2
+Url: http://www.cups.org
+Source0: ftp://ftp.easysw.com/pub/cups/%{version}/%{name}-%{version}-source.tar.bz2
 
 # Small C program to get list of all installed PPD files
 Source1: poll_ppd_base.c
@@ -74,8 +44,8 @@ Source16: cjktexttops
 Source17: cups.service
 # Nice level for now. bug #16387
 Source18: cups.sysconfig
-Patch10: cups-1.4.0-recommended.patch
 
+Patch10: cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
 Patch32: cups-1.4-permissions.patch
 # Debian/Ubuntu patch: make the USB
@@ -135,56 +105,51 @@ Patch1023: cups-cups-get-classes.patch
 Patch1024: cups-avahi.patch
 Patch1025: cups-1.4.8-CVE-2011-3170.diff
 
+#RosaLabs
 Patch9999: cups-1.4.8-l10n-ru.patch
 
-##### ADDITIONAL DEFINITIONS #####
-
-Url: http://www.cups.org
-Requires: %{libname} >= %{version}-%{release} %{name}-common >= %{version}-%{release} openssl net-tools
-Requires: printer-testpages
-# Take care that device files are created with correct permissions
-Requires: udev 
-# For desktop menus
-Requires: xdg-utils
-Suggests: avahi
-%if !%bootstrap
-Requires:	poppler
-%endif
-BuildRequires:	autoconf2.5
+BuildRequires:	htmldoc
 BuildRequires:	xdg-utils
+Buildrequires:  xinetd
 BuildRequires:	openssl-devel
 BuildRequires:	libpam-devel
-BuildRequires:	libopenslp-devel, libldap-devel
-%if %mdkver >= 200700
+BuildRequires:	libopenslp-devel
+BuildRequires:	libldap-devel
 BuildRequires:	libdbus-devel >= 0.50
-%endif
-BuildRequires:	glibc
-BuildRequires:	htmldoc
-#BuildRequires:  libdbus-1-devel
 BuildRequires:	libgnutls-devel
-BuildRequires:	php-devel >= 5.1.0 php-cli
-BuildRequires:	libjpeg-devel, libpng-devel, libtiff-devel, libz-devel
-%if !%bootstrap
+BuildRequires:	php-devel >= 5.1.0
+BuildRequires:	php-cli
+BuildRequires:	libjpeg-devel
+BuildRequires:	libpng-devel
+BuildRequires:	libtiff-devel
+BuildRequires:	libz-devel
+%if !%{bootstrap}
 BuildRequires:	poppler
-%endif
-BuildRequires:	acl-devel
-Buildrequires:  xinetd
-BuildRequires:	avahi-compat-libdns_sd-devel
-BuildRequires:	libusb-devel
-BuildRequires:	krb-devel
 %if %{_with_systemd}
 BuildRequires:	systemd-units
 %endif
-Requires: 	portreserve
-Provides:	cupsddk-drivers
-Obsoletes:	cupsddk-drivers < 1.2.3-5
-Obsoletes:	cupsddk < 1.4.0
+%endif
+BuildRequires:	acl-devel
+BuildRequires:	avahi-compat-libdns_sd-devel
+BuildRequires:	libusb-devel
+BuildRequires:	krb-devel
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-
-
-
-##### SUB-PACKAGES #####
+Requires: %{libname} >= %{version}-%{release}
+Requires: %{name}-common >= %{version}-%{release}
+Requires: %{name}-utils >= %{version}-%{release}
+Requires: net-tools
+%if !%{bootstrap}
+Requires: poppler
+Suggests: avahi
+%endif
+Requires: portreserve
+Requires: printer-testpages
+# Take care that device files are created with correct permissions
+Requires: udev 
+Requires: update-alternatives
+# For desktop menus
+Requires: xdg-utils
+%rename cupsddk-drivers
 
 %description
 The Common Unix Printing System provides a portable printing layer for 
@@ -202,7 +167,8 @@ need to be assigned to a specific CUPS server by an
 Summary: Common Unix Printing System - Common stuff
 License: GPLv2
 Group: System/Printing
-Requires: %{libname} >= %{version}-%{release} rpm >= 3.0.4-6mdk update-alternatives openssl net-tools
+Requires: update-alternatives
+Requires: net-tools
 # To satisfy LSB/FHS
 Provides: lpddaemon
 
@@ -222,9 +188,6 @@ This package you need for both CUPS clients and servers.
 Summary: Common Unix Printing System - CUPS library
 License: LGPLv2
 Group: System/Libraries
-Requires: openssl net-tools
-Obsoletes: libcups1
-Provides: libcups1 = %{version}
 
 %description -n %{libname}
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
@@ -238,20 +201,15 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%package -n %{libname}-devel
+%package -n %{develname}
 Summary: Common Unix Printing System - Development environment "libcups"
 License: LGPLv2
 Group: Development/C
-Requires: libgnutls-devel
-Requires: cups-common = %{version}-%{release}
-Requires: %{libname} >= %{version}-%{release} openssl openssl-devel
-Provides: libcups-devel = %{version}-%{release}
-Provides: libcups2_1-devel = %{version}-%{release}
-Obsoletes: cups-devel, libcups1-devel
-Provides: cups-devel = %{version}, libcups1-devel = %{version}
-Conflicts: cupsddk < 1.4.0
+Requires: %{libname} >= %{version}-%{release}
+Provides: cups-devel
+Obsoletes: %mklibname %{name}2 -d
 
-%description -n %{libname}-devel
+%description -n %{develname}
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -288,34 +246,14 @@ Provides: php4-cups
 Provides bindings to the functions of libcups, to give direct access
 to the CUPS printing environment from PHP programs.
 
-##### PREP #####
-
 %prep
-
-
-%if %{svnsnapshot}
-# SVN version
-rm -rf $RPM_BUILD_DIR/%{cupstarballname}
-%setup -q -n %{cupstarballname}
-%else
-# Released version
-rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
-%setup -q -n %{cupsbasename}-%{real_version}
-%endif
-
-# Downdated pstops filter due to problems with multiple page documents
-#bzcat %{SOURCE9} > $RPM_BUILD_DIR/%{cupsbasename}-%{real_version}/filter/pstops.c
-
-# Do NEVER use cups.suse (this package is for Mandriva)
-#cp -f data/cups.pam data/cups.suse
-
+%setup -q
 # Patch away ugly "(Recommended)" tag removal
 %patch10 -p1 -b .recommended
 %patch32 -p1 -b .permissions
 %patch34 -p1 -b .usb
 %patch35 -p1 -b .broadcast
 %patch36 -p1 -b .str3461-revert
-
 # fedora patches
 %patch1001 -p1 -b .no-gzip-man
 %patch1003 -p1 -b .multilib
@@ -337,19 +275,6 @@ rm -rf $RPM_BUILD_DIR/%{cupsbasename}-%{version}
 
 %patch9999 -p1 -b .po-file
 
-%if 0
-# Fix libdir for 64-bit architectures
-mv config-scripts/cups-directories.m4 config-scripts/cups-directories.m4.orig
-cat << EOF > config-scripts/cups-directories.m4
-libdir=%{_libdir}
-EOF
-cat config-scripts/cups-directories.m4.orig >> \
-	config-scripts/cups-directories.m4
-# Need to regenerate configure script
-WANT_AUTOCONF_2_5=1 autoconf
-%endif
-
-#if 0
 # Set CUPS users and groups
 perl -p -i -e 's:(SystemGroup\s+.*)$:$1\nGroup sys\nUser lp:' conf/cupsd.conf.in
 
@@ -362,27 +287,18 @@ perl -p -i -e 's:(<Location\s+/\s*>):$1\n  Allow \@LOCAL:' conf/cupsd.conf.in
 # so no security problem)
 perl -p -i -e 's:(<Location\s+/admin(|/conf)\s*>):$1\n  Allow \@LOCAL:' conf/cupsd.conf.in
 
-%if %mdkver >= 200700
 # Replace the PAM configuration file
 cat << EOF > scheduler/cups.pam
 auth	include	system-auth
 account	include	system-auth
 EOF
 cp -f scheduler/cups.pam conf/pam.std.in
-%else
-# Adapt PAM configuration to Mandriva Linux (former patch #6)
-perl -p -i -e 's:(auth\s+required\s+?).*$:${1}pam_stack.so service=system-auth:' scheduler/cups.pam conf/pam.std.in
-perl -p -i -e 's:(account\s+required\s+?).*$:${1}pam_stack.so service=system-auth:' scheduler/cups.pam conf/pam.std.in
-%endif
 
 # Let the Makefiles not trying to set file ownerships
 perl -p -i -e "s/ -o \\$.CUPS_USER.//" scheduler/Makefile
 perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" scheduler/Makefile
 perl -p -i -e "s/ -o \\$.CUPS_USER.//" systemv/Makefile
 perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" systemv/Makefile
-
-# Correct hard-coded path for pam_appl.h
-#perl -p -i -e 's:pam/pam_appl.h:security/pam_appl.h:' config-scripts/cups-pam.m4 */*.[ch]*
 
 # Work around bug on Mandriva compilation cluster (32-bit machine has
 # /usr/lib64 directory)
@@ -391,29 +307,13 @@ perl -p -i -e 's:(libdir=")\$exec_prefix/lib64("):$1%{_libdir}$2:' config-script
 # Let's look at the compilation command lines.
 perl -p -i -e "s,^.SILENT:,," Makedefs.in
 
-%if 0
-# Recode all translations to UTF 8
-for l in `ls -1 locale/*/cups_* | cut -d '/' -f 2`; do 
-	enc=`head -1 locale/$l/cups_$l`
-	iconv -f $enc -t utf-8 -o locale/$l/cups_$l.new locale/$l/cups_$l && \
-		mv -f locale/$l/cups_$l.new locale/$l/cups_$l && \
-		perl -p -i -e "s/$enc/utf-8/" locale/$l/cups_$l
-done
-for f in doc/fr/*.*html; do 
-	iconv -f iso-8859-15 -t utf-8 -o $f.new $f && mv -f $f.new $f
-done
-for f in templates/fr/*.tmpl; do 
-	iconv -f iso-8859-15 -t utf-8 -o $f.new $f && mv -f $f.new $f
-done
-%endif
-
 # Load additional tools
 cp %{SOURCE1} poll_ppd_base.c
 cp %{SOURCE2} lphelp.c
 # Load nprint backend
 cp %{SOURCE11} nprint
 # Load AppleTalk "pap" backend
-%setup -q -T -D -a 12 -n %{cupstarballname}
+%setup -q -T -D -a 12 -n %{name}-%{version}
 # Load the "pap" documentation
 bzcat %{SOURCE13} > pap-docu.pdf
 # Load the "photo_print" utility
@@ -425,103 +325,67 @@ cp %{SOURCE16} cjktexttops
 # systemd service
 cp %{SOURCE17} cups.service
 
-
-
-##### BUILD #####
-
 %build
-%serverbuild
-# For 'configure' the macro is not used, because otherwise one does not get the
-# /etc and /var directories correctly hardcoded into the executables (they
-# would get /usr/etc and /usr/var. In addition, the "--with-docdir" option
-# has to be given because the default setting is broken. "aclocal" and 
-# "autoconf" are needed if we have a Subversion snapshot or patched the
-# files of the build system.
-%if %{svnsnapshot}
-aclocal
-WANT_AUTOCONF_2_5=1 autoconf
-%endif
+# needed by additional SOURCES
 aclocal
 autoconf
+# for the PHP module
+%define _disable_ld_no_undefined 1
+%setup_compile_flags
+# cups uses $DSOFLAGS instead of $LDFLAGS for shared libs
+export DSOFLAGS="$LDFLAGS"
+%if %{debug}
 # Debug mode
-%if %debug
 export DONT_STRIP=1
 export CFLAGS="-g"
 export CXXFLAGS="-g"
-./configure \
-    --enable-avahi \
-    --enable-debug=yes \
-    --disable-libpaper \
-    --enable-raw-printing \
-    --enable-ssl \
-    --enable-static \
-    --with-cups-group=sys \
-    --with-cups-user=lp \
-    --with-docdir=%{_datadir}/cups/doc \
-    --with-icondir=%{_datadir}/icons \
-    --with-system-groups="lpadmin root" \
-%if !%bootstrap
-    --with-pdftops=pdftops
-%endif
-
-# Let Makefiles not execute the /usr/bin/strip command
-export STRIP=":"
-# Remove "-s" (stripping) option from "install" command used for binaries
-# by "make install"
-perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
 %else
 export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
 export LDFLAGS="%{ldflags}"
+%endif
 ./configure \
     --enable-avahi \
+%if %{debug}
+    --enable-debug=yes \
+%endif
     --disable-libpaper \
     --enable-raw-printing \
     --enable-ssl \
-    --enable-static \
+    --disable-static \
     --with-cups-group=sys \
     --with-cups-user=lp \
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
     --enable-relro \
-%if !%bootstrap
+%if !%{bootstrap}
     --with-pdftops=pdftops
 %endif
 
+%if %{debug}
+# Let Makefiles not execute the /usr/bin/strip command
+export STRIP=":"
+# Remove "-s" (stripping) option from "install" command used for binaries
+# by "make install"
+perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
+%else
 #configure2_5x --enable-ssl --with-docdir=%{_datadir}/cups/doc
 export STRIP="/usr/bin/strip"
 %endif
+
 # Remove hardcoded "chgrp" from Makefiles
 perl -p -i -e 's/chgrp/:/' Makefile */Makefile
-%ifnarch %{ix86}
-export REAL_CFLAGS="$CFLAGS -fPIC"
-%else
-export REAL_CFLAGS="$CFLAGS"
-%endif
 make CHOWN=":" STRIP="$STRIP" OPTIM="$REAL_CFLAGS" \
              REQUESTS=%{buildroot}%{_var}/spool/cups \
              LOGDIR=%{buildroot}%{_var}/log/cups \
              STATEDIR=%{buildroot}%{_var}/run/cups
 
-%if 0
-%make LOGDIR=%{buildroot}%{_var}/log/cups \
-             REQUESTS=%{buildroot}%{_var}/spool/cups \
-             SERVERROOT=%{buildroot}%{_sysconfdir}/cups \
-             MANDIR=%{buildroot}%{_mandir} \
-             PAMDIR=%{buildroot}%{_sysconfdir}/pam.d \
-             BINDIR=%{buildroot}%{_bindir} \
-             SBINDIR=%{buildroot}%{_sbindir} \
-             INITDIR=%{buildroot}%{_sysconfdir}/rc.d \
-             DOCDIR=%{buildroot}%{_datadir}/cups/doc \
-             CHOWN=":" STRIP="$STRIP" OPTIM="$REAL_CFLAGS"
-%endif
-
 # Compile additional tools
-gcc -opoll_ppd_base -I. -I./cups -L./cups -lcups poll_ppd_base.c
-gcc -olphelp -I. -I./cups -L./cups -lcups lphelp.c
+gcc %optflags %ldflags -opoll_ppd_base -I. -I./cups poll_ppd_base.c -L./cups -lcups
+gcc %optflags %ldflags -olphelp -I. -I./cups lphelp.c -L./cups -lcups
 
-%if !%bootstrap
+%if !%{bootstrap}
 %check
 export LC_ALL=C
 export LC_MESSAGES=C
@@ -530,15 +394,12 @@ export LANGUAGE=C
 make test << EOF
 
 EOF
-
 %endif
-
-##### INSTALL #####
 
 %install
 rm -rf %{buildroot}
 # Debug mode
-%if %debug
+%if %{debug}
 export DONT_STRIP=1
 %endif
 
@@ -549,23 +410,7 @@ make install BUILDROOT=%{buildroot} \
              REQUESTS=%{buildroot}%{_var}/spool/cups \
              STATEDIR=%{buildroot}%{_var}/run/cups
 
-%if 0
-make install BUILDROOT=%{buildroot} \
-	     LOGDIR=%{buildroot}%{_var}/log/cups \
-             SERVERROOT=%{buildroot}%{_sysconfdir}/cups \
-             AMANDIR=%{buildroot}%{_mandir} \
-             PMANDIR=%{buildroot}%{_mandir} \
-             MANDIR=%{buildroot}%{_mandir} \
-             PAMDIR=%{buildroot}%{_sysconfdir}/pam.d \
-             BINDIR=%{buildroot}%{_bindir} \
-             SBINDIR=%{buildroot}%{_sbindir} \
-             INITDIR=%{buildroot}%{_sysconfdir}/rc.d \
-             DOCDIR=%{buildroot}%{_datadir}/cups/doc \
-             CHOWN=":" CHGRP=":" STRIP="$STRIP"
-
-#             DOCDIR=%{buildroot}%{_defaultdocdir}/cups \
-%endif
-
+rm -f %{buildroot}%{_libdir}/lib*.la
 # Make a directory for PPD generators
 mkdir -p %{buildroot}%{_prefix}/lib/cups/driver
 
@@ -587,7 +432,7 @@ install -m 755 nprint %{buildroot}%{_prefix}/lib/cups/backend/
 
 # Install AppleTalk backend
 install -m 755 pap-backend/pap %{buildroot}%{_prefix}/lib/cups/backend/
-install -m 644 pap-docu.pdf %{buildroot}%{_datadir}/%{cupsbasename}/doc
+install -m 644 pap-docu.pdf %{buildroot}%{_datadir}/%{name}/doc
 
 # Install "photo_print"
 install -m 755 photo_print %{buildroot}%{_bindir}
@@ -608,7 +453,6 @@ install -m644 cups.service %{buildroot}/lib/systemd/system
 %endif
 
 # Set link to test page in /usr/share/printer-testpages
-#rm -f %{buildroot}%{_datadir}/cups/data/testprint.ps
 ln -s %{_datadir}/printer-testpages/testprint.ps %{buildroot}%{_datadir}/cups/data/testprint-mdv.ps
 
 # Install startup script
@@ -636,28 +480,19 @@ chmod a+rx ./cleanppd.pl
 # Do the clean-up
 find %{buildroot}%{_datadir}/cups/model -name "*.ppd" -exec ./cleanppd.pl '{}' \;
 
-# bzip2 all man pages already now, so that we can link man pages without
 # RPM breaking it. Links need to be deleted and afterwards regenerated
 rm -f %{buildroot}%{_mandir}/man8/cupsdisable.8
 rm -f %{buildroot}%{_mandir}/man8/reject.8
-#bzme -F %{buildroot}%{_mandir}/man*/*.[0-9n].gz
 
 # Set compatibility links for the man pages and executables
 ln -s %{_sbindir}/cupsenable %{buildroot}%{_bindir}/enable
 ln -s %{_sbindir}/cupsdisable %{buildroot}%{_bindir}/disable
 ln -s %{_sbindir}/cupsenable %{buildroot}%{_sbindir}/enable
 ln -s %{_sbindir}/cupsdisable %{buildroot}%{_sbindir}/disable
-%if %manpagelinks
 ln -s %{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/cupsdisable.8
 ln -s %{_mandir}/man8/cupsdisable.8 %{buildroot}%{_mandir}/man8/disable.8
 ln -s %{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/enable.8
 ln -s %{_mandir}/man8/accept.8 %{buildroot}%{_mandir}/man8/reject.8
-%else
-cp %{buildroot}%{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/cupsdisable.8
-cp %{buildroot}%{_mandir}/man8/cupsdisable.8 %{buildroot}%{_mandir}/man8/disable.8
-cp %{buildroot}%{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/enable.8
-cp %{buildroot}%{_mandir}/man8/accept.8 %{buildroot}%{_mandir}/man8/reject.8
-%endif
 
 %ifarch x86_64
 # This one will be removed soon, when all other packages are
@@ -734,7 +569,7 @@ EOF
 # Prefer xdg-utils than htmlview (kde one)
 sed -i s/htmlview/xdg-open/ %{buildroot}%{_datadir}/applications/*.desktop
 
-#find_lang %{name}
+%find_lang %{name}
 
 # http://qa.mandriva.com/show_bug.cgi?id=28383
 # Common PPD dirs
@@ -748,8 +583,6 @@ ln -s %{_datadir}/ppd %{buildroot}%{_datadir}/cups/model/3-distribution
 # Common printer driver dirs
 mkdir -p %{buildroot}%{_libdir}/printdriver
 # Other dirs can't be handled here, but on %post instead.
-
-##### PRE/POST INSTALL SCRIPTS #####
 
 %pre
 %ifarch x86_64
@@ -798,10 +631,6 @@ done
 %{_sbindir}/update-alternatives --install %{_sbindir}/lpmove lpmove %{_sbindir}/lpmove-cups 10 --slave %{_mandir}/man8/lpmove.8%{_extension} lpmove.8%{_extension} %{_mandir}/man8/lpmove-cups.8%{_extension}
 %{_sbindir}/update-alternatives --install %{_sbindir}/reject reject %{_sbindir}/reject-cups 10 --slave %{_mandir}/man8/reject.8%{_extension} reject.8%{_extension} %{_mandir}/man8/reject-cups.8%{_extension}
 
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
 %preun
 # Let CUPS daemon not be automatically started at boot time any more
 %_preun_service cups
@@ -826,23 +655,7 @@ fi
 %postun
 %_postun_groupdel lpadmin
 
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-
-
-%clean
-##### CLEAN UP #####
-rm -rf %{buildroot}
-
-
-
-##### FILE LISTS FOR ALL BINARY PACKAGES #####
-
-#####cups
 %files
-%defattr(-,root,root)
 %doc *.txt
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf
@@ -856,9 +669,7 @@ rm -rf %{buildroot}
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ppd
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ssl
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/snmp.conf
-%if %mdkver >= 200700
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/dbus*/system.d/cups.conf
-%endif
 %{_initrddir}/cups
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
@@ -906,10 +717,7 @@ rm -rf %{buildroot}
 /lib/systemd/system/cups.service
 %endif
 
-#####cups-common
-%files common
-#-f %{name}.lang
-%defattr(-,root,root)
+%files common -f %{name}.lang
 %dir %config(noreplace) %attr(-,lp,sys) %{_sysconfdir}/cups
 %ghost %config(noreplace) %attr(-,lp,sys) %{_sysconfdir}/cups/client.conf
 %{_sbindir}/*
@@ -928,32 +736,9 @@ rm -rf %{buildroot}
 %{_bindir}/cupstestdsc
 %{_bindir}/enable
 %{_bindir}/disable
-%lang(da) %{_datadir}/locale/da/cups_da.po
-%lang(de) %{_datadir}/locale/de/cups_de.po
-%lang(es) %{_datadir}/locale/es/cups_es.po
-#%lang(et) %{_datadir}/locale/et/cups_et.po
-%lang(eu) %{_datadir}/locale/eu/cups_eu.po
-%lang(fi) %{_datadir}/locale/fi/cups_fi.po
-%lang(fr) %{_datadir}/locale/fr/cups_fr.po
-#%lang(he) %{_datadir}/locale/he/cups_he.po
-%lang(id) %{_datadir}/locale/id/cups_id.po
-%lang(it) %{_datadir}/locale/it/cups_it.po
-%lang(ja) %{_datadir}/locale/ja/cups_ja.po
-%lang(ko) %{_datadir}/locale/ko/cups_ko.po
-%lang(nl) %{_datadir}/locale/nl/cups_nl.po
-%lang(no) %{_datadir}/locale/no/cups_no.po
-%lang(pl) %{_datadir}/locale/pl/cups_pl.po
-%lang(pt) %{_datadir}/locale/pt/cups_pt.po
-%lang(pt_BR) %{_datadir}/locale/pt_BR/cups_pt_BR.po
-%lang(ru) %{_datadir}/locale/ru/cups_ru.po
-%lang(sv) %{_datadir}/locale/sv/cups_sv.po
-%lang(zh) %{_datadir}/locale/zh/cups_zh.po
-%lang(zh_TW) %{_datadir}/locale/zh_TW/cups_zh_TW.po
 %{_mandir}/man?/*
 
-#####%{libname}
 %files -n %{libname}
-%defattr(-,root,root)
 %{_libdir}/libcups.so.*
 %{_libdir}/libcupsimage.so.*
 %{_libdir}/libcupscgi.so.1
@@ -961,21 +746,17 @@ rm -rf %{buildroot}
 %{_libdir}/libcupsmime.so.1
 %{_libdir}/libcupsppdc.so.1
 
-#####%{libname}-devel
-%files -n %{libname}-devel
-%defattr(-,root,root)
+%files -n %{develname}
 %{_includedir}/cups/*
 %{multiarch_includedir}/cups/*
-%{_libdir}/*.a
 %{_libdir}/*.so
 %{_bindir}/cups-config
 
 %files serial
-%defattr(-,root,root)
 %{_prefix}/lib/cups/backend/serial
 
 %files -n php-cups
-%defattr(-,root,root)
 %doc scripting/php/README
 %attr(0755,root,root) %{_libdir}/php/extensions/*
 %config(noreplace) %{_sysconfdir}/php.d/*
+
