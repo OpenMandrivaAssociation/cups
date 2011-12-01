@@ -4,6 +4,7 @@
 
 # Turning this on lets CUPS to be built in debug mode (with debugger symbols)
 %define debug 0
+%define enable_check 0
 
 %define bootstrap 0
 %if !%{bootstrap}
@@ -12,8 +13,8 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.4.8
-Release:	7
+Version:	1.5.0
+Release:	1
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url: http://www.cups.org
@@ -22,6 +23,7 @@ Source0: ftp://ftp.easysw.com/pub/cups/%{version}/%{name}-%{version}-source.tar.
 # Small C program to get list of all installed PPD files
 Source1: poll_ppd_base.c
 # Small C program to list the printer-specific options of a particular printer
+# fails to build now
 Source2: lphelp.c
 # Complete replacement for startup script to have it the
 # Mandriva Linux way
@@ -42,101 +44,94 @@ Source14: http://www.linuxprinting.org/download/printing/photo_print
 Source15: http://printing.kde.org/downloads/pdfdistiller
 Source16: cjktexttops
 Source17: cups.service
+
 # Nice level for now. bug #16387
 Source18: cups.sysconfig
-
 Patch10: cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
 Patch32: cups-1.4-permissions.patch
-# Debian/Ubuntu patch: make the USB
-# backend supporting both printer access via libusb and via the usblp kernel
-# module. Make it also printing via libusb if the URI for the queue was
-# generated via usblp and vice versa. This should solve most USB printing
-# problems which occured on the transition to CUPS 1.4.x (Launchpad #420015,
-# #436495; bugs.debian.org: #546558, #545288, #545453)
-Patch34: cups-1.4.3-both-usblp-and-libusb.patch
+#RosaLabs - needs to be rediff'd
+#Patch9999: cups-1.4.8-l10n-ru.patch
+
 # Ubuntu patch, Launchpad #449586: Do not use host
 # names for broadcasting print queues and managing print queues broadcasted
 # from other servers by default. Many networks do not have valid host names
 # for all machines
-Patch35: cups-1.4.4-no-hostname-broadcast.patch
-# Suse patch, Novell bug #617026, Mandriva bug #61009
-# reverts changes by CUPS STR #3461 as band-aid workaround
-# to avoid https://bugzilla.novell.com/show_bug.cgi?id=617026 for now
-Patch36: cups-1.4.4-str3461-1.4.reverted.patch
+Patch35: do-not-broadcast-with-hostnames.patch
 
-# Fedora patches:
-# don't gzip man pages
+#fedora patches all shifted by 1000
 Patch1001: cups-no-gzip-man.patch
-# use correct libdir
+Patch1002: cups-system-auth.patch
 Patch1003: cups-multilib.patch
-# Ignore .rpmnew and .rpmsave banner files.
+Patch1004: cups-serial.patch
 Patch1005: cups-banners.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=194005
-# disabled: breaks build on x86_64
 Patch1006: cups-serverbin-compat.patch
-# Don't export in SSLLIBS to cups-config.
 Patch1007: cups-no-export-ssllibs.patch
-# Add '--help' option to lpr command (RH bug #206380, STR #1989).
+Patch1008: cups-direct-usb.patch
 Patch1009: cups-lpr-help.patch
-# Fix compilation of peer credentials support.
-Patch1010: cups-1.3.7-peercred.patch
-# Write a pid file (RH bug #132987).
+Patch1010: cups-peercred.patch
 Patch1011: cups-pid.patch
-# Fixed orientation of page labels when printing text in landscape
-# mode (RH bug #520141, STR #3334).
-Patch1012: cups-1.4.4-page-label.patch
-# Send QueueChanged D-Bus signal on all job state changes.
-Patch1013: cups-eggcups.patch
-# Don't use getpass() (RH bug #125133).
-Patch1014: cups-1.4.4-getpass.patch
-# Increased PPD timeout in copy_model() (RH bug #216065)
-Patch1015: cups-driverd-timeout.patch
-# Don't do logrotation in cups, so that logrotate can take care of it
-Patch1017: cups-logrotate.patch
-# cups-polld: reinit the resolver if we haven't yet resolved the
-# hostname (RH bug #354071).
-Patch1020: cups-res_init.patch
-# Cheaply restore compatibility with 1.1.x by having cups_get_sdests()
-# perform a CUPS_GET_CLASSES request if it is not sure it is talking
-# to CUPS 1.2 or later (RH bug #512866).
-Patch1023: cups-cups-get-classes.patch
-# build against avahi (RH bug #245824).
-Patch1024: cups-avahi.patch
-Patch1025: cups-1.4.8-CVE-2011-3170.diff
+Patch1012: cups-eggcups.patch
+Patch1013: cups-getpass.patch
+Patch1014: cups-driverd-timeout.patch
+Patch1015: cups-strict-ppd-line-length.patch
+Patch1016: cups-logrotate.patch
+Patch1017: cups-usb-paperout.patch
+Patch1018: cups-build.patch
+Patch1019: cups-res_init.patch
+Patch1020: cups-filter-debug.patch
+Patch1021: cups-uri-compat.patch
+Patch1022: cups-cups-get-classes.patch
+Patch1023: cups-str3382.patch
+Patch1024: cups-str3947.patch
+#same as mdv patch cups-1.4-permissions.patch
+#Patch1025: cups-0755.patch
+Patch1026: cups-snmp-quirks.patch
+Patch1027: cups-hp-deviceid-oid.patch
+Patch1028: cups-dnssd-deviceid.patch
+Patch1029: cups-ricoh-deviceid-oid.patch
 
-#RosaLabs
-Patch9999: cups-1.4.8-l10n-ru.patch
+Patch1030: cups-avahi-1-config.patch
+Patch1031: cups-avahi-2-backend.patch
+Patch1032: cups-avahi-3-timeouts.patch
+Patch1033: cups-avahi-4-poll.patch
+Patch1034: cups-avahi-5-services.patch
+
+Patch1035: cups-icc.patch
+Patch1036: cups-systemd-socket.patch
+Patch1037: cups-CVE-2011-2896.patch
+Patch1038: cups-str3921.patch
+Patch1039: cups-ps-command-filter.patch
 
 BuildRequires:	htmldoc
-BuildRequires:	xdg-utils
-Buildrequires:  xinetd
-BuildRequires:	openssl-devel
-BuildRequires:	libpam-devel
-BuildRequires:	libopenslp-devel
-BuildRequires:	libldap-devel
-BuildRequires:	libdbus-devel >= 0.50
-BuildRequires:	libgnutls-devel
-BuildRequires:	php-devel >= 5.1.0
 BuildRequires:	php-cli
-BuildRequires:	libjpeg-devel
-BuildRequires:	libpng-devel
-BuildRequires:	libtiff-devel
-BuildRequires:	libz-devel
+BuildRequires:	xdg-utils
+Buildrequires:	xinetd
+BuildRequires:	acl-devel
+BuildRequires:	jpeg-devel
+BuildRequires:	krb-devel
+BuildRequires:	libldap-devel
+BuildRequires:	openslp-devel
+BuildRequires:	pam-devel
+BuildRequires:	php-devel >= 5.1.0
+BuildRequires:	tiff-devel
+BuildRequires:	pkgconfig(avahi-compat-libdns_sd)
+BuildRequires:	pkgconfig(dbus-1) >= 0.50
+BuildRequires:	pkgconfig(gnutls)
+BuildRequires:	pkgconfig(libcrypto)
+BuildRequires:	pkgconfig(libpng)
+BuildRequires:	pkgconfig(libssl)
+BuildRequires:	pkgconfig(libusb-1.0)
+BuildRequires:	pkgconfig(zlib)
 %if !%{bootstrap}
 BuildRequires:	poppler
 %if %{_with_systemd}
 BuildRequires:	systemd-units
 %endif
 %endif
-BuildRequires:	acl-devel
-BuildRequires:	avahi-compat-libdns_sd-devel
-BuildRequires:	libusb-devel
-BuildRequires:	krb-devel
 
 Requires: %{libname} >= %{version}-%{release}
 Requires: %{name}-common >= %{version}-%{release}
-Requires: %{name}-utils >= %{version}-%{release}
 Requires: net-tools
 %if !%{bootstrap}
 Requires: poppler
@@ -248,32 +243,7 @@ to the CUPS printing environment from PHP programs.
 
 %prep
 %setup -q
-# Patch away ugly "(Recommended)" tag removal
-%patch10 -p1 -b .recommended
-%patch32 -p1 -b .permissions
-%patch34 -p1 -b .usb
-%patch35 -p1 -b .broadcast
-%patch36 -p1 -b .str3461-revert
-# fedora patches
-%patch1001 -p1 -b .no-gzip-man
-%patch1003 -p1 -b .multilib
-%patch1005 -p1 -b .banners
-#%patch1006 -p1 -b .serverbin-compat
-%patch1007 -p1 -b .no-export-ssllibs
-%patch1009 -p1 -b .lpr-help
-%patch1010 -p1 -b .peercred
-%patch1011 -p1 -b .pid
-%patch1012 -p0 -b .page-label
-%patch1013 -p1 -b .eggcups
-%patch1014 -p1 -b .getpass
-%patch1015 -p1 -b .driverd-timeout
-%patch1017 -p1 -b .logrotate
-%patch1020 -p1 -b .res_init
-%patch1023 -p1 -b .cups-get-classes
-%patch1024 -p1 -b .avahi
-%patch1025 -p0 -b .CVE-2011-3170
-
-%patch9999 -p1 -b .po-file
+%apply_patches
 
 # Set CUPS users and groups
 perl -p -i -e 's:(SystemGroup\s+.*)$:$1\nGroup sys\nUser lp:' conf/cupsd.conf.in
@@ -331,20 +301,16 @@ aclocal
 autoconf
 # for the PHP module
 %define _disable_ld_no_undefined 1
-%setup_compile_flags
-# cups uses $DSOFLAGS instead of $LDFLAGS for shared libs
-export DSOFLAGS="$LDFLAGS"
+#setup_compile_flags
 %if %{debug}
 # Debug mode
 export DONT_STRIP=1
 export CFLAGS="-g"
 export CXXFLAGS="-g"
-%else
-export CFLAGS="$RPM_OPT_FLAGS -fPIC"
-export CXXFLAGS="$RPM_OPT_FLAGS -fPIC"
-export LDFLAGS="%{ldflags}"
 %endif
-./configure \
+# cups uses $DSOFLAGS instead of $LDFLAGS for shared libs
+export DSOFLAGS="$LDFLAGS"
+%configure2_5x \
     --enable-avahi \
 %if %{debug}
     --enable-debug=yes \
@@ -364,28 +330,21 @@ export LDFLAGS="%{ldflags}"
 %endif
 
 %if %{debug}
-# Let Makefiles not execute the /usr/bin/strip command
-export STRIP=":"
 # Remove "-s" (stripping) option from "install" command used for binaries
 # by "make install"
 perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
-%else
-#configure2_5x --enable-ssl --with-docdir=%{_datadir}/cups/doc
-export STRIP="/usr/bin/strip"
 %endif
 
 # Remove hardcoded "chgrp" from Makefiles
 perl -p -i -e 's/chgrp/:/' Makefile */Makefile
-make CHOWN=":" STRIP="$STRIP" OPTIM="$REAL_CFLAGS" \
-             REQUESTS=%{buildroot}%{_var}/spool/cups \
-             LOGDIR=%{buildroot}%{_var}/log/cups \
-             STATEDIR=%{buildroot}%{_var}/run/cups
+%make 
 
 # Compile additional tools
 gcc %optflags %ldflags -opoll_ppd_base -I. -I./cups poll_ppd_base.c -L./cups -lcups
-gcc %optflags %ldflags -olphelp -I. -I./cups lphelp.c -L./cups -lcups
+#no longer compiles
+#gcc %optflags %ldflags -olphelp -I. -I./cups lphelp.c -L./cups -lcups
 
-%if !%{bootstrap}
+%if !%{bootstrap} && %{enable_check}
 %check
 export LC_ALL=C
 export LC_MESSAGES=C
@@ -402,7 +361,6 @@ rm -rf %{buildroot}
 %if %{debug}
 export DONT_STRIP=1
 %endif
-
 make install BUILDROOT=%{buildroot} \
              DOCDIR=%{buildroot}%{_datadir}/cups/doc \
              CHOWN=":" CHGRP=":" STRIP="$STRIP" \
@@ -425,7 +383,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
 
 # Install additional tools
 install -m 755 poll_ppd_base %{buildroot}%{_bindir}
-install -m 755 lphelp %{buildroot}%{_bindir}
+#install -m 755 lphelp %{buildroot}%{_bindir}
 
 # Install nprint backend
 install -m 755 nprint %{buildroot}%{_prefix}/lib/cups/backend/
@@ -547,8 +505,8 @@ rm -rf %{buildroot}%{_mandir}/*/cat
 rm -rf %{buildroot}%{_mandir}/*/cat?
 
 # Install missing headers (Thanks to Oden Eriksson)
-install -m644 cups/debug.h  %{buildroot}%{_includedir}/cups/
-install -m644 cups/string.h %{buildroot}%{_includedir}/cups/
+install -m644 cups/debug-private.h  %{buildroot}%{_includedir}/cups/
+install -m644 cups/string-private.h %{buildroot}%{_includedir}/cups/
 install -m644 config.h %{buildroot}%{_includedir}/cups/
 
 # Multiarch fixes
@@ -568,8 +526,6 @@ EOF
 
 # Prefer xdg-utils than htmlview (kde one)
 sed -i s/htmlview/xdg-open/ %{buildroot}%{_datadir}/applications/*.desktop
-
-%find_lang %{name}
 
 # http://qa.mandriva.com/show_bug.cgi?id=28383
 # Common PPD dirs
@@ -684,13 +640,15 @@ fi
 %dir %{_prefix}/lib/cups/backend
 %{_prefix}/lib/cups/backend/dnssd
 %{_prefix}/lib/cups/backend/http
+%{_prefix}/lib/cups/backend/https
 %{_prefix}/lib/cups/backend/ipp
+%{_prefix}/lib/cups/backend/ipps
 %{_prefix}/lib/cups/backend/lpd
 %{_prefix}/lib/cups/backend/mdns
 %{_prefix}/lib/cups/backend/nprint
 %{_prefix}/lib/cups/backend/pap
 %{_prefix}/lib/cups/backend/parallel
-%{_prefix}/lib/cups/backend/scsi
+#%{_prefix}/lib/cups/backend/scsi
 %{_prefix}/lib/cups/backend/snmp
 %{_prefix}/lib/cups/backend/socket
 %{_prefix}/lib/cups/backend/usb
@@ -717,12 +675,13 @@ fi
 /lib/systemd/system/cups.service
 %endif
 
-%files common -f %{name}.lang
+%files common
 %dir %config(noreplace) %attr(-,lp,sys) %{_sysconfdir}/cups
 %ghost %config(noreplace) %attr(-,lp,sys) %{_sysconfdir}/cups/client.conf
 %{_sbindir}/*
 %{_bindir}/*cups
-%{_bindir}/lphelp
+%{_bindir}/ipptool
+#%{_bindir}/lphelp
 %{_bindir}/lpoptions
 %attr(6755,root,sys) %{_bindir}/lppasswd
 %{_bindir}/photo_print
@@ -736,6 +695,7 @@ fi
 %{_bindir}/cupstestdsc
 %{_bindir}/enable
 %{_bindir}/disable
+%{_datadir}/locale/*/*.po
 %{_mandir}/man?/*
 
 %files -n %{libname}
