@@ -14,7 +14,7 @@
 Summary:	Common Unix Printing System - Server package
 Name:		cups
 Version:	1.5.0
-Release:	3
+Release:	4
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url: http://www.cups.org
@@ -117,7 +117,7 @@ BuildRequires:	php-devel >= 5.1.0
 BuildRequires:	tiff-devel
 BuildRequires:	pkgconfig(avahi-compat-libdns_sd)
 BuildRequires:	pkgconfig(dbus-1) >= 0.50
-BuildRequires:	pkgconfig(gnutls)
+BuildRequires:	pkgconfig(gnutls) >= 3.0
 BuildRequires:	pkgconfig(libcrypto)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libssl)
