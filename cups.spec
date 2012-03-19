@@ -673,7 +673,7 @@ fi
 %{_libdir}/cups
 %endif
 %if %{_with_systemd}
-/lib/systemd/system/cups.service
+/lib/systemd/system/cups.*
 %endif
 
 %files common
