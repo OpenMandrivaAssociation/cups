@@ -109,7 +109,7 @@ BuildRequires:	xdg-utils
 Buildrequires:	xinetd
 BuildRequires:	acl-devel
 BuildRequires:	jpeg-devel
-BuildRequires:	krb-devel
+BuildRequires:	krb5-devel
 BuildRequires:	libldap-devel
 BuildRequires:	openslp-devel
 BuildRequires:	pam-devel
