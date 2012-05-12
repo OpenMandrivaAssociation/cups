@@ -13,12 +13,12 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.5.0
-Release:	4
+Version:	1.5.2
+Release:	1
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
-Url: http://www.cups.org
-Source0: ftp://ftp.easysw.com/pub/cups/%{version}/%{name}-%{version}-source.tar.bz2
+Url:		http://www.cups.org
+Source0:	ftp://ftp.easysw.com/pub/cups/%{version}/%{name}-%{version}-source.tar.bz2
 
 # Small C program to get list of all installed PPD files
 Source1: poll_ppd_base.c
@@ -83,7 +83,7 @@ Patch1020: cups-filter-debug.patch
 Patch1021: cups-uri-compat.patch
 Patch1022: cups-cups-get-classes.patch
 Patch1023: cups-str3382.patch
-Patch1024: cups-str3947.patch
+#NOT_IN_FEDPatch1024: cups-str3947.patch
 #same as mdv patch cups-1.4-permissions.patch
 #Patch1025: cups-0755.patch
 Patch1026: cups-snmp-quirks.patch
@@ -102,6 +102,10 @@ Patch1036: cups-systemd-socket.patch
 Patch1037: cups-CVE-2011-2896.patch
 Patch1038: cups-str3921.patch
 Patch1039: cups-ps-command-filter.patch
+Patch1040: cups-str3985.patch
+Patch1041: cups-revision10277.patch
+# selinux
+#Patch1100: cups-lspp.patch
 
 BuildRequires:	htmldoc
 BuildRequires:	php-cli
@@ -131,7 +135,6 @@ BuildRequires:	systemd-units
 %endif
 %endif
 
-Requires: %{libname} >= %{version}-%{release}
 Requires: %{name}-common >= %{version}-%{release}
 Requires: net-tools
 %if !%{bootstrap}
@@ -357,7 +360,6 @@ EOF
 %endif
 
 %install
-rm -rf %{buildroot}
 # Debug mode
 %if %{debug}
 export DONT_STRIP=1
