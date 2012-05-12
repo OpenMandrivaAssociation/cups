@@ -99,9 +99,9 @@ Patch1034: cups-avahi-5-services.patch
 
 Patch1035: cups-icc.patch
 Patch1036: cups-systemd-socket.patch
-Patch1037: cups-CVE-2011-2896.patch
-Patch1038: cups-str3921.patch
-Patch1039: cups-ps-command-filter.patch
+Patch1037: cups-str4014.patch
+Patch1038: cups-polld-reconnect.patch
+Patch1039: cups-translation.patch
 Patch1040: cups-str3985.patch
 Patch1041: cups-revision10277.patch
 # selinux
