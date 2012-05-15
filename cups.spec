@@ -13,7 +13,7 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.5.2
+Version:	1.5.3
 Release:	1
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
