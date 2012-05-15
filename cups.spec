@@ -58,7 +58,6 @@ Patch32: cups-1.5.3-permissions.patch
 # from other servers by default. Many networks do not have valid host names
 # for all machines
 Patch35: do-not-broadcast-with-hostnames.patch
-#cups-polld-reconnect.patch cups-revision10277.patch cups-str3985.patch cups-str4014.patch cups-translation.patch
 #fedora patches all shifted by 1000
 Patch1001: cups-no-gzip-man.patch
 Patch1002: cups-system-auth.patch
@@ -642,7 +641,7 @@ fi
 %{_prefix}/lib/cups/backend/ipp
 %{_prefix}/lib/cups/backend/ipps
 %{_prefix}/lib/cups/backend/lpd
-%{_prefix}/lib/cups/backend/mdns
+#{_prefix}/lib/cups/backend/mdns
 %{_prefix}/lib/cups/backend/nprint
 %{_prefix}/lib/cups/backend/pap
 %{_prefix}/lib/cups/backend/parallel
