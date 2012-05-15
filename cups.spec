@@ -49,7 +49,7 @@ Source17: cups.service
 Source18: cups.sysconfig
 Patch10: cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
-Patch32: cups-1.4-permissions.patch
+Patch32: cups-1.5.3-permissions.patch
 #RosaLabs - needs to be rediff'd
 #Patch9999: cups-1.4.8-l10n-ru.patch
 
@@ -58,7 +58,7 @@ Patch32: cups-1.4-permissions.patch
 # from other servers by default. Many networks do not have valid host names
 # for all machines
 Patch35: do-not-broadcast-with-hostnames.patch
-
+#cups-polld-reconnect.patch cups-revision10277.patch cups-str3985.patch cups-str4014.patch cups-translation.patch
 #fedora patches all shifted by 1000
 Patch1001: cups-no-gzip-man.patch
 Patch1002: cups-system-auth.patch
@@ -99,11 +99,6 @@ Patch1034: cups-avahi-5-services.patch
 
 Patch1035: cups-icc.patch
 Patch1036: cups-systemd-socket.patch
-Patch1037: cups-str4014.patch
-Patch1038: cups-polld-reconnect.patch
-Patch1039: cups-translation.patch
-Patch1040: cups-str3985.patch
-Patch1041: cups-revision10277.patch
 # selinux
 #Patch1100: cups-lspp.patch
 
