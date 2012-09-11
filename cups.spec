@@ -14,7 +14,7 @@
 Summary:	Common Unix Printing System - Server package
 Name:		cups
 Version:	1.5.3
-Release:	1
+Release:	2
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url:		http://www.cups.org
@@ -704,7 +704,9 @@ fi
 %{_libdir}/libcupsppdc.so.1
 
 %files -n %{develname}
+%dir %{_includedir}/cups
 %{_includedir}/cups/*
+%dir %{multiarch_includedir}/cups
 %{multiarch_includedir}/cups/*
 %{_libdir}/*.so
 %{_bindir}/cups-config
