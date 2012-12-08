@@ -1,16 +1,4 @@
 sources:
-  "cjktexttops:"	217f1b336806f30e43a96a4f85722d91c9021244
-  "cleanppd.pl:"	9f95de10f3f4d5be1cd2fc5bb1dcd0b410000422
-  "correctcupsconfig:"	81bc4faf1464529962873914dbd32af8d426c095
-  "cups-1.5.3-source.tar.bz2:"	f7c4fc7d115da20dbbb6a3a568259df6702a7caa
-  "cups.logrotate:"	17a46e4ced283c406675d72c2f936f3eefdb510e
-  "cups.service:"	b2b7ff159cd198c293534b3037111465d39f2e23
-  "cups.startup:"	efed77f9e76999718efe8b0662b010861cdddee3
-  "cups.sysconfig:"	28a764c1ca6551a68845ece91049e7ff034db382
-  "lphelp.c:"	7053cd0bfa96e09497af74577d6dd1e14bd208be
-  "nprint.2002011801:"	1ec75cdd5854d43b19688bc151e964fd0206c4ff
-  "pap-backend.tar.bz2:"	89e1e7eb4258d47069d2a60c383b8bd555a11e63
-  "pap-docu.pdf.bz2:"	7e7d44bb58532ab2fc4c1ca3581787877f1b5733
-  "pdfdistiller:"	91b29dbbb5d825ab27fa342fd47975d1053c11ad
-  "photo_print:"	68452ce3a91f8a5e18753b1bcdcfab31a24825ec
-  "poll_ppd_base.c:"	0f618511e4d899f29d75e60c4cb442f65268a5d2
+  "cups-1.5.4-source.tar.bz2": cb39961cbaf1851a47694828ad9a7cdf4da51fbd
+  "pap-backend.tar.bz2": 89e1e7eb4258d47069d2a60c383b8bd555a11e63
+  "pap-docu.pdf.bz2": 7e7d44bb58532ab2fc4c1ca3581787877f1b5733

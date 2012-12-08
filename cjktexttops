@@ -1,0 +1,11 @@
+#!/bin/bash
+
+INPUT=-
+if [ $# == 6 ]
+then
+  INPUT=$6
+fi
+
+# Extract the papersize
+PAPERSIZE=`grep '^\*DefaultPageSize' "$PPD" | cut -d\  -f2`
+LC_ALL=ja_JP mpage -b$PAPERSIZE -1 -o -f -m18lr36bt -P- "$INPUT"

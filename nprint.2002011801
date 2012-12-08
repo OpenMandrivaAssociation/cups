@@ -1,0 +1,125 @@
+#!/bin/bash
+
+VERSION=2002011801
+
+### NPRINT CUPS backend
+### Copyright (C) 2001 Mark J. Horn <mark at hornclan dot com>
+###
+### This program is free software; you can redistribute it and/or
+### modify it under the terms of the GNU General Public License
+### as published by the Free Software Foundation; either version 2
+### of the License, or (at your option) any later version.
+### 
+### This program is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+### 
+### You should have received a copy of the GNU General Public License
+### along with this program; if not, write to the Free Software
+### Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+###
+### A copy of the GNU General Public License is available at: 
+### http://www.gnu.org/licenses/gpl.txt
+
+### INSTALLATION
+### ------------
+### To use this script, copy it into your CUPS backends directory, which
+### might be in /usr/lib/cups/backends or /usr/local/lib/cups/backends.
+### Make sure that the script is executable by whatever id cupsd runs
+### with, and then restart CUPS.
+### 
+### In order for CUPS to detect your novell printers at boot time you
+### will have to have correctly configured ipx in your kernel, and CUPS
+### must start *after* your network interface card is up.  
+### 
+### As root, you must be able run "pqlist" and get a list of the
+### printers on your server.  The "pqlist" program uses ~root/.nwclient
+### as a mechinism for determining the default novell server to use.
+### This file must be properly configured in order for this backend to
+### detect and use novell printers.  Currently this script will only
+### enable printing to print queue's on a single server.  If anyone
+### has any ideas on how to support more than one server, please let
+### me know.
+### 
+### You should then be able to configure printers in CUPS with the
+### devices you've configured.  I have only been able to configure
+### devices with the CUPS web interface.
+###
+### This single script can be used to support multiple devices.  However,
+### at this point it can only support access to one print server.
+### This is due to the inability of pqlist to enumerate more than a
+### single server's printers at a time.  If anyone has any ideas on how
+### I might make printing to multiple servers function, I'd be glad to
+### hear them.
+### 
+### DEPENDANCIES
+### ------------
+### This script is dependant upon builtin commands in bash.  It has not
+### been tested against other non-bash shells.  I don't expect that
+### it will work with them.  You are invited to test other shells.
+### Please let me know if you have any success.
+### 
+### This script depends on correctly installed ncpfs software 
+### available at: ftp://platan.vc.cvut.cz/pub/linux/ncpfs/
+###
+### This script depends on the following programs being in the PATH
+###   pqlist, nprint, basename, cat
+### If these commands are not in /bin, /usr/bin, or /usr/local/bin on
+### your computer, set PATH below to include where they are located.
+
+PATH=$PATH:/bin:/usr/bin:/usr/local/bin
+
+### Set root's home directory here:
+#HOME=/root
+HOME=~root
+export HOME
+
+### Uncomment for crude debugging output
+#DEBUG=true
+
+if [ ! -z "$DEBUG" ]; then
+	echo "Args: $0 $*" > /tmp/printargs
+	echo "Arg1: $1" >> /tmp/printargs
+	echo "Arg2: $2" >> /tmp/printargs
+	echo "Arg2: $3" >> /tmp/printargs
+	echo "Arg2: $4" >> /tmp/printargs
+	echo "Arg2: $5" >> /tmp/printargs
+	echo "Arg2: $6" >> /tmp/printargs
+	echo "Arg2: $7" >> /tmp/printargs
+	command -V pqlist >> /tmp/printargs 2>&1
+	command -V nprint >> /tmp/printargs 2>&1
+	command -V basename >> /tmp/printargs 2>&1
+	command -V cat >> /tmp/printargs 2>&1
+	declare -p >> /tmp/printargs
+	echo "pqlist\n------" >> /tmp/printargs
+	pqlist >> /tmp/printargs
+fi
+
+ME=`basename $0`
+
+if [ -z "$*" ]; then
+
+	pqlist | while read printq qid; do
+		echo network $ME:/$printq \"$printq\" \"NPRINT $printq\"
+	done
+
+	exit 0
+fi
+
+### For raw printing, $6 is the file to print.  For driver processed
+### printing, $6 is empty and the data to print is in stdin.
+FILE=$6
+
+### When advertising multiple printers, the script has to be able
+### determine where it should send real print jobs.  This is done
+### through the environment variable $DEVICE_URI
+SENDTO=${DEVICE_URI#${ME}:/}
+
+if [ ! -z "$DEBUG" ]; then
+	echo "SENDTO: $SENDTO" >> /tmp/printargs
+	cat $6 > /tmp/printout
+	cat /tmp/printout | nprint -q $SENDTO -
+else
+	cat $FILE | nprint -q $SENDTO -
+fi

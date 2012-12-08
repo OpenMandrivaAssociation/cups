@@ -1,0 +1,136 @@
+#!/bin/bash
+#set -x
+#
+# Photo Print
+# -----------
+#
+# Till Kamppeter (http://www.linuxprinting.org/till/)
+#
+# Derived from a script from Max Barel (max dot barel at wanadoo dot fr)
+#
+# License: GPL (www.gnu.org)
+#
+#
+# Script for printing several photos/image files on on sheet of paper.
+#
+# For example for printing 4 postcard-sized photos on one A4/Letter sheet 
+# (1 A4/Letter sheet of photo paper is much cheaper than 4 postcard-sized
+# sheets, and 1 A4/Letter image is printed faster than 4 postcards).
+#
+# Reqirements:
+#
+#   CUPS printing system (www.cups.org)
+#   ImageMagick (www.imagemagick.org)
+#
+# Installation:
+#
+# Copy this file into the /usr/bin or /usr/local/bin directory and make it
+# executable with the command "chmod a+rx photo_print".
+#
+# This script mounts photos together to one big image using the "montage"
+# command of ImageMagick without scaling the images to avoid quality loss.
+# It sends the resulting image to the printer and lets the image file filter
+# of CUPS scale the image to fit into the page. By default, 4 images are
+# printed on one sheet, but the number can be changed with the "-t" option.
+# On the command line can be given any number of photos, if necessary more
+# than one page is printed. So one can easily print all the photos from one
+# directory with one command line:
+#
+#    photo_print -P Epson1290 *.jpg
+#
+#
+#
+# Command line parameters and their defaults:
+#
+# "-t XxY": Matrix size (Number of columns x number of rows)
+tile=2x2
+#
+# "-s n": Scaling (100 % fills the sheet exactly)
+# If parts of the edges of the images get lost due to unprintable borders,
+# use a scaling value lower than 100 to shrink the image to fit the printable
+# area. With an HP DeskJet 990C you get the best result with a value of 95 when
+# using A4 paper and 90 when using Letter paper assuming the width/height ratio
+# of the images being 4:3.
+scaling=100
+#
+# "-p": Preview: when this option is given, from every page a preview is shown
+# and the user is asked on the console whether he wants to print the page.
+preview=0
+#
+# "-P xxx": Printer on which the photos should be printed (leave blank to use
+# the default printer)
+printer=""
+#
+# "-o option=value": Driver options ("-o option=value") to give on the command
+# line of the "lpr" command of CUPS
+options=""
+#
+
+#Get parameters from above from the command line
+moreoptions=1;
+while [ $moreoptions == 1 ]
+  do
+  case $1 in
+      -t)
+	  shift
+	  tile=$1
+	  shift
+	  ;;
+      -s)
+	  shift
+	  scaling=$1
+	  shift
+	  ;;
+      -p)
+	  shift
+	  preview=1
+	  ;;
+      -o)
+	  shift
+	  options="$options -o $1"
+	  shift
+	  ;;
+      -P)
+	  shift
+	  printer="-P $1"
+	  shift
+	  ;;
+      -h)
+	  echo "Usage: $0 -P printer -s Scaling -t COLUMNSxROWS -o option=value ... file1 file2 ..."
+	  exit 0
+	  ;;
+      * )
+	  moreoptions=0;
+	  ;;
+  esac
+done
+
+l=$(echo $tile |cut -f1 -dx);
+L=$(echo $tile |cut -f2 -dx);
+nbfich=$[ $l * $L ]
+freespaces=0
+
+page=1
+
+while [ "$#" -gt 0 ]
+  do
+  if [ "$nbfich" -gt "$#" ]; then
+    freespaces=$[ $nbfich - $# ]
+    nbfich="$#"
+  fi
+  images=$( echo $* | cut -f1-$nbfich -d " " )
+  shift $nbfich
+  while [ "$freespaces" -gt 0 ]; do
+    images="$images NULL:"
+    freespaces=$[ $freespaces - 1 ]
+  done
+  ( [ $preview == 0 ] || 
+  (montage -geometry "128x96+2+2" -tile $tile $images miff:-\
+   | display -title "Page $page" &
+   echo -n "Print this page? "; read in; killall display; [ x$in == xy ] ) ) &&\
+  montage -cache 10 -geometry "100%+2+2" -tile $tile $images pro$page.bmp &&\
+      lpr $printer -o scaling=$scaling $options pro$page.bmp -r
+  page=$[page + 1]
+done
+wait
+rm -f pro[0-9]*.bmp

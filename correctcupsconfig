@@ -1,0 +1,107 @@
+#!/usr/bin/perl -w
+
+#
+# Till Kamppeter (till@mandrakesoft.com)
+#
+# Copyright 2001
+#
+# This software may be freely redistributed under the terms of the GNU
+# General Public License.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
+# Some great piece of code taken from
+# /usr/lib/perl5/site_perl/5.6.1/MDK/Common/DataStructure.pm
+# member( $a, @b ) returns 1 if $a is in @b, 0 otherwise.
+
+sub member { my $e = shift; foreach (@_) { $e eq $_ and return 1 } 0 };
+
+# Do not do any changes when the user chose manual configuration in
+# printerdrake
+
+my $manual = 0;
+my $manualconffile = "/etc/sysconfig/printing";
+if (open MANUALCONFFILE, "< $manualconffile") {
+    @manualconf_content = <MANUALCONFFILE>;
+    close MANUALCONFFILE;
+    ($_ =~ /^\s*CUPS_CONFIG\s*=\s*manual\s*$/ and $manual = 1) foreach @manualconf_content;
+}
+if ($manual) {exit;}
+
+# Read CUPS config file or create a new one if necessary.
+
+my $cups_conf = "/etc/cups/cupsd.conf";
+my @cups_conf_content;
+my $config_modified = 0;
+
+if (!(-f $cups_conf)) {
+    warn "No CUPS configuration file $cups_conf, creating one ...\n";
+    @cups_conf_content = split('\n',
+"LogLevel info
+TempDir /var/spool/cups/tmp
+Port 631
+BrowseAddress \@LOCAL
+BrowseDeny All
+BrowseAllow 127.0.0.1
+BrowseAllow \@LOCAL
+BrowseOrder deny,allow
+<Location />
+Order Deny,Allow
+Deny From All
+Allow From 127.0.0.1
+Allow From \@LOCAL
+</Location>
+<Location /admin>
+AuthType Basic
+AuthClass System
+Order Deny,Allow
+Deny From All
+Allow From 127.0.0.1
+</Location>
+");
+    ($_ =~ s/$/\n/) foreach @cups_conf_content;
+    $config_modified = 1;
+} else {
+    open CONF_CUPS, "$cups_conf" or die "Can't open $cups_conf!";
+    @cups_conf_content = <CONF_CUPS>;
+    close CONF_CUPS;
+}
+
+# Check whether LPD/LPRng is installed and turn off creation of an
+# /etc/printcap file by CUPS.
+
+if ((-x "/usr/sbin/lpd") &&
+    !(grep { /^\s*Printcap\s*$/ } @cups_conf_content)) {
+
+    my $oldprintcap = "";
+    ($_ =~ /^\s*Printcap\s+(\S*)\s*$/ and $oldprintcap = $1)
+	foreach @cups_conf_content;
+
+    if (($oldprintcap eq "") || ($oldprintcap eq "/etc/printcap")) {
+
+	print STDERR "WARNING: Inserted \"Printcap\" line in /etc/cups/cupsd.conf\n         (to avoid overwriting the /etc/printcap of the installed LPD/LPRng)\n";
+
+	# Remove all valid "Printcap" lines
+	($_ =~ /^\s*Printcap[^:]/ and $_="") foreach @cups_conf_content;
+	
+	# Insert the new "Printcap" line
+	push @cups_conf_content, "Printcap\n";
+
+	# Remove the /etc/printcap file which the CUPS daemon left during
+	# shutdown and replace it by an empty file
+	unlink "/etc/printcap";
+	system "touch /etc/printcap";
+		
+	$config_modified = 1;
+    }
+}
+
+# Write back the modified CUPS config file
+if ($config_modified) {
+    open CONF_CUPS, ">$cups_conf" or die "Can't open $cups_conf";
+    print CONF_CUPS @cups_conf_content;
+    close CONF_CUPS;
+}
