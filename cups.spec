@@ -149,7 +149,6 @@ Suggests: avahi
 Requires: printer-testpages
 # Take care that device files are created with correct permissions
 Requires: udev 
-Requires: update-alternatives
 # For desktop menus
 Requires: xdg-utils
 %rename cupsddk-drivers
@@ -170,7 +169,7 @@ need to be assigned to a specific CUPS server by an
 Summary: Common Unix Printing System - Common stuff
 License: GPLv2
 Group: System/Printing
-Requires: update-alternatives
+Requires(post,preun): update-alternatives
 Requires: net-tools
 # To satisfy LSB/FHS
 Provides: lpddaemon
