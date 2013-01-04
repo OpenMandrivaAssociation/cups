@@ -731,7 +731,9 @@ fi
 %{_libdir}/libcupsppdc.so.1
 
 %files -n %{devname}
+%dir %{_includedir}/cups
 %{_includedir}/cups/*
+%dir %{multiarch_includedir}/cups
 %{multiarch_includedir}/cups/*
 %{_libdir}/*.so
 %{_bindir}/cups-config
