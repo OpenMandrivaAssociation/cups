@@ -337,11 +337,9 @@ export DSOFLAGS="$LDFLAGS"
     --with-pdftops=%{_bindir}/pdftops
 %endif
 
-%if %{debug}
 # Remove "-s" (stripping) option from "install" command used for binaries
 # by "make install"
 perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
-%endif
 
 # Remove hardcoded "chgrp" from Makefiles
 perl -p -i -e 's/chgrp/:/' Makefile */Makefile
@@ -748,6 +746,8 @@ fi
 
 %changelog
 * Fri Jan  4 2013 Per Øyvind Karlsen 1.5.4-3
+- always remove '-s' argument for 'install' to prevent binaries getting
+  stripped by other than find-debuginfo.sh
 - cleanups
 - change Requires on 'update-alternatives' to Requires(post,preun) for
   cups-common subpkg
