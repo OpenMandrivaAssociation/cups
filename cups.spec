@@ -1,6 +1,6 @@
-%define major	2
-%define libname %mklibname %{name} %{major}
-%define develname %mklibname %{name} -d
+%define	major	2
+%define	libname	%mklibname %{name} %{major}
+%define	devname	%mklibname %{name} -d
 
 # {_exec_prefix}/lib/cups is correct, even on x86_64.
 # It is not used for shared objects but for executables.
@@ -12,103 +12,103 @@
 %define debug 0
 %define enable_check 0
 
-%define bootstrap 0
-%if !%{bootstrap}
-%define _with_systemd 1
+%bcond_with	bootstrap
+%if !%{with bootstrap}
+%bcond_without	systemd
 %endif
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
 Version:	1.5.4
-Release:	2
+Release:	3
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url:		http://www.cups.org
 Source0:	ftp://ftp.easysw.com/pub/cups/%{version}/%{name}-%{version}-source.tar.bz2
 
 # Small C program to get list of all installed PPD files
-Source1: poll_ppd_base.c
+Source1:	poll_ppd_base.c
 # Small C program to list the printer-specific options of a particular printer
 # fails to build now
-Source2: lphelp.c
+Source2:	lphelp.c
 # Script for cleaning up the PPD files
-Source6: cleanppd.pl
+Source6:	cleanppd.pl
 # Perl script for automatic configuration of CUPS, especially access
 # restrictions and broadcasting
-Source7: correctcupsconfig
-Source9: cups.logrotate
+Source7:	correctcupsconfig
+Source9:	cups.logrotate
 # Backend filter for nprint (Novell client) from Mark Horn
 # (mark@hornclan.com)
-Source11: http://www.hornclan.com/~mark/cups/nprint.2002011801
+Source11:	http://www.hornclan.com/~mark/cups/nprint.2002011801
 # AppleTalk/netatalk backend for CUPS
-Source12: http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-backend.tar.bz2
-Source13: http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-docu.pdf.bz2
-Source14: http://www.linuxprinting.org/download/printing/photo_print
-Source15: http://printing.kde.org/downloads/pdfdistiller
-Source16: cjktexttops
-Source17: cups.service
+Source12:	http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-backend.tar.bz2
+Source13:	http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-docu.pdf.bz2
+Source14:	http://www.linuxprinting.org/download/printing/photo_print
+Source15:	http://printing.kde.org/downloads/pdfdistiller
+Source16:	cjktexttops
+Source17:	cups.service
 
 # Nice level for now. bug #16387
-Source18: cups.sysconfig
-Patch10: cups-1.4.0-recommended.patch
+Source18:	cups.sysconfig
+Patch10:	cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
-Patch32: cups-1.5.3-permissions.patch
+Patch32:	cups-1.5.3-permissions.patch
 
 # Ubuntu patch, Launchpad #449586: Do not use host
 # names for broadcasting print queues and managing print queues broadcasted
 # from other servers by default. Many networks do not have valid host names
 # for all machines
-Patch35: do-not-broadcast-with-hostnames.patch
+Patch35:	do-not-broadcast-with-hostnames.patch
 #fedora patches all shifted by 1000
-Patch1001: cups-no-gzip-man.patch
-Patch1002: cups-system-auth.patch
-Patch1003: cups-multilib.patch
-Patch1004: cups-serial.patch
-Patch1005: cups-banners.patch
-Patch1006: cups-serverbin-compat.patch
-Patch1007: cups-no-export-ssllibs.patch
-Patch1008: cups-direct-usb.patch
-Patch1009: cups-lpr-help.patch
-Patch1010: cups-peercred.patch
-Patch1011: cups-pid.patch
-Patch1012: cups-eggcups.patch
-Patch1013: cups-getpass.patch
-Patch1014: cups-driverd-timeout.patch
-Patch1015: cups-strict-ppd-line-length.patch
-Patch1016: cups-logrotate.patch
-Patch1017: cups-usb-paperout.patch
-Patch1018: cups-build.patch
-Patch1019: cups-res_init.patch
-Patch1020: cups-filter-debug.patch
-Patch1021: cups-uri-compat.patch
-Patch1022: cups-cups-get-classes.patch
-Patch1023: cups-str3382.patch
+Patch1001:	cups-no-gzip-man.patch
+Patch1002:	cups-system-auth.patch
+Patch1003:	cups-multilib.patch
+Patch1004:	cups-serial.patch
+Patch1005:	cups-banners.patch
+Patch1006:	cups-serverbin-compat.patch
+Patch1007:	cups-no-export-ssllibs.patch
+Patch1008:	cups-direct-usb.patch
+Patch1009:	cups-lpr-help.patch
+Patch1010:	cups-peercred.patch
+Patch1011:	cups-pid.patch
+Patch1012:	cups-eggcups.patch
+Patch1013:	cups-getpass.patch
+Patch1014:	cups-driverd-timeout.patch
+Patch1015:	cups-strict-ppd-line-length.patch
+Patch1016:	cups-logrotate.patch
+Patch1017:	cups-usb-paperout.patch
+Patch1018:	cups-build.patch
+Patch1019:	cups-res_init.patch
+Patch1020:	cups-filter-debug.patch
+Patch1021:	cups-uri-compat.patch
+Patch1022:	cups-cups-get-classes.patch
+Patch1023:	cups-str3382.patch
 #NOT_IN_FEDPatch1024: cups-str3947.patch
 #same as mdv patch cups-1.4-permissions.patch
 #Patch1025: cups-0755.patch
-Patch1026: cups-snmp-quirks.patch
-Patch1027: cups-hp-deviceid-oid.patch
-Patch1028: cups-dnssd-deviceid.patch
-Patch1029: cups-ricoh-deviceid-oid.patch
+Patch1026:	cups-snmp-quirks.patch
+Patch1027:	cups-hp-deviceid-oid.patch
+Patch1028:	cups-dnssd-deviceid.patch
+Patch1029:	cups-ricoh-deviceid-oid.patch
 
-Patch1030: cups-avahi-1-config.patch
-Patch1031: cups-avahi-2-backend.patch
-Patch1032: cups-avahi-3-timeouts.patch
-Patch1033: cups-avahi-4-poll.patch
-Patch1034: cups-avahi-5-services.patch
+Patch1030:	cups-avahi-1-config.patch
+Patch1031:	cups-avahi-2-backend.patch
+Patch1032:	cups-avahi-3-timeouts.patch
+Patch1033:	cups-avahi-4-poll.patch
+Patch1034:	cups-avahi-5-services.patch
 
-Patch1035: cups-icc.patch
-Patch1036: cups-systemd-socket.patch
+Patch1035:	cups-icc.patch
+Patch1036:	cups-systemd-socket.patch
 # selinux
-#Patch1100: cups-lspp.patch
+#Patch1100:	cups-lspp.patch
 
 # Requires /etc/tmpfiles.d (bug #656566)
-Requires: systemd-units >= 13
-Requires(post): systemd-units
-Requires(preun): systemd-units
+Requires:	systemd-units >= 13
+Requires(post):	systemd-units
+Requires(preun):systemd-units
 Requires(postun): systemd-units
-Requires(post):  rpm-helper >= 0.24.1
-Requires(preun): rpm-helper >= 0.24.1
+Requires(post):	rpm-helper >= 0.24.1
+Requires(preun):rpm-helper >= 0.24.1
 
 BuildRequires:	htmldoc
 BuildRequires:	php-cli
@@ -131,27 +131,27 @@ BuildRequires:	pkgconfig(libssl)
 BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
-%if !%{bootstrap}
+%if !%{with bootstrap}
 BuildRequires:	poppler
-%if %{_with_systemd}
+%if %{with systemd}
 BuildRequires:	systemd-units
-BuildRequires:  pkgconfig(libsystemd-login)
-BuildRequires:  pkgconfig(systemd)
+BuildRequires:	pkgconfig(libsystemd-login)
+BuildRequires:	pkgconfig(systemd)
 %endif
 %endif
 
-Requires: %{name}-common >= %{version}-%{release}
-Requires: net-tools
-%if !%{bootstrap}
-Requires: poppler
-Suggests: avahi
+Requires:	%{name}-common >= %{version}-%{release}
+Requires:	net-tools
+%if !%{with bootstrap}
+Requires:	poppler
+Suggests:	avahi
 %endif
-Requires: printer-testpages
+Requires:	printer-testpages
 # Take care that device files are created with correct permissions
-Requires: udev 
+Requires:	udev 
 # For desktop menus
-Requires: xdg-utils
-%rename cupsddk-drivers
+Requires:	xdg-utils
+%rename		cupsddk-drivers
 
 %description
 The Common Unix Printing System provides a portable printing layer for 
@@ -165,16 +165,16 @@ up broadcasted printer information from other CUPS servers and do not
 need to be assigned to a specific CUPS server by an
 %{_sysconfdir}/cups/client.conf file.
 
-%package common
-Summary: Common Unix Printing System - Common stuff
-License: GPLv2
-Group: System/Printing
+%package	common
+Summary:	Common Unix Printing System - Common stuff
+License:	GPLv2
+Group:		System/Printing
 Requires(post,preun): update-alternatives
-Requires: net-tools
+Requires:	net-tools
 # To satisfy LSB/FHS
-Provides: lpddaemon
+Provides:	lpddaemon
 
-%description common
+%description	common
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -186,12 +186,12 @@ clients (%{_sysconfdir}/cups/client.conf).
 
 This package you need for both CUPS clients and servers. 
 
-%package -n %{libname}
-Summary: Common Unix Printing System - CUPS library
-License: LGPLv2
-Group: System/Libraries
+%package -n	%{libname}
+Summary:	Common Unix Printing System - CUPS library
+License:	LGPLv2
+Group:		System/Libraries
 
-%description -n %{libname}
+%description -n	%{libname}
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -203,15 +203,15 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%package -n %{develname}
-Summary: Common Unix Printing System - Development environment "libcups"
-License: LGPLv2
-Group: Development/C
-Requires: %{libname} >= %{version}-%{release}
-Provides: cups-devel
-Obsoletes: %mklibname %{name}2 -d
+%package -n	%{devname}
+Summary:	Common Unix Printing System - Development environment "libcups"
+License:	LGPLv2
+Group:		Development/C
+Requires:	%{libname} >= %{version}-%{release}
+Provides:	cups-devel
+Obsoletes:	%mklibname %{name}2 -d
 
-%description -n %{develname}
+%description -n	%{devname}
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -220,13 +220,13 @@ UNIX(TM) operating systems. This is the development package for
 creating additional printer drivers, printing software, and other CUPS
 services using the main CUPS library "libcups".
 
-%package serial
-Summary: Common Unix Printing System - Backend for serial port printers
-License: GPLv2
-Group: System/Printing
-Requires: %{name} >= %{version}-%{release}
+%package	serial
+Summary:	Common Unix Printing System - Backend for serial port printers
+License:	GPLv2
+Group:		System/Printing
+Requires:	%{name} >= %{version}-%{release}
 
-%description serial
+%description	serial
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -237,14 +237,14 @@ ports takes several seconds (and so the startup time of the CUPS
 daemon with this backend present) and therefore it is not recommended
 to install this package when one has no serial port printer.
 
-%package -n php-cups
-Summary: PHP bindings for the libcups library
-License: GPLv2
-Group: Development/PHP
-Obsoletes: php4-cups
-Provides: php4-cups
+%package -n	php-cups
+Summary:	PHP bindings for the libcups library
+License:	GPLv2
+Group:		Development/PHP
+Obsoletes:	php4-cups
+Provides:	php4-cups
 
-%description -n php-cups
+%description -n	php-cups
 Provides bindings to the functions of libcups, to give direct access
 to the CUPS printing environment from PHP programs.
 
@@ -302,10 +302,11 @@ cp %{SOURCE16} cjktexttops
 # systemd service
 #cp %{SOURCE17} cups.service
 
-%build
 # needed by additional SOURCES
 aclocal
 autoconf
+
+%build
 # for the PHP module
 %define _disable_ld_no_undefined 1
 #setup_compile_flags
@@ -332,7 +333,7 @@ export DSOFLAGS="$LDFLAGS"
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
     --enable-relro \
-%if !%{bootstrap}
+%if !%{with bootstrap}
     --with-pdftops=%{_bindir}/pdftops
 %endif
 
@@ -347,11 +348,11 @@ perl -p -i -e 's/chgrp/:/' Makefile */Makefile
 %make 
 
 # Compile additional tools
-gcc %optflags %ldflags -opoll_ppd_base -I. -I./cups poll_ppd_base.c -L./cups -lcups
+gcc %{optflags} %{ldflags} -opoll_ppd_base -I. -I./cups poll_ppd_base.c -L./cups -lcups
 #no longer compiles
-#gcc %optflags %ldflags -olphelp -I. -I./cups lphelp.c -L./cups -lcups
+#gcc %{optflags} %{ldflags} -olphelp -I. -I./cups lphelp.c -L./cups -lcups
 
-%if !%{bootstrap} && %{enable_check}
+%if !%{with bootstrap} && %{enable_check}
 %check
 export LC_ALL=C
 export LC_MESSAGES=C
@@ -413,7 +414,7 @@ install -m 755 cjktexttops %{buildroot}%{_prefix}/lib/cups/filter/
 # Install logrotate configuration
 install -c -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/logrotate.d/cups
 
-%if %{_with_systemd}
+%if %{with systemd}
 # systemd
 #mkdir -p %{buildroot}/lib/systemd/system
 #install -m644 cups.service %{buildroot}/lib/systemd/system
@@ -463,49 +464,44 @@ ln -s %{_prefix}/lib/cups %{buildroot}%{_libdir}/cups
 
 # prepare the commands conflicting with LPD for the update-alternatives
 # treatment
-( cd %{buildroot}%{_bindir}
+pushd %{buildroot}%{_bindir}
   mv lpr lpr-cups
   mv lpq lpq-cups
   mv lprm lprm-cups
   mv lp lp-cups
   mv cancel cancel-cups
   mv lpstat lpstat-cups
-)
-( cd %{buildroot}%{_sbindir}
+popd
+pushd %{buildroot}%{_sbindir}
   mv accept accept-cups
   mv disable disable-cups
   mv enable enable-cups
   mv lpc lpc-cups
   mv lpmove lpmove-cups
   mv reject reject-cups
-)
-( cd %{buildroot}%{_mandir}/man1
+popd
+pushd %{buildroot}%{_mandir}/man1
   mv lpr.1 lpr-cups.1
   mv lpq.1 lpq-cups.1
   mv lprm.1 lprm-cups.1
   mv lp.1 lp-cups.1
   mv cancel.1 cancel-cups.1
   mv lpstat.1 lpstat-cups.1
-)
-( cd %{buildroot}%{_mandir}/man8
+popd
+pushd %{buildroot}%{_mandir}/man8
   mv accept.8 accept-cups.8
   mv disable.8 disable-cups.8
   mv enable.8 enable-cups.8
   mv lpc.8 lpc-cups.8
   mv lpmove.8 lpmove-cups.8
   mv reject.8 reject-cups.8
-)
+popd
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/reject-cups
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsdisable
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsenable
 
 # Remove links to the startup script, we make our own ones with chkconfig
-rm -rf %{buildroot}%{_sysconfdir}/rc?.d/[SK]*
-# Remove superflouus man page stuff
-rm -rf %{buildroot}%{_mandir}/cat
-rm -rf %{buildroot}%{_mandir}/cat?
-rm -rf %{buildroot}%{_mandir}/*/cat
-rm -rf %{buildroot}%{_mandir}/*/cat?
+rm -r %{buildroot}%{_sysconfdir}/rc?.d/[SK]*
 
 # Install missing headers (Thanks to Oden Eriksson)
 install -m644 cups/debug-private.h  %{buildroot}%{_includedir}/cups/
@@ -549,7 +545,7 @@ c /dev/lp2 0660 root lp - 6:2
 c /dev/lp3 0660 root lp - 6:3
 EOF
 
-# Prefer xdg-utils than htmlview (kde one)
+# Prefer xdg-utils rather than htmlview (kde one)
 sed -i s/htmlview/xdg-open/ %{buildroot}%{_datadir}/applications/*.desktop
 
 ## Hide desktop file
@@ -699,7 +695,7 @@ fi
 # Compatibility link, will be removed soon
 %{_libdir}/cups
 %endif
-%if %{_with_systemd}
+%if %{with systemd}
 /lib/systemd/system/cups.*
 %endif
 
@@ -734,7 +730,7 @@ fi
 %{_libdir}/libcupsmime.so.1
 %{_libdir}/libcupsppdc.so.1
 
-%files -n %{develname}
+%files -n %{devname}
 %{_includedir}/cups/*
 %{multiarch_includedir}/cups/*
 %{_libdir}/*.so
@@ -748,9 +744,12 @@ fi
 %attr(0755,root,root) %{_libdir}/php/extensions/*
 %config(noreplace) %{_sysconfdir}/php.d/*
 
-
-
 %changelog
+* Fri Jan  4 2013 Per Øyvind Karlsen 1.5.4-3
+- cleanups
+- change Requires on 'update-alternatives' to Requires(post,preun) for
+  cups-common subpkg
+
 * Wed Sep 26 2012 akdengi 1.5.4-1
 - update to 1.5.4
 - don't use portreserve
