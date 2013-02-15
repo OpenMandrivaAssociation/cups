@@ -36,6 +36,7 @@
  * Include necessary headers...
  */
 
+#define _IPP_PRIVATE_STRUCTURES 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,4 +1,4 @@
-%define	major	2
+%define	major	3
 %define	libname	%mklibname %{name} %{major}
 %define	devname	%mklibname %{name} -d
 
@@ -19,8 +19,8 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.5.4
-Release:	3
+Version:	1.6.1
+Release:	1
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url:		http://www.cups.org
@@ -50,6 +50,9 @@ Source17:	cups.service
 
 # Nice level for now. bug #16387
 Source18:	cups.sysconfig
+Patch1:		cups-dbus-utf8.patch
+Patch2:		cups-systemd-socket.patch
+Patch3:		cups-usblp-quirks.patch
 Patch10:	cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
 Patch32:	cups-1.5.3-permissions.patch
@@ -63,7 +66,6 @@ Patch35:	do-not-broadcast-with-hostnames.patch
 Patch1001:	cups-no-gzip-man.patch
 Patch1002:	cups-system-auth.patch
 Patch1003:	cups-multilib.patch
-Patch1004:	cups-serial.patch
 Patch1005:	cups-banners.patch
 Patch1006:	cups-serverbin-compat.patch
 Patch1007:	cups-no-export-ssllibs.patch
@@ -72,33 +74,22 @@ Patch1009:	cups-lpr-help.patch
 Patch1010:	cups-peercred.patch
 Patch1011:	cups-pid.patch
 Patch1012:	cups-eggcups.patch
-Patch1013:	cups-getpass.patch
 Patch1014:	cups-driverd-timeout.patch
 Patch1015:	cups-strict-ppd-line-length.patch
 Patch1016:	cups-logrotate.patch
 Patch1017:	cups-usb-paperout.patch
-Patch1018:	cups-build.patch
 Patch1019:	cups-res_init.patch
 Patch1020:	cups-filter-debug.patch
 Patch1021:	cups-uri-compat.patch
-Patch1022:	cups-cups-get-classes.patch
 Patch1023:	cups-str3382.patch
+Patch1024:	cups-str4223.patch
 #NOT_IN_FEDPatch1024: cups-str3947.patch
 #same as mdv patch cups-1.4-permissions.patch
 #Patch1025: cups-0755.patch
-Patch1026:	cups-snmp-quirks.patch
 Patch1027:	cups-hp-deviceid-oid.patch
 Patch1028:	cups-dnssd-deviceid.patch
 Patch1029:	cups-ricoh-deviceid-oid.patch
 
-Patch1030:	cups-avahi-1-config.patch
-Patch1031:	cups-avahi-2-backend.patch
-Patch1032:	cups-avahi-3-timeouts.patch
-Patch1033:	cups-avahi-4-poll.patch
-Patch1034:	cups-avahi-5-services.patch
-
-Patch1035:	cups-icc.patch
-Patch1036:	cups-systemd-socket.patch
 # selinux
 #Patch1100:	cups-lspp.patch
 
@@ -117,7 +108,7 @@ BuildRequires:	xinetd
 BuildRequires:	acl-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	krb5-devel
-BuildRequires:	libldap-devel
+BuildRequires:	openldap-devel
 BuildRequires:	openslp-devel
 BuildRequires:	pam-devel
 BuildRequires:	php-devel >= 5.1.0
@@ -220,33 +211,12 @@ UNIX(TM) operating systems. This is the development package for
 creating additional printer drivers, printing software, and other CUPS
 services using the main CUPS library "libcups".
 
-%package	serial
-Summary:	Common Unix Printing System - Backend for serial port printers
-License:	GPLv2
-Group:		System/Printing
-Requires:	%{name} >= %{version}-%{release}
+%package -n php-cups
+Summary: PHP bindings for the libcups library
+Group: Development/PHP
 
-%description	serial
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
-The Common Unix Printing System provides a portable printing layer for
-UNIX(TM) operating systems. This package contains the backend filter
-for printers on the serial ports. The auto-detection on the serial
-ports takes several seconds (and so the startup time of the CUPS
-daemon with this backend present) and therefore it is not recommended
-to install this package when one has no serial port printer.
-
-%package -n	php-cups
-Summary:	PHP bindings for the libcups library
-License:	GPLv2
-Group:		Development/PHP
-Obsoletes:	php4-cups
-Provides:	php4-cups
-
-%description -n	php-cups
+%description -n php-cups
 Provides bindings to the functions of libcups, to give direct access
-to the CUPS printing environment from PHP programs.
 
 %prep
 %setup -q
@@ -332,6 +302,7 @@ export DSOFLAGS="$LDFLAGS"
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
+    --with-php=%_bindir/php \
     --enable-relro \
 %if !%{with bootstrap}
     --with-pdftops=%{_bindir}/pdftops
@@ -637,6 +608,7 @@ fi
 %doc *.txt
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf
+%config(noreplace) %attr(-,root,root) %_sysconfdir/cups/cups-files.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/sysconfig/cups
 %ghost %config(noreplace) %{_sysconfdir}/cups/printers.conf
 %ghost %config(noreplace) %{_sysconfdir}/cups/classes.conf
@@ -669,7 +641,7 @@ fi
 %{_prefix}/lib/cups/backend/mdns
 %{_prefix}/lib/cups/backend/nprint
 %{_prefix}/lib/cups/backend/pap
-%{_prefix}/lib/cups/backend/parallel
+#{_prefix}/lib/cups/backend/parallel
 #%{_prefix}/lib/cups/backend/scsi
 %{_prefix}/lib/cups/backend/snmp
 %{_prefix}/lib/cups/backend/socket
@@ -724,7 +696,6 @@ fi
 %{_libdir}/libcups.so.*
 %{_libdir}/libcupsimage.so.*
 %{_libdir}/libcupscgi.so.1
-%{_libdir}/libcupsdriver.so.1
 %{_libdir}/libcupsmime.so.1
 %{_libdir}/libcupsppdc.so.1
 
@@ -736,13 +707,8 @@ fi
 %{_libdir}/*.so
 %{_bindir}/cups-config
 
-%files serial
-%{_prefix}/lib/cups/backend/serial
-
 %files -n php-cups
-%doc scripting/php/README
-%attr(0755,root,root) %{_libdir}/php/extensions/*
-%config(noreplace) %{_sysconfdir}/php.d/*
+%_sysconfdir/php.d/A20_cups.ini
 
 %changelog
 * Fri Jan  4 2013 Per Øyvind Karlsen 1.5.4-3
