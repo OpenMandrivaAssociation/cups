@@ -1,7 +1,3 @@
-%define	major	2
-%define	libname	%mklibname %{name} %{major}
-%define	devname	%mklibname %{name} -d
-
 # {_exec_prefix}/lib/cups is correct, even on x86_64.
 # It is not used for shared objects but for executables.
 # It's more of a libexec-style ({_libexecdir}) usage,
@@ -20,7 +16,7 @@
 Summary:	Common Unix Printing System - Server package
 Name:		cups
 Version:	1.6.1
-Release:	1
+Release:	2
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url:		http://www.cups.org
@@ -177,12 +173,15 @@ clients (%{_sysconfdir}/cups/client.conf).
 
 This package you need for both CUPS clients and servers. 
 
-%package -n	%{libname}
+%define	cupsmajor	2
+%define	libcups		%mklibname cups %{cupsmajor}
+
+%package -n	%{libcups}
 Summary:	Common Unix Printing System - CUPS library
 License:	LGPLv2
 Group:		System/Libraries
 
-%description -n	%{libname}
+%description -n	%{libcups}
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -194,11 +193,123 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
+%define	cupscgimajor	1
+%define	libcupscgi	%mklibname cupscgi %{cupscgimajor}
+
+%package -n	%{libcupscgi}
+Summary:	Common Unix Printing System - CUPSCGI library
+License:	LGPLv2
+Group:		System/Libraries
+Conflicts:	%{libcups} < 1.6.1-2
+
+%description -n	%{libcupscgi}
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
+with software built against CUPS-1.1 libraries.
+
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This package contains the CUPS API library
+which contains common functions used by both the CUPS daemon and all
+CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
+
+This package you need for both CUPS clients and servers. It is also
+needed by Samba.
+
+%define	cupsdrivermajor	1
+%define	libcupsdriver	%mklibname cupsdriver %{cupsdrivermajor}
+
+%package -n	%{libcupsdriver}
+Summary:	Common Unix Printing System - CUPSdriver library
+License:	LGPLv2
+Group:		System/Libraries
+Conflicts:	%{libcups} < 1.6.1-2
+
+%description -n	%{libcupsdriver}
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
+with software built against CUPS-1.1 libraries.
+
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This package contains the CUPS API library
+which contains common functions used by both the CUPS daemon and all
+CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
+
+This package you need for both CUPS clients and servers. It is also
+needed by Samba.
+
+%define	cupsimagemajor	2
+%define	libcupsimage	%mklibname cupsimage %{cupsimagemajor}
+
+%package -n	%{libcupsimage}
+Summary:	Common Unix Printing System - CUPSimage library
+License:	LGPLv2
+Group:		System/Libraries
+Conflicts:	%{libcups} < 1.6.1-2
+
+%description -n	%{libcupsimage}
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
+with software built against CUPS-1.1 libraries.
+
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This package contains the CUPS API library
+which contains common functions used by both the CUPS daemon and all
+CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
+
+This package you need for both CUPS clients and servers. It is also
+needed by Samba.
+
+%define	cupsmimemajor	1
+%define	libcupsmime	%mklibname cupsmime %{cupsmimemajor}
+
+%package -n	%{libcupsmime}
+Summary:	Common Unix Printing System - CUPS library
+License:	LGPLv2
+Group:		System/Libraries
+Conflicts:	%{libcups} < 1.6.1-2
+
+%description -n	%{libcupsmime}
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
+with software built against CUPS-1.1 libraries.
+
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This package contains the CUPS API library
+which contains common functions used by both the CUPS daemon and all
+CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
+
+This package you need for both CUPS clients and servers. It is also
+needed by Samba.
+
+%define	cupsppdcmajor	1
+%define	libcupsppdc	%mklibname cupsppdc %{cupsppdcmajor}
+
+%package -n	%{libcupsppdc}
+Summary:	Common Unix Printing System - CUPSPPDC library
+License:	LGPLv2
+Group:		System/Libraries
+Conflicts:	%{libcups} < 1.6.1-2
+
+%description -n	%{libcupsppdc}
+CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
+with software built against CUPS-1.1 libraries.
+
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This package contains the CUPS API library
+which contains common functions used by both the CUPS daemon and all
+CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
+
+This package you need for both CUPS clients and servers. It is also
+needed by Samba.
+
+%define	devname	%mklibname %{name} -d
 %package -n	%{devname}
 Summary:	Common Unix Printing System - Development environment "libcups"
 License:	LGPLv2
 Group:		Development/C
-Requires:	%{libname} >= %{version}-%{release}
+Requires:	%{libcups} >= %{version}-%{release}
+Requires:	%{libcupscgi} >= %{version}-%{release}
+Requires:	%{libcupsimage} >= %{version}-%{release}
+Requires:	%{libcupsdriver} >= %{version}-%{release}
+Requires:	%{libcupsmime} >= %{version}-%{release}
+Requires:	%{libcupsppdc} >= %{version}-%{release}
+
 Provides:	cups-devel
 Obsoletes:	%mklibname %{name}2 -d
 
@@ -692,12 +803,20 @@ fi
 %{_datadir}/locale/*/*.po
 %{_mandir}/man?/*
 
-%files -n %{libname}
-%{_libdir}/libcups.so.*
-%{_libdir}/libcupsimage.so.*
-%{_libdir}/libcupscgi.so.1
-%{_libdir}/libcupsmime.so.1
-%{_libdir}/libcupsppdc.so.1
+%files -n %{libcups}
+%{_libdir}/libcups.so.%{cupsmajor}*
+
+%files -n %{libcupsimage}
+%{_libdir}/libcupsimage.so.%{cupsimagemajor}*
+
+%files -n %{libcupscgi}
+%{_libdir}/libcupscgi.so.%{cupscgimajor}*
+
+%files -n %{libcupsmime}
+%{_libdir}/libcupsmime.so.%{cupsmimemajor}*
+
+%files -n %{libcupsppdc}
+%{_libdir}/libcupsppdc.so.%{cupsppdcmajor}*
 
 %files -n %{devname}
 %dir %{_includedir}/cups
