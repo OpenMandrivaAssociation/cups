@@ -180,6 +180,7 @@ This package you need for both CUPS clients and servers.
 Summary:	Common Unix Printing System - CUPS library
 License:	LGPLv2
 Group:		System/Libraries
+Obsoletes:	%{_lib}cups3 < 1.6.1-2
 
 %description -n	%{libcups}
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
