@@ -215,27 +215,6 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%define	cupsdrivermajor	1
-%define	libcupsdriver	%mklibname cupsdriver %{cupsdrivermajor}
-
-%package -n	%{libcupsdriver}
-Summary:	Common Unix Printing System - CUPSdriver library
-License:	LGPLv2
-Group:		System/Libraries
-Conflicts:	%{libcups} < 1.6.1-2
-
-%description -n	%{libcupsdriver}
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
-The Common Unix Printing System provides a portable printing layer for
-UNIX(TM) operating systems. This package contains the CUPS API library
-which contains common functions used by both the CUPS daemon and all
-CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
-
-This package you need for both CUPS clients and servers. It is also
-needed by Samba.
-
 %define	cupsimagemajor	2
 %define	libcupsimage	%mklibname cupsimage %{cupsimagemajor}
 
@@ -307,7 +286,6 @@ Group:		Development/C
 Requires:	%{libcups} >= %{version}-%{release}
 Requires:	%{libcupscgi} >= %{version}-%{release}
 Requires:	%{libcupsimage} >= %{version}-%{release}
-Requires:	%{libcupsdriver} >= %{version}-%{release}
 Requires:	%{libcupsmime} >= %{version}-%{release}
 Requires:	%{libcupsppdc} >= %{version}-%{release}
 
