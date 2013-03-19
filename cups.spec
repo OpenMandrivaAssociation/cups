@@ -480,6 +480,8 @@ install -c -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/logrotate.d/cups
 
 # Set link to test page in /usr/share/printer-testpages
 ln -s %{_datadir}/printer-testpages/testprint.ps %{buildroot}%{_datadir}/cups/data/testprint-mdv.ps
+# replace no longer supported testprint banner format with our own
+ln -sf testprint-mdv.ps %{buildroot}%{_datadir}/cups/data/testprint
 
 # Install startup script
 install -d %{buildroot}%{_sysconfdir}/sysconfig
