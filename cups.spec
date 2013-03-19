@@ -86,6 +86,7 @@ Patch1024:	cups-str4223.patch
 Patch1027:	cups-hp-deviceid-oid.patch
 Patch1028:	cups-dnssd-deviceid.patch
 Patch1029:	cups-ricoh-deviceid-oid.patch
+Patch1032:	cups-lpd-manpage.patch
 
 # selinux
 #Patch1100:	cups-lspp.patch
