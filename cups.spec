@@ -70,6 +70,7 @@ Patch1009:	cups-lpr-help.patch
 Patch1010:	cups-peercred.patch
 Patch1011:	cups-pid.patch
 Patch1012:	cups-eggcups.patch
+Patch1013:	cups-str4276.patch
 Patch1014:	cups-driverd-timeout.patch
 Patch1015:	cups-strict-ppd-line-length.patch
 Patch1016:	cups-logrotate.patch
