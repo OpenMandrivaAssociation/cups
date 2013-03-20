@@ -15,8 +15,8 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.6.1
-Release:	2
+Version:	1.6.2
+Release:	1
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url:		http://www.cups.org
@@ -48,7 +48,6 @@ Source17:	cups.service
 Source18:	cups.sysconfig
 Patch1:		cups-dbus-utf8.patch
 Patch2:		cups-systemd-socket.patch
-Patch3:		cups-usblp-quirks.patch
 Patch10:	cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
 Patch32:	cups-1.5.3-permissions.patch
@@ -78,7 +77,6 @@ Patch1019:	cups-res_init.patch
 Patch1020:	cups-filter-debug.patch
 Patch1021:	cups-uri-compat.patch
 Patch1023:	cups-str3382.patch
-Patch1024:	cups-str4223.patch
 #NOT_IN_FEDPatch1024: cups-str3947.patch
 #same as mdv patch cups-1.4-permissions.patch
 #Patch1025: cups-0755.patch
