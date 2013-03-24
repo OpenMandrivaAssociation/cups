@@ -1,5 +1,5 @@
 --- cups-1.6.2/config.h.in.0002~	2012-12-17 23:17:08.000000000 +0100
-+++ cups-1.6.2/config.h.in	2013-03-19 08:12:56.364131431 +0100
++++ cups-1.6.2/config.h.in	2013-03-20 00:08:16.879944015 +0100
 @@ -487,6 +487,13 @@
  
  
@@ -14,8 +14,8 @@
   * Various scripting languages...
   */
  
---- cups-1.6.2/config-scripts/cups-systemd.m4.0002~	2013-03-19 08:12:56.365131442 +0100
-+++ cups-1.6.2/config-scripts/cups-systemd.m4	2013-03-19 08:12:56.365131442 +0100
+--- cups-1.6.2/config-scripts/cups-systemd.m4.0002~	2013-03-20 00:08:16.879944015 +0100
++++ cups-1.6.2/config-scripts/cups-systemd.m4	2013-03-20 00:08:16.879944015 +0100
 @@ -0,0 +1,36 @@
 +dnl
 +dnl "$Id$"
@@ -82,14 +82,14 @@
  	  conf/snmp.conf
  	  cups-config
  	  data/testprint
-+          data/cups.service
-+          data/cups.socket
-+          data/cups.path
++	  data/cups.service
++	  data/cups.socket
++	  data/cups.path
  	  desktop/cups.desktop
  	  doc/help/ref-cups-files-conf.html
  	  doc/help/ref-cupsd-conf.html
 --- cups-1.6.2/cups/usersys.c.0002~	2013-03-12 15:26:28.000000000 +0100
-+++ cups-1.6.2/cups/usersys.c	2013-03-19 08:12:56.365131442 +0100
++++ cups-1.6.2/cups/usersys.c	2013-03-20 00:08:16.879944015 +0100
 @@ -964,7 +964,7 @@ cups_read_client_conf(
      struct stat	sockinfo;		/* Domain socket information */
  
@@ -99,8 +99,8 @@
        cups_server = CUPS_DEFAULT_DOMAINSOCKET;
      else
  #endif /* CUPS_DEFAULT_DOMAINSOCKET */
---- cups-1.6.2/data/cups.path.in.0002~	2013-03-19 08:12:56.366131454 +0100
-+++ cups-1.6.2/data/cups.path.in	2013-03-19 08:12:56.366131454 +0100
+--- cups-1.6.2/data/cups.path.in.0002~	2013-03-20 00:08:16.879944015 +0100
++++ cups-1.6.2/data/cups.path.in	2013-03-20 00:08:16.879944015 +0100
 @@ -0,0 +1,8 @@
 +[Unit]
 +Description=CUPS Printer Service Spool
@@ -110,8 +110,8 @@
 +
 +[Install]
 +WantedBy=multi-user.target
---- cups-1.6.2/data/cups.service.in.0002~	2013-03-19 08:12:56.366131454 +0100
-+++ cups-1.6.2/data/cups.service.in	2013-03-19 08:12:56.366131454 +0100
+--- cups-1.6.2/data/cups.service.in.0002~	2013-03-20 00:08:16.879944015 +0100
++++ cups-1.6.2/data/cups.service.in	2013-03-20 00:08:16.879944015 +0100
 @@ -0,0 +1,10 @@
 +[Unit]
 +Description=CUPS Printing Service
@@ -123,8 +123,8 @@
 +[Install]
 +Also=cups.socket cups.path
 +WantedBy=printer.target
---- cups-1.6.2/data/cups.socket.in.0002~	2013-03-19 08:12:56.366131454 +0100
-+++ cups-1.6.2/data/cups.socket.in	2013-03-19 08:12:56.366131454 +0100
+--- cups-1.6.2/data/cups.socket.in.0002~	2013-03-20 00:08:16.879944015 +0100
++++ cups-1.6.2/data/cups.socket.in	2013-03-20 00:08:16.879944015 +0100
 @@ -0,0 +1,8 @@
 +[Unit]
 +Description=CUPS Printing Service Sockets
@@ -135,7 +135,7 @@
 +[Install]
 +WantedBy=sockets.target
 --- cups-1.6.2/data/Makefile.0002~	2011-08-27 11:23:01.000000000 +0200
-+++ cups-1.6.2/data/Makefile	2013-03-19 08:12:56.366131454 +0100
++++ cups-1.6.2/data/Makefile	2013-03-20 00:08:16.879944015 +0100
 @@ -100,6 +100,12 @@ install-data:
  		$(INSTALL_DATA) $$file $(DATADIR)/ppdc; \
  	done
@@ -160,7 +160,7 @@
  
  #
 --- cups-1.6.2/Makedefs.in.0002~	2012-05-23 01:58:31.000000000 +0200
-+++ cups-1.6.2/Makedefs.in	2013-03-19 08:12:56.366131454 +0100
++++ cups-1.6.2/Makedefs.in	2013-03-20 00:08:16.879944015 +0100
 @@ -134,11 +134,13 @@ CXXFLAGS	=	@CPPFLAGS@ @CXXFLAGS@
  CXXLIBS		=	@CXXLIBS@
  DBUS_NOTIFIER	=	@DBUS_NOTIFIER@
@@ -184,7 +184,7 @@
  
  #
 --- cups-1.6.2/scheduler/client.h.0002~	2012-03-22 21:30:20.000000000 +0100
-+++ cups-1.6.2/scheduler/client.h	2013-03-19 08:12:56.366131454 +0100
++++ cups-1.6.2/scheduler/client.h	2013-03-20 00:08:16.879944015 +0100
 @@ -77,6 +77,9 @@ typedef struct
    int			fd;		/* File descriptor for this server */
    http_addr_t		address;	/* Bind address of socket */
@@ -196,7 +196,7 @@
  
  
 --- cups-1.6.2/scheduler/listen.c.0002~	2011-04-16 01:38:13.000000000 +0200
-+++ cups-1.6.2/scheduler/listen.c	2013-03-19 08:12:56.367131465 +0100
++++ cups-1.6.2/scheduler/listen.c	2013-03-20 00:08:16.879944015 +0100
 @@ -401,7 +401,11 @@ cupsdStopListening(void)
         lis;
         lis = (cupsd_listener_t *)cupsArrayNext(Listeners))
@@ -211,7 +211,7 @@
  #ifdef WIN32
        closesocket(lis->fd);
 --- cups-1.6.2/scheduler/main.c.0002~	2012-12-17 23:18:10.000000000 +0100
-+++ cups-1.6.2/scheduler/main.c	2013-03-19 08:12:56.367131465 +0100
++++ cups-1.6.2/scheduler/main.c	2013-03-20 00:08:16.880944002 +0100
 @@ -26,6 +26,8 @@
   *   launchd_checkin()     - Check-in with launchd and collect the listening
   *                           fds.
@@ -376,7 +376,7 @@
  /*
   * 'parent_handler()' - Catch USR1/CHLD signals...
 --- cups-1.6.2/scheduler/Makefile.0002~	2012-05-21 19:40:22.000000000 +0200
-+++ cups-1.6.2/scheduler/Makefile	2013-03-19 08:12:56.367131465 +0100
++++ cups-1.6.2/scheduler/Makefile	2013-03-20 00:08:16.880944002 +0100
 @@ -371,7 +371,7 @@ cupsd:	$(CUPSDOBJS) $(LIBCUPSMIME) ../cu
  	$(CC) $(LDFLAGS) -o cupsd $(CUPSDOBJS) -L. -lcupsmime \
  		$(LIBZ) $(SSLLIBS) $(LIBSLP) $(LIBLDAP) $(PAMLIBS) \
