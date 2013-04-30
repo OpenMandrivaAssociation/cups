@@ -1,7 +1,6 @@
-diff -up cups-1.6b1/cups/http-addr.c.res_init cups-1.6b1/cups/http-addr.c
---- cups-1.6b1/cups/http-addr.c.res_init	2012-05-17 00:57:03.000000000 +0200
-+++ cups-1.6b1/cups/http-addr.c	2012-05-25 15:51:51.323916352 +0200
-@@ -254,7 +254,8 @@ httpAddrLookup(
+--- cups-1.7b1/cups/http-addr.c.1019~	2013-03-20 19:14:10.000000000 +0100
++++ cups-1.7b1/cups/http-addr.c	2013-04-30 10:42:54.956876751 +0200
+@@ -319,7 +319,8 @@ httpAddrLookup(
  
      if (error)
      {
@@ -11,16 +10,14 @@ diff -up cups-1.6b1/cups/http-addr.c.res_init cups-1.6b1/cups/http-addr.c
          cg->need_res_init = 1;
  
        return (httpAddrString(addr, name, namelen));
-diff -up cups-1.6b1/cups/http-addrlist.c.res_init cups-1.6b1/cups/http-addrlist.c
---- cups-1.6b1/cups/http-addrlist.c.res_init	2012-04-23 19:26:57.000000000 +0200
-+++ cups-1.6b1/cups/http-addrlist.c	2012-05-25 16:05:05.930377452 +0200
-@@ -540,7 +540,8 @@ httpAddrGetList(const char *hostname,	/*
+--- cups-1.7b1/cups/http-addrlist.c.1019~	2013-04-30 10:42:54.956876751 +0200
++++ cups-1.7b1/cups/http-addrlist.c	2013-04-30 10:43:52.770153986 +0200
+@@ -581,7 +581,7 @@ httpAddrGetList(const char *hostname,	/*
      }
      else
      {
 -      if (error == EAI_FAIL)
-+      if (error == EAI_FAIL || error == EAI_AGAIN || error == EAI_NODATA ||
-+          error == EAI_NONAME)
++      if (error == EAI_FAIL || error == EAI_AGAIN || error == EAI_NODATA || error == EAI_NONAME)
          cg->need_res_init = 1;
  
-       _cupsSetError(IPP_INTERNAL_ERROR, gai_strerror(error), 0);
+       _cupsSetError(IPP_STATUS_ERROR_INTERNAL, gai_strerror(error), 0);

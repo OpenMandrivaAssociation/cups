@@ -55,21 +55,6 @@
 +dnl
 --- cups-1.6.2/configure.in.0002~	2013-03-18 18:00:03.000000000 +0100
 +++ cups-1.6.2/configure.in	2013-03-19 08:15:14.862732488 +0100
-@@ -1,4 +1,4 @@
--dnl
-+ydnl
- dnl "$Id: configure.in 10913 2013-03-18 17:00:03Z mike $"
- dnl
- dnl   Configuration script for CUPS.
-@@ -11,7 +11,7 @@ dnl   property of Apple Inc. and are pro
- dnl   law.  Distribution and use rights are outlined in the file "LICENSE.txt"
- dnl   which should have been included with this file.  If this file is
- dnl   file is missing or damaged, see the license at "http://www.cups.org/".
--dnl
-+dnl:
- 
- AC_INIT(cups/cups.h)
- 
 @@ -33,6 +33,7 @@ sinclude(config-scripts/cups-pam.m4)
  sinclude(config-scripts/cups-largefile.m4)
  sinclude(config-scripts/cups-dnssd.m4)

@@ -8,6 +8,9 @@
 %define debug 0
 %define enable_check 0
 
+# Define to %nil for release builds
+%define beta b1
+
 %bcond_with	bootstrap
 %if !%{with bootstrap}
 %bcond_without	systemd
@@ -15,12 +18,16 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.6.2
+Version:	1.7
+%if "%beta" != ""
+Release:	0.%beta.1
+%else
 Release:	2
+%endif
+Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url:		http://www.cups.org
-Source0:	ftp://ftp.easysw.com/pub/cups/%{version}/%{name}-%{version}-source.tar.bz2
 
 # Small C program to get list of all installed PPD files
 Source1:	poll_ppd_base.c
@@ -43,20 +50,17 @@ Source14:	http://www.linuxprinting.org/download/printing/photo_print
 Source15:	http://printing.kde.org/downloads/pdfdistiller
 Source16:	cjktexttops
 Source17:	cups.service
-
 # Nice level for now. bug #16387
 Source18:	cups.sysconfig
+# udev rules for setting symlinks needed if the usblp module is loaded
+Source19:	10-cups_device_links.rules
+
 Patch1:		cups-dbus-utf8.patch
 Patch2:		cups-systemd-socket.patch
 Patch10:	cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
 Patch32:	cups-1.5.3-permissions.patch
 
-# Ubuntu patch, Launchpad #449586: Do not use host
-# names for broadcasting print queues and managing print queues broadcasted
-# from other servers by default. Many networks do not have valid host names
-# for all machines
-Patch35:	do-not-broadcast-with-hostnames.patch
 #fedora patches all shifted by 1000
 Patch1001:	cups-no-gzip-man.patch
 Patch1002:	cups-system-auth.patch
@@ -308,7 +312,7 @@ Group: Development/PHP
 Provides bindings to the functions of libcups, to give direct access
 
 %prep
-%setup -q
+%setup -q -n %name-%version%beta
 %apply_patches
 
 # Set CUPS users and groups
@@ -349,7 +353,7 @@ cp %{SOURCE2} lphelp.c
 # Load nprint backend
 cp %{SOURCE11} nprint
 # Load AppleTalk "pap" backend
-%setup -q -T -D -a 12 -n %{name}-%{version}
+%setup -q -T -D -a 12 -n %{name}-%{version}%beta
 # Load the "pap" documentation
 bzcat %{SOURCE13} > pap-docu.pdf
 # Load the "photo_print" utility
@@ -624,6 +628,10 @@ ln -s %{_datadir}/ppd %{buildroot}%{_datadir}/cups/model/3-distribution
 mkdir -p %{buildroot}%{_libdir}/printdriver
 # Other dirs can't be handled here, but on %post instead.
 
+# Create /dev/lp* nodes to make usblp happy
+mkdir -p %buildroot%_sysconfdir/udev/rules.d
+install -c -m 644 %SOURCE19 %buildroot%_sysconfdir/udev/rules.d/
+
 %pre
 %ifarch x86_64
 # Fix /usr/lib/cups directory, so that updates can be done
@@ -716,6 +724,7 @@ fi
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
 %attr(644,root,root) %config(noreplace) %{_sysconfdir}/xinetd.d/cups-lpd
+%_sysconfdir/udev/rules.d/*
 %dir %{_prefix}/lib/cups
 %{_prefix}/lib/cups/cgi-bin
 %{_prefix}/lib/cups/daemon
