@@ -9,7 +9,7 @@
 %define enable_check 0
 
 # Define to %nil for release builds
-%define beta b1
+%define beta rc1
 
 %bcond_with	bootstrap
 %if !%{with bootstrap}
@@ -88,7 +88,6 @@ Patch1027:	cups-hp-deviceid-oid.patch
 Patch1028:	cups-dnssd-deviceid.patch
 Patch1029:	cups-ricoh-deviceid-oid.patch
 Patch1032:	cups-lpd-manpage.patch
-Patch1033:	cups-17b1-va_list.patch
 
 # selinux
 #Patch1100:	cups-lspp.patch
@@ -775,6 +774,7 @@ fi
 %ghost %config(noreplace) %attr(-,lp,sys) %{_sysconfdir}/cups/client.conf
 %{_sbindir}/*
 %{_bindir}/*cups
+%{_bindir}/ippfind
 %{_bindir}/ipptool
 #%{_bindir}/lphelp
 %{_bindir}/lpoptions

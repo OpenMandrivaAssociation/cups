@@ -1,5 +1,5 @@
---- cups-1.6.2/man/cups-lpd.man.in.1032~	2013-01-10 17:58:21.000000000 +0100
-+++ cups-1.6.2/man/cups-lpd.man.in	2013-03-19 08:21:25.659003948 +0100
+--- cups-1.7rc1/man/cups-lpd.man.in.1032~	2013-07-08 23:15:13.000000000 +0200
++++ cups-1.7rc1/man/cups-lpd.man.in	2013-08-23 12:50:44.299227808 +0200
 @@ -26,39 +26,8 @@ cups-lpd \- receive print jobs and repor
  \fIcups-lpd\fR is the CUPS Line Printer Daemon ("LPD")
  mini-server that supports legacy client systems that use the LPD
@@ -11,7 +11,7 @@
 -.br
 -.nf
 -
--    printer stream tcp nowait lp @CUPS_SERVERBIN@/daemon/cups-lpd cups-lpd \\
+-    printer stream tcp nowait lp /usr/lib/cups/daemon/cups-lpd cups-lpd \\
 -        -o document-format=application/octet-stream
 -.fi
 -.LP
@@ -33,7 +33,7 @@
 -        user = lp
 -	group = sys
 -	passenv =
--        server = @CUPS_SERVERBIN@/daemon/cups-lpd
+-        server = /usr/lib/cups/daemon/cups-lpd
 -	server_args = -o document-format=application/octet-stream
 -    }
 -.fi
