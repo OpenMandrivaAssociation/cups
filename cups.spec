@@ -316,15 +316,30 @@ Provides bindings to the functions of libcups, to give direct access
 %apply_patches
 
 # Set CUPS users and groups
-perl -p -i -e 's:(SystemGroup\s+.*)$:$1\nGroup sys\nUser lp:' conf/cupsd.conf.in
+if ! grep -qE 'LogLevel\s+' conf/cupsd.conf.in; then
+	echo "Couldn't edit cupsd.conf - keyword LogLevel not found"
+	exit 1
+fi
+perl -p -i -e 's:(LogLevel\s+.*)$:$1\nGroup lp\nUser lp:' conf/cupsd.conf.in
 
 # Let local printers be broadcasted in the local network(s)
+if ! grep -qE 'Listen\s+' conf/cupsd.conf.in; then
+	echo "Couldn't edit cupsd.conf - keyword Listen not found"
+	exit 1
+fi
 perl -p -i -e 's:(Listen\s+)localhost:$1*:' conf/cupsd.conf.in
-perl -p -i -e 's:(Browsing\s+On):$1\nBrowseAddress \@LOCAL:' conf/cupsd.conf.in
+if ! grep -qE '<Location\s+/\s*>' conf/cupsd.conf.in; then
+	echo "Couldn't edit cupsd.conf - keyword Location / not found"
+	exit 1
+fi
 perl -p -i -e 's:(<Location\s+/\s*>):$1\n  Allow \@LOCAL:' conf/cupsd.conf.in
 
 # Allow remote administration in local network (connections are encrypted,
 # so no security problem)
+if ! grep -qE '<Location\s+/admin(|/conf)\s*>' conf/cupsd.conf.in; then
+	echo "Couldn't edit cupsd.conf - keyword Location / not found"
+	exit 1
+fi
 perl -p -i -e 's:(<Location\s+/admin(|/conf)\s*>):$1\n  Allow \@LOCAL:' conf/cupsd.conf.in
 
 # Replace the PAM configuration file
@@ -390,7 +405,7 @@ export DSOFLAGS="$LDFLAGS"
     --enable-raw-printing \
     --enable-ssl \
     --disable-static \
-    --with-cups-group=sys \
+    --with-cups-group=lp \
     --with-cups-user=lp \
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
@@ -591,7 +606,7 @@ EOF
 mkdir -p %{buildroot}%{_prefix}/lib/tmpfiles.d
 cat > %{buildroot}%{_prefix}/lib/tmpfiles.d/cups.conf <<EOF
 d %{_localstatedir}/run/cups 0755 root lp -
-d %{_localstatedir}/run/cups/certs 0511 lp sys -
+d %{_localstatedir}/run/cups/certs 0511 lp lp -
 EOF
 
 # /usr/lib/tmpfiles.d/cups-lp.conf (bug #812641)
@@ -649,7 +664,7 @@ fi
 
 %post
 # Make sure group ownerships are correct
-chgrp -R sys %{_sysconfdir}/cups %{_var}/*/cups
+chgrp -R lp %{_sysconfdir}/cups %{_var}/*/cups
 
 # We can't enforce this. Bug #35993
 for d in /opt/share/ppd /opt/lib/printdriver /usr/local/share/ppd /usr/local/lib/printdriver
@@ -706,19 +721,19 @@ fi
 %files
 %doc *.txt
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
-%config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf
+%config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/cupsd.conf
 %config(noreplace) %attr(-,root,root) %_sysconfdir/cups/cups-files.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/sysconfig/cups
 %ghost %config(noreplace) %{_sysconfdir}/cups/printers.conf
 %ghost %config(noreplace) %{_sysconfdir}/cups/classes.conf
 %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf.default
-%config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/interfaces
-#%config(noreplace) %attr(644,root,sys) %{_sysconfdir}/cups/mime.convs
-#%config(noreplace) %attr(644,root,sys) %{_sysconfdir}/cups/mime.types
-%config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ppd
-%config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/ssl
-%config(noreplace) %attr(-,root,sys) %{_sysconfdir}/cups/snmp.conf
-%config(noreplace) %attr(-,root,sys) %{_sysconfdir}/dbus*/system.d/cups.conf
+%config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/interfaces
+#%config(noreplace) %attr(644,root,lp) %{_sysconfdir}/cups/mime.convs
+#%config(noreplace) %attr(644,root,lp) %{_sysconfdir}/cups/mime.types
+%config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/ppd
+%config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/ssl
+%config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/snmp.conf
+%config(noreplace) %attr(-,root,lp) %{_sysconfdir}/dbus*/system.d/cups.conf
 %{_prefix}/lib/tmpfiles.d/cups.conf
 %{_prefix}/lib/tmpfiles.d/cups-lp.conf
 %config(noreplace) %{_sysconfdir}/pam.d/cups
@@ -749,12 +764,12 @@ fi
 %{_prefix}/lib/cups/backend/pdf
 %dir %{_prefix}/lib/cups/driver
 %{_datadir}/cups
-%attr(0755,root,sys) %{_var}/log/cups
+%attr(0755,root,lp) %{_var}/log/cups
 # Set ownerships of spool directory which is normally done by 'make install'
 # Because RPM does 'make install' as normal user, this has to be done here
-%dir %attr(0710,root,sys) %{_var}/spool/cups
-%dir %attr(01770,root,sys) %{_var}/spool/cups/tmp
-%dir %attr(775,root,sys) %{_var}/cache/cups
+%dir %attr(0710,root,lp) %{_var}/spool/cups
+%dir %attr(01770,root,lp) %{_var}/spool/cups/tmp
+%dir %attr(775,root,lp) %{_var}/cache/cups
 # Bug #28383 dirs
 %dir %{_datadir}/ppd
 %dir %{_libdir}/printdriver
@@ -770,15 +785,15 @@ fi
 %endif
 
 %files common
-%dir %config(noreplace) %attr(-,lp,sys) %{_sysconfdir}/cups
-%ghost %config(noreplace) %attr(-,lp,sys) %{_sysconfdir}/cups/client.conf
+%dir %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups
+%ghost %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups/client.conf
 %{_sbindir}/*
 %{_bindir}/*cups
 %{_bindir}/ippfind
 %{_bindir}/ipptool
 #%{_bindir}/lphelp
 %{_bindir}/lpoptions
-%attr(6755,root,sys) %{_bindir}/lppasswd
+%attr(6755,root,lp) %{_bindir}/lppasswd
 %{_bindir}/photo_print
 %{_bindir}/poll_ppd_base
 %{_bindir}/ppdc
