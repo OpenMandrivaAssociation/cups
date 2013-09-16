@@ -22,7 +22,7 @@ Version:	1.7
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	3
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 License:	GPLv2 and LGPLv2
@@ -646,6 +646,10 @@ mkdir -p %{buildroot}%{_libdir}/printdriver
 # Create /dev/lp* nodes to make usblp happy
 mkdir -p %buildroot%_sysconfdir/udev/rules.d
 install -c -m 644 %SOURCE19 %buildroot%_sysconfdir/udev/rules.d/
+
+# Remove stuff that's also in cups-filters
+rm -f %buildroot%_datadir/cups/banners/{confidential,secret,standard,topsecret,unclassified}
+rm -f %buildroot%_datadir/cups/data/testprint
 
 %pre
 %ifarch x86_64
