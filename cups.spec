@@ -20,7 +20,7 @@ Summary:	Common Unix Printing System - Server package
 Name:		cups
 Version:	1.7
 %if "%beta" != ""
-Release:	0.%beta.1
+Release:	0.%beta.2
 %else
 Release:	3
 %endif
@@ -121,9 +121,6 @@ BuildRequires:	pkgconfig(libssl)
 BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
-%if !%{with bootstrap}
-BuildRequires:	poppler
-%if %{with systemd}
 BuildRequires:	systemd-units
 BuildRequires:	pkgconfig(libsystemd-login)
 BuildRequires:	pkgconfig(systemd)
@@ -133,12 +130,12 @@ BuildRequires:	pkgconfig(systemd)
 Requires:	%{name}-common >= %{version}-%{release}
 Requires:	net-tools
 %if !%{with bootstrap}
-Requires:	poppler
 Suggests:	avahi
 %endif
 Requires:	printer-testpages
 # Take care that device files are created with correct permissions
-Requires:	udev 
+Requires:	udev
+Requires:	cups-filters
 # For desktop menus
 Requires:	xdg-utils
 %rename		cupsddk-drivers
@@ -411,10 +408,7 @@ export DSOFLAGS="$LDFLAGS"
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
     --with-php=%_bindir/php \
-    --enable-relro \
-%if !%{with bootstrap}
-    --with-pdftops=%{_bindir}/pdftops
-%endif
+    --enable-relro 
 
 # Remove "-s" (stripping) option from "install" command used for binaries
 # by "make install"
