@@ -642,7 +642,7 @@ mkdir -p %buildroot%_sysconfdir/udev/rules.d
 install -c -m 644 %SOURCE19 %buildroot%_sysconfdir/udev/rules.d/
 
 # Remove stuff that's also in cups-filters
-rm -f %buildroot%_datadir/cups/banners/{confidential,secret,standard,topsecret,unclassified}
+rm -f %buildroot%_datadir/cups/banners/{classified,confidential,secret,standard,topsecret,unclassified}
 rm -f %buildroot%_datadir/cups/data/testprint
 
 %pre
