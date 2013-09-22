@@ -121,10 +121,10 @@ BuildRequires:	pkgconfig(libssl)
 BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
+%if %{with systemd}
 BuildRequires:	systemd-units
 BuildRequires:	pkgconfig(libsystemd-login)
 BuildRequires:	pkgconfig(systemd)
-%endif
 %endif
 
 Requires:	%{name}-common >= %{version}-%{release}
