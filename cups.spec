@@ -18,13 +18,14 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.7.0
+Version:	1.7.1
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	5
+Release:	1
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
+Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
 Url:		http://www.cups.org

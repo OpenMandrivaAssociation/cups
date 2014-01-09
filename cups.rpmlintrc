@@ -1,0 +1,7 @@
+# Intentional -- those alleged "header files" are actually #included into PPDs
+addFilter("E: devel-file-in-non-devel-package")
+# Intentional -- spool directories etc. need special permissions
+addFilter("E: non-standard-dir-perm")
+# And some files must not be world-readable because they contain potentially
+# sensitive information
+addFilter("E: non-readable")
