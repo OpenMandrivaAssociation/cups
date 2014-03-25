@@ -1,7 +1,6 @@
-diff -up cups-1.6.1/notifier/dbus.c.dbus-utf8 cups-1.6.1/notifier/dbus.c
---- cups-1.6.1/notifier/dbus.c.dbus-utf8	2012-01-20 19:00:32.000000000 +0000
-+++ cups-1.6.1/notifier/dbus.c	2012-10-31 11:04:47.686973616 +0000
-@@ -31,6 +31,9 @@
+--- cups-1.7.1/notifier/dbus.c.0001~	2014-01-06 23:21:15.000000000 +0100
++++ cups-1.7.1/notifier/dbus.c	2014-03-25 18:46:12.195366321 +0100
+@@ -26,6 +26,9 @@
  #include <sys/stat.h>
  #include <sys/types.h>
  #include <unistd.h>
@@ -11,16 +10,13 @@ diff -up cups-1.6.1/notifier/dbus.c.dbus-utf8 cups-1.6.1/notifier/dbus.c
  
  #ifdef HAVE_DBUS
  #  include <dbus/dbus.h>
-@@ -157,10 +160,82 @@ enum
-  * Local functions...
-  */
+@@ -161,7 +164,78 @@ static char		lock_filename[1024];	/* Loc
  
--static int	acquire_lock(int *fd, char *lockfile, size_t locksize);
-+static int		acquire_lock(int *fd, char *lockfile, size_t locksize);
+ static int	acquire_lock(int *fd, char *lockfile, size_t locksize);
+ static void	release_lock(void);
 +static const char	*validate_utf8(const char *str);
- 
- 
- /*
++ 
++/*
 + * 'validate_utf8()' - Convert to valid UTF-8
 + */
 +
@@ -33,7 +29,7 @@ diff -up cups-1.6.1/notifier/dbus.c.dbus-utf8 cups-1.6.1/notifier/dbus.c
 +  size_t str_len;
 +  unsigned int i;
 +  mbstate_t instate, outstate;
-+
+ 
 +  if (str == NULL)
 +  {
 +    free (buffer);
@@ -90,12 +86,10 @@ diff -up cups-1.6.1/notifier/dbus.c.dbus-utf8 cups-1.6.1/notifier/dbus.c
 +  *p = '\0';
 +  return buffer;
 +}
-+
-+/*
-  * 'main()' - Read events and send DBUS notifications.
-  */
  
-@@ -366,7 +441,7 @@ main(int  argc,				/* I - Number of comm
+ /*
+  * 'main()' - Read events and send DBUS notifications.
+@@ -367,7 +441,7 @@ main(int  argc,				/* I - Number of comm
      attr = ippFindAttribute(msg, "notify-text", IPP_TAG_TEXT);
      if (attr)
      {
@@ -104,7 +98,7 @@ diff -up cups-1.6.1/notifier/dbus.c.dbus-utf8 cups-1.6.1/notifier/dbus.c
        if (!dbus_message_iter_append_string(&iter, &val))
          goto bail;
      }
-@@ -530,7 +605,7 @@ main(int  argc,				/* I - Number of comm
+@@ -533,7 +607,7 @@ main(int  argc,				/* I - Number of comm
        attr = ippFindAttribute(msg, "job-name", IPP_TAG_NAME);
        if (attr)
        {
