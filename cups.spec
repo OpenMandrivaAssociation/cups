@@ -18,7 +18,7 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.7.1
+Version:	1.7.2
 %if "%beta" != ""
 Release:	0.%beta.1
 %else

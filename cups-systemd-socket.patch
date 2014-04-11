@@ -219,15 +219,6 @@
        closesocket(lis->fd);
 --- cups-1.7rc1/scheduler/main.c.0002~	2013-05-29 13:51:34.000000000 +0200
 +++ cups-1.7rc1/scheduler/main.c	2013-08-23 10:18:12.080545173 +0200
-@@ -26,6 +26,8 @@
-  *   launchd_checkin()     - Check-in with launchd and collect the listening
-  *                           fds.
-  *   launchd_checkout()    - Update the launchd KeepAlive file as needed.
-+ *   systemd_checkin()     - Check-in with systemd and collect the
-+ *                           listening fds.
-  *   parent_handler()      - Catch USR1/CHLD signals...
-  *   process_children()    - Process all dead children...
-  *   select_timeout()      - Calculate the select timeout value.
 @@ -62,6 +64,10 @@
  #  endif /* !LAUNCH_JOBKEY_SERVICEIPC */
  #endif /* HAVE_LAUNCH_H */
