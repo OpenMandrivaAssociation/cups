@@ -11,6 +11,7 @@
 # Define to %nil for release builds
 %define beta %nil
 
+%bcond_with	dnssd
 %bcond_with	bootstrap
 %if !%{with bootstrap}
 %bcond_without	systemd
@@ -113,7 +114,9 @@ BuildRequires:	openslp-devel
 BuildRequires:	pam-devel
 BuildRequires:	php-devel >= 5.1.0
 BuildRequires:	tiff-devel
+%if %{with dnssd}
 BuildRequires:	pkgconfig(avahi-compat-libdns_sd)
+%endif
 BuildRequires:	pkgconfig(dbus-1) >= 0.50
 BuildRequires:	pkgconfig(gnutls) >= 3.0
 BuildRequires:	pkgconfig(libcrypto)
@@ -394,8 +397,10 @@ export CXXFLAGS="-g"
 %endif
 # cups uses $DSOFLAGS instead of $LDFLAGS for shared libs
 export DSOFLAGS="$LDFLAGS"
-%configure2_5x \
+%configure \
+%if !%{with dnsd}
     --enable-avahi \
+%endif
 %if %{debug}
     --enable-debug=yes \
 %endif
@@ -746,7 +751,9 @@ fi
 %{_prefix}/lib/cups/filter
 %{_prefix}/lib/cups/monitor
 %dir %{_prefix}/lib/cups/backend
+%if %{with dnssd}
 %{_prefix}/lib/cups/backend/dnssd
+%endif
 %{_prefix}/lib/cups/backend/http
 %{_prefix}/lib/cups/backend/https
 %{_prefix}/lib/cups/backend/ipp
@@ -788,7 +795,9 @@ fi
 %ghost %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups/client.conf
 %{_sbindir}/*
 %{_bindir}/*cups
+%if %{with dnssd}
 %{_bindir}/ippfind
+%endif
 %{_bindir}/ipptool
 #%{_bindir}/lphelp
 %{_bindir}/lpoptions
