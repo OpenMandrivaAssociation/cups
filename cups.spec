@@ -11,7 +11,7 @@
 # Define to %nil for release builds
 %define beta %nil
 
-%bcond_with	dnssd
+%bcond_without	dnssd
 %bcond_with	bootstrap
 %if !%{with bootstrap}
 %bcond_without	systemd
