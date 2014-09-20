@@ -23,7 +23,7 @@ Version:	1.7.5
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	1
+Release:	2
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
@@ -96,12 +96,9 @@ Patch1032:	cups-lpd-manpage.patch
 
 # Requires /etc/tmpfiles.d (bug #656566)
 Requires:	systemd-units >= 13
-Requires(post):	systemd-units
-Requires(preun):systemd-units
-Requires(postun): systemd-units
 Requires(post):	rpm-helper >= 0.24.1
-Requires(preun):rpm-helper >= 0.24.1
-
+Requires(preun):	rpm-helper >= 0.24.1
+Requires(postun):	rpm-helper
 BuildRequires:	htmldoc
 BuildRequires:	php-cli
 BuildRequires:	xdg-utils
@@ -414,7 +411,7 @@ export DSOFLAGS="$LDFLAGS"
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
     --with-php=%_bindir/php \
-    --enable-relro 
+    --enable-relro
 
 # Remove "-s" (stripping) option from "install" command used for binaries
 # by "make install"
@@ -422,7 +419,7 @@ perl -p -i -e 's:^(\s*INSTALL_BIN\s*=.*)-s:$1:' Makedefs
 
 # Remove hardcoded "chgrp" from Makefiles
 perl -p -i -e 's/chgrp/:/' Makefile */Makefile
-%make 
+%make
 
 # Compile additional tools
 gcc %{optflags} %{ldflags} -opoll_ppd_base -I. -I./cups poll_ppd_base.c -L./cups -lcups
@@ -678,7 +675,7 @@ done
 # End of 28383
 
 # Let CUPS daemon be automatically started at boot time
-%_post_service cups
+%systemd_post %{name}.path %{name}.socket %{name}.service
 
 %post common
 # The lpc updates-alternative links were not correctly set in older CUPS
@@ -700,7 +697,7 @@ done
 
 %preun
 # Let CUPS daemon not be automatically started at boot time any more
-%_preun_service cups
+%systemd_preun %{name}.path %{name}.socket %{name}.service
 
 %preun common
 if [ "$1" = 0 ]; then
@@ -721,6 +718,7 @@ fi
 
 %postun
 %_postun_groupdel lpadmin
+%systemd_postun_with_restart %{name}.path %{name}.socket %{name}.service
 
 %files
 %doc *.txt
