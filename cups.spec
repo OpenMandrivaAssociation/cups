@@ -19,11 +19,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	1.7.5
+Version:	2.0.0
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	1
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
@@ -58,7 +58,6 @@ Source18:	cups.sysconfig
 Source19:	10-cups_device_links.rules
 
 Patch1:		cups-dbus-utf8.patch
-Patch2:		cups-systemd-socket.patch
 Patch10:	cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
 Patch32:	cups-1.5.3-permissions.patch
@@ -89,7 +88,6 @@ Patch1023:	cups-str3382.patch
 Patch1027:	cups-hp-deviceid-oid.patch
 Patch1028:	cups-dnssd-deviceid.patch
 Patch1029:	cups-ricoh-deviceid-oid.patch
-Patch1032:	cups-lpd-manpage.patch
 
 # selinux
 #Patch1100:	cups-lspp.patch
@@ -557,7 +555,6 @@ pushd %{buildroot}%{_sbindir}
   mv reject reject-cups
 popd
 pushd %{buildroot}%{_mandir}/man1
-  mv lpr.1 lpr-cups.1
   mv lpq.1 lpq-cups.1
   mv lprm.1 lprm-cups.1
   mv lp.1 lp-cups.1
@@ -575,9 +572,6 @@ popd
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/reject-cups
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsdisable
 ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsenable
-
-# Remove links to the startup script, we make our own ones with chkconfig
-rm -r %{buildroot}%{_sysconfdir}/rc?.d/[SK]*
 
 # Install missing headers (Thanks to Oden Eriksson)
 install -m644 cups/debug-private.h  %{buildroot}%{_includedir}/cups/
@@ -682,7 +676,6 @@ done
 # packages, therefore remove the entry before making a new one when updating
 %{_sbindir}/update-alternatives --remove lpc %{_sbindir}/lpc-cups || :
 # Set up update-alternatives entries
-%{_sbindir}/update-alternatives --install %{_bindir}/lpr lpr %{_bindir}/lpr-cups 10 --slave %{_mandir}/man1/lpr.1%{_extension} lpr.1%{_extension} %{_mandir}/man1/lpr-cups.1%{_extension}
 %{_sbindir}/update-alternatives --install %{_bindir}/lpq lpq %{_bindir}/lpq-cups 10 --slave %{_mandir}/man1/lpq.1%{_extension} lpq.1%{_extension} %{_mandir}/man1/lpq-cups.1%{_extension}
 %{_sbindir}/update-alternatives --install %{_bindir}/lprm lprm %{_bindir}/lprm-cups 10 --slave %{_mandir}/man1/lprm.1%{_extension} lprm.1%{_extension} %{_mandir}/man1/lprm-cups.1%{_extension}
 %{_sbindir}/update-alternatives --install %{_bindir}/lp lp %{_bindir}/lp-cups 10 --slave %{_mandir}/man1/lp.1%{_extension} lp.1%{_extension} %{_mandir}/man1/lp-cups.1%{_extension}
@@ -785,7 +778,7 @@ fi
 %{_libdir}/cups
 %endif
 %if %{with systemd}
-/lib/systemd/system/cups.*
+/lib/systemd/system/org.cups.*
 %endif
 
 %files common
@@ -799,7 +792,6 @@ fi
 %{_bindir}/ipptool
 #%{_bindir}/lphelp
 %{_bindir}/lpoptions
-%attr(6755,root,lp) %{_bindir}/lppasswd
 %{_bindir}/photo_print
 %{_bindir}/poll_ppd_base
 %{_bindir}/ppdc
