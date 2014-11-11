@@ -23,7 +23,7 @@ Version:	2.0.0
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	1
+Release:	2
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
@@ -56,6 +56,8 @@ Source17:	cups.service
 Source18:	cups.sysconfig
 # udev rules for setting symlinks needed if the usblp module is loaded
 Source19:	10-cups_device_links.rules
+# Udev rules for setting properly rights and groups
+Source20:	10-cups_device_usb.rules
 
 Patch1:		cups-dbus-utf8.patch
 Patch10:	cups-1.4.0-recommended.patch
@@ -637,6 +639,8 @@ mkdir -p %{buildroot}%{_libdir}/printdriver
 # Create /dev/lp* nodes to make usblp happy
 mkdir -p %buildroot%_sysconfdir/udev/rules.d
 install -c -m 644 %SOURCE19 %buildroot%_sysconfdir/udev/rules.d/
+# Fix USB printers permissions and groups
+install -c -m 644 %SOURCE20 %buildroot%_sysconfdir/udev/rules.d/
 
 # Remove stuff that's also in cups-filters
 rm -f %buildroot%_datadir/cups/banners/{classified,confidential,secret,standard,topsecret,unclassified}
