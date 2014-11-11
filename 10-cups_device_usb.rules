@@ -1,0 +1,11 @@
+#Brother
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04f9", GROUP="lp", MODE:="666"
+
+#Xerox
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0924", GROUP="lp", MODE:="666"
+
+#Epson
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04b8", GROUP="lp", MODE:="666"
+
+#Samsung
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04e8", GROUP="lp", MODE:="666"
