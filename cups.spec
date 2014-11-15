@@ -19,11 +19,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.0.0
+Version:	2.0.1
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	1
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
@@ -737,7 +737,6 @@ fi
 %{_prefix}/lib/tmpfiles.d/cups-lp.conf
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
-%attr(644,root,root) %config(noreplace) %{_sysconfdir}/xinetd.d/cups-lpd
 %_sysconfdir/udev/rules.d/*
 %dir %{_prefix}/lib/cups
 %{_prefix}/lib/cups/cgi-bin
