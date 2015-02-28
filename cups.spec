@@ -11,6 +11,9 @@
 # Define to %nil for release builds
 %define beta %nil
 
+# Define name of systemd service
+%define sysdname org.cups.cupsd
+
 %bcond_without	dnssd
 %bcond_with	bootstrap
 %if !%{with bootstrap}
@@ -673,7 +676,7 @@ done
 # End of 28383
 
 # Let CUPS daemon be automatically started at boot time
-%systemd_post %{name}.path %{name}.socket %{name}.service
+%systemd_post %{sysdname}.path %{sysdname}.socket %{sysdname}.service
 
 %post common
 # The lpc updates-alternative links were not correctly set in older CUPS
@@ -694,7 +697,7 @@ done
 
 %preun
 # Let CUPS daemon not be automatically started at boot time any more
-%systemd_preun %{name}.path %{name}.socket %{name}.service
+%systemd_preun %{sysdname}.path %{sysdname}.socket %{sysdname}.service
 
 %preun common
 if [ "$1" = 0 ]; then
@@ -715,7 +718,7 @@ fi
 
 %postun
 %_postun_groupdel lpadmin
-%systemd_postun_with_restart %{name}.path %{name}.socket %{name}.service
+%systemd_postun_with_restart %{sysdname}.path %{sysdname}.socket %{sysdname}.service
 
 %files
 %doc *.txt
