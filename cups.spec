@@ -19,11 +19,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.0.1
+Version:	2.0.2
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	4
+Release:	1
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
@@ -102,7 +102,6 @@ Requires(postun):	rpm-helper
 BuildRequires:	htmldoc
 BuildRequires:	php-cli
 BuildRequires:	xdg-utils
-BuildRequires:	xinetd
 BuildRequires:	acl-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	krb5-devel
@@ -410,8 +409,9 @@ export DSOFLAGS="$LDFLAGS"
     --with-docdir=%{_datadir}/cups/doc \
     --with-icondir=%{_datadir}/icons \
     --with-system-groups="lpadmin root" \
-    --with-php=%_bindir/php \
-    --enable-relro
+    --with-php=%{_bindir}/php \
+    --enable-relro \
+    --without-xinetd
 
 # Remove "-s" (stripping) option from "install" command used for binaries
 # by "make install"
