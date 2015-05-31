@@ -411,7 +411,8 @@ export DSOFLAGS="$LDFLAGS"
     --with-system-groups="lpadmin root" \
     --with-php=%{_bindir}/php \
     --enable-relro \
-    --without-xinetd
+    --without-xinetd \
+    --without-rcdir
 
 # Remove "-s" (stripping) option from "install" command used for binaries
 # by "make install"
