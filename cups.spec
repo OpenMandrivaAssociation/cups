@@ -12,7 +12,7 @@
 %define beta %nil
 
 %bcond_without	dnssd
-%bcond_with	bootstrap
+%bcond_without	bootstrap
 %if !%{with bootstrap}
 %bcond_without	systemd
 %endif
@@ -23,7 +23,7 @@ Version:	2.0.2
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	3
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
