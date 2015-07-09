@@ -19,11 +19,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.0.2
+Version:	2.0.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	3
+Release:	1
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
@@ -51,7 +51,6 @@ Source13:	http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-docu.pdf.bz2
 Source14:	http://www.linuxprinting.org/download/printing/photo_print
 Source15:	http://printing.kde.org/downloads/pdfdistiller
 Source16:	cjktexttops
-Source17:	cups.service
 # Nice level for now. bug #16387
 Source18:	cups.sysconfig
 # udev rules for setting symlinks needed if the usblp module is loaded
@@ -95,7 +94,7 @@ Patch1029:	cups-ricoh-deviceid-oid.patch
 #Patch1100:	cups-lspp.patch
 
 # Requires /etc/tmpfiles.d (bug #656566)
-Requires:	systemd-units >= 13
+Requires:	systemd >= 208
 Requires(post):	rpm-helper >= 0.24.1
 Requires(preun):	rpm-helper >= 0.24.1
 Requires(postun):	rpm-helper
@@ -122,9 +121,8 @@ BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
 %if %{with systemd}
-BuildRequires:	systemd-units
-BuildRequires:	pkgconfig(libsystemd-login)
-BuildRequires:	pkgconfig(systemd)
+BuildRequires:	pkgconfig(libsystemd-daemon)
+BuildRequires:	pkgconfig(libsystemd)
 %endif
 
 Requires:	%{name}-common >= %{version}-%{release}
@@ -309,8 +307,14 @@ Group: Development/PHP
 Provides bindings to the functions of libcups, to give direct access
 
 %prep
-%setup -q -n %name-%version%beta
+%setup -q -n %{name}-%{version}%{beta}
 %apply_patches
+
+# (tpg) log to journal
+sed -i -e 's,^ErrorLog .*$,ErrorLog journal,' conf/cups-files.conf.in
+
+# Let local printers be broadcasted in the local network(s)
+perl -p -i -e 's:(Browsing\s+On):$1:' conf/cupsd.conf.in
 
 # Set CUPS users and groups
 if ! grep -qE 'LogLevel\s+' conf/cupsd.conf.in; then
@@ -325,6 +329,7 @@ if ! grep -qE 'Listen\s+' conf/cupsd.conf.in; then
 	exit 1
 fi
 perl -p -i -e 's:(Listen\s+)localhost:$1*:' conf/cupsd.conf.in
+
 if ! grep -qE '<Location\s+/\s*>' conf/cupsd.conf.in; then
 	echo "Couldn't edit cupsd.conf - keyword Location / not found"
 	exit 1
@@ -365,7 +370,7 @@ cp %{SOURCE2} lphelp.c
 # Load nprint backend
 cp %{SOURCE11} nprint
 # Load AppleTalk "pap" backend
-%setup -q -T -D -a 12 -n %{name}-%{version}%beta
+%setup -q -T -D -a 12 -n %{name}-%{version}%{beta}
 # Load the "pap" documentation
 bzcat %{SOURCE13} > pap-docu.pdf
 # Load the "photo_print" utility
@@ -374,8 +379,6 @@ cp %{SOURCE14} photo_print
 cp %{SOURCE15} pdf
 # Load the "cjktexttops" filter
 cp %{SOURCE16} cjktexttops
-# systemd service
-#cp %{SOURCE17} cups.service
 
 # needed by additional SOURCES
 aclocal
@@ -423,9 +426,7 @@ perl -p -i -e 's/chgrp/:/' Makefile */Makefile
 %make
 
 # Compile additional tools
-gcc %{optflags} %{ldflags} -opoll_ppd_base -I. -I./cups poll_ppd_base.c -L./cups -lcups
-#no longer compiles
-#gcc %{optflags} %{ldflags} -olphelp -I. -I./cups lphelp.c -L./cups -lcups
+%{__cc} %{optflags} %{ldflags} -opoll_ppd_base -I. -I./cups poll_ppd_base.c -L./cups -lcups
 
 %if !%{with bootstrap} && %{enable_check}
 %check
@@ -597,14 +598,14 @@ extension = phpcups.so
 EOF
 
 # install /usr/lib/tmpfiles.d/cups.conf (bug #656566)
-mkdir -p %{buildroot}%{_prefix}/lib/tmpfiles.d
-cat > %{buildroot}%{_prefix}/lib/tmpfiles.d/cups.conf <<EOF
+mkdir -p %{buildroot}%{_tmpfilesdir}
+cat > %{buildroot}%{_tmpfilesdir}/cups.conf <<EOF
 d %{_localstatedir}/run/cups 0755 root lp -
 d %{_localstatedir}/run/cups/certs 0511 lp lp -
 EOF
 
 # /usr/lib/tmpfiles.d/cups-lp.conf (bug #812641)
-cat > %{buildroot}%{_prefix}/lib/tmpfiles.d/cups-lp.conf <<EOF
+cat > %{buildroot}%{_tmpfilesdir}/cups-lp.conf <<EOF
 # This file is part of cups.
 #
 # Legacy parallel port character device nodes, to trigger the
@@ -638,14 +639,14 @@ mkdir -p %{buildroot}%{_libdir}/printdriver
 # Other dirs can't be handled here, but on %post instead.
 
 # Create /dev/lp* nodes to make usblp happy
-mkdir -p %buildroot%_sysconfdir/udev/rules.d
-install -c -m 644 %SOURCE19 %buildroot%_sysconfdir/udev/rules.d/
+mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
+install -c -m 644 %{SOURCE19} %{buildroot}%{_sysconfdir}/udev/rules.d/
 # Fix USB printers permissions and groups
-install -c -m 644 %SOURCE20 %buildroot%_sysconfdir/udev/rules.d/
+install -c -m 644 %{SOURCE20} %{buildroot}%{_sysconfdir}/udev/rules.d/
 
 # Remove stuff that's also in cups-filters
-rm -f %buildroot%_datadir/cups/banners/{classified,confidential,secret,standard,topsecret,unclassified}
-rm -f %buildroot%_datadir/cups/data/testprint
+rm -f %{buildroot}%{_datadir}/cups/banners/{classified,confidential,secret,standard,topsecret,unclassified}
+rm -f %{buildroot}%{_datadir}/cups/data/testprint
 
 %pre
 %ifarch x86_64
@@ -693,10 +694,6 @@ done
 %{_sbindir}/update-alternatives --install %{_sbindir}/lpmove lpmove %{_sbindir}/lpmove-cups 10 --slave %{_mandir}/man8/lpmove.8%{_extension} lpmove.8%{_extension} %{_mandir}/man8/lpmove-cups.8%{_extension}
 %{_sbindir}/update-alternatives --install %{_sbindir}/reject reject %{_sbindir}/reject-cups 10 --slave %{_mandir}/man8/reject.8%{_extension} reject.8%{_extension} %{_mandir}/man8/reject-cups.8%{_extension}
 
-%preun
-# Let CUPS daemon not be automatically started at boot time any more
-#%systemd_preun %{sysdname}.path %{sysdname}.socket %{sysdname}.service
-
 %preun common
 if [ "$1" = 0 ]; then
 # Remove update-alternatives entries
@@ -716,13 +713,12 @@ fi
 
 %postun
 %_postun_groupdel lpadmin
-%#systemd_postun_with_restart %{sysdname}.path %{sysdname}.socket %{sysdname}.service
 
 %files
 %doc *.txt
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/cupsd.conf
-%config(noreplace) %attr(-,root,root) %_sysconfdir/cups/cups-files.conf
+%config(noreplace) %attr(-,root,root) %{_sysconfdir}/cups/cups-files.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/sysconfig/cups
 %ghost %config(noreplace) %{_sysconfdir}/cups/printers.conf
 %ghost %config(noreplace) %{_sysconfdir}/cups/classes.conf
@@ -734,11 +730,10 @@ fi
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/ssl
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/snmp.conf
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/dbus*/system.d/cups.conf
-%{_prefix}/lib/tmpfiles.d/cups.conf
-%{_prefix}/lib/tmpfiles.d/cups-lp.conf
+%{_tmpfilesdir}/*.conf
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
-%_sysconfdir/udev/rules.d/*
+%{_sysconfdir}/udev/rules.d/*
 %dir %{_prefix}/lib/cups
 %{_prefix}/lib/cups/cgi-bin
 %{_prefix}/lib/cups/daemon
@@ -834,4 +829,4 @@ fi
 %{_bindir}/cups-config
 
 %files -n php-cups
-%_sysconfdir/php.d/A20_cups.ini
+%{_sysconfdir}/php.d/A20_cups.ini
