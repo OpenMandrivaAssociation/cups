@@ -560,7 +560,6 @@ pushd %{buildroot}%{_sbindir}
   mv reject reject-cups
 popd
 pushd %{buildroot}%{_mandir}/man1
-  mv lpq.1 lpq-cups.1
   mv lprm.1 lprm-cups.1
   mv lp.1 lp-cups.1
   mv cancel.1 cancel-cups.1
