@@ -382,8 +382,8 @@ cp %{SOURCE15} pdf
 cp %{SOURCE16} cjktexttops
 
 # needed by additional SOURCES
-aclocal
-autoconf
+aclocal -I config-scripts
+autoconf -I config-scripts
 
 %build
 # for the PHP module
