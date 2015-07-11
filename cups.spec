@@ -89,7 +89,7 @@ Patch1023:	cups-str3382.patch
 Patch1027:	cups-hp-deviceid-oid.patch
 Patch1028:	cups-dnssd-deviceid.patch
 Patch1029:	cups-ricoh-deviceid-oid.patch
-
+Patch1030:	cups-journal.patch
 # selinux
 #Patch1100:	cups-lspp.patch
 
@@ -123,6 +123,7 @@ BuildRequires:	pkgconfig(zlib)
 %if %{with systemd}
 BuildRequires:	pkgconfig(libsystemd-daemon)
 BuildRequires:	pkgconfig(libsystemd)
+BuildRequires:	pkgconfig(libsystemd-journal)
 %endif
 
 Requires:	%{name}-common >= %{version}-%{release}
