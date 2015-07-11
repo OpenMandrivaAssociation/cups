@@ -13,9 +13,6 @@
 
 %bcond_without	dnssd
 %bcond_without	bootstrap
-%if !%{with bootstrap}
-%bcond_without	systemd
-%endif
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
@@ -133,11 +130,9 @@ BuildRequires:	pkgconfig(libssl)
 BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
-%if %{with systemd}
 BuildRequires:	pkgconfig(libsystemd-daemon)
 BuildRequires:	pkgconfig(libsystemd)
 BuildRequires:	pkgconfig(libsystemd-journal)
-%endif
 
 Requires:	%{name}-common >= %{version}-%{release}
 Requires:	net-tools
@@ -485,9 +480,7 @@ install -m 755 cjktexttops %{buildroot}%{_prefix}/lib/cups/filter/
 # Install logrotate configuration
 install -c -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/logrotate.d/cups
 
-%if %{with systemd}
 mkdir -p %{buildroot}%{_unitdir}
-%endif
 
 # Set link to test page in /usr/share/printer-testpages
 ln -s %{_datadir}/printer-testpages/testprint.ps %{buildroot}%{_datadir}/cups/data/testprint-mdv.ps
@@ -666,9 +659,6 @@ do
 done
 # End of 28383
 
-# Let CUPS daemon be automatically started at boot time
-#%systemd_post %{sysdname}.path %{sysdname}.socket %{sysdname}.service
-
 %post common
 # The lpc updates-alternative links were not correctly set in older CUPS
 # packages, therefore remove the entry before making a new one when updating
@@ -723,11 +713,9 @@ fi
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/snmp.conf
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/dbus*/system.d/cups.conf
 %{_tmpfilesdir}/*.conf
-%if %{with systemd}
 %{_unitdir}/*.path
 %{_unitdir}/*.service
 %{_unitdir}/*.socket
-%endif
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
 %{_sysconfdir}/udev/rules.d/*
