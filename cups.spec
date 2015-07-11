@@ -63,35 +63,48 @@ Patch10:	cups-1.4.0-recommended.patch
 # fhimpe: make installed binary files writeable as root
 Patch32:	cups-1.5.3-permissions.patch
 
-#fedora patches all shifted by 1000
-Patch1001:	cups-no-gzip-man.patch
-Patch1002:	cups-system-auth.patch
-Patch1003:	cups-multilib.patch
-Patch1005:	cups-banners.patch
-Patch1006:	cups-serverbin-compat.patch
-Patch1007:	cups-no-export-ssllibs.patch
-Patch1008:	cups-direct-usb.patch
-Patch1009:	cups-lpr-help.patch
-Patch1010:	cups-peercred.patch
-Patch1011:	cups-pid.patch
-Patch1012:	cups-eggcups.patch
-Patch1014:	cups-driverd-timeout.patch
-Patch1015:	cups-strict-ppd-line-length.patch
-Patch1016:	cups-logrotate.patch
-Patch1017:	cups-usb-paperout.patch
-Patch1019:	cups-res_init.patch
-Patch1020:	cups-filter-debug.patch
-Patch1021:	cups-uri-compat.patch
-Patch1023:	cups-str3382.patch
-#NOT_IN_FEDPatch1024: cups-str3947.patch
+# Fedora patches
+Patch1000:	cups-no-gzip-man.patch
+Patch1001:	cups-system-auth.patch
+Patch1002:	cups-multilib.patch
+Patch1003:	cups-str4538.patch
+Patch1004:	cups-banners.patch
+Patch1005:	cups-serverbin-compat.patch
+Patch1006:	cups-no-export-ssllibs.patch
+Patch1007:	cups-direct-usb.patch
+Patch1008:	cups-lpr-help.patch
+Patch1009:	cups-peercred.patch
+Patch1010:	cups-pid.patch
+Patch1011:	cups-eggcups.patch
+Patch1012:	cups-driverd-timeout.patch
+Patch1013:	cups-strict-ppd-line-length.patch
+Patch1014:	cups-logrotate.patch
+Patch1015:	cups-usb-paperout.patch
+Patch1016:	cups-res_init.patch
+Patch1017:	cups-filter-debug.patch
+Patch1018:	cups-uri-compat.patch
+Patch1019:	cups-str3382.patch
 #same as mdv patch cups-1.4-permissions.patch
-#Patch1025: cups-0755.patch
-Patch1027:	cups-hp-deviceid-oid.patch
-Patch1028:	cups-dnssd-deviceid.patch
-Patch1029:	cups-ricoh-deviceid-oid.patch
-Patch1030:	cups-journal.patch
-# selinux
-#Patch1100:	cups-lspp.patch
+#Patch1020:	cups-0755.patch
+Patch1021:	cups-hp-deviceid-oid.patch
+Patch1022:	cups-dnssd-deviceid.patch
+Patch1023:	cups-ricoh-deviceid-oid.patch
+Patch1024:	cups-systemd-socket.patch
+Patch1025:	cups-str4646.patch
+Patch1026:	cups-avahi-address.patch
+Patch1027:	cups-enum-all.patch
+Patch1028:	cups-dymo-deviceid.patch
+Patch1029:	cups-freebind.patch
+Patch1030:	cups-no-gcry.patch
+Patch1031:	cups-libusb-quirks.patch
+Patch1032:	cups-use-ipp1.1.patch
+Patch1033:	cups-avahi-no-threaded.patch
+Patch1034:	cups-ipp-multifile.patch
+Patch1035:	cups-web-devices-timeout.patch
+Patch1036:	cups-journal.patch
+Patch1037:	cups-synconclose.patch
+# End fedora patches
+
 
 # Requires /etc/tmpfiles.d (bug #656566)
 Requires:	systemd >= 208
@@ -311,39 +324,24 @@ Provides bindings to the functions of libcups, to give direct access
 %setup -q -n %{name}-%{version}%{beta}
 %apply_patches
 
-# (tpg) log to journal
-sed -i -e 's,^ErrorLog .*$,ErrorLog journal,' conf/cups-files.conf.in
-
 # Let local printers be broadcasted in the local network(s)
-perl -p -i -e 's:(Browsing\s+On):$1:' conf/cupsd.conf.in
-
-# Set CUPS users and groups
-if ! grep -qE 'LogLevel\s+' conf/cupsd.conf.in; then
-	echo "Couldn't edit cupsd.conf - keyword LogLevel not found"
-	exit 1
-fi
-perl -p -i -e 's:(LogLevel\s+.*)$:$1\nGroup lp\nUser lp:' conf/cupsd.conf.in
-
-# Let local printers be broadcasted in the local network(s)
-if ! grep -qE 'Listen\s+' conf/cupsd.conf.in; then
-	echo "Couldn't edit cupsd.conf - keyword Listen not found"
-	exit 1
-fi
 perl -p -i -e 's:(Listen\s+)localhost:$1*:' conf/cupsd.conf.in
-
-if ! grep -qE '<Location\s+/\s*>' conf/cupsd.conf.in; then
-	echo "Couldn't edit cupsd.conf - keyword Location / not found"
-	exit 1
-fi
+perl -p -i -e 's:(Browsing\s+On):$1:' conf/cupsd.conf.in
 perl -p -i -e 's:(<Location\s+/\s*>):$1\n  Allow \@LOCAL:' conf/cupsd.conf.in
 
 # Allow remote administration in local network (connections are encrypted,
 # so no security problem)
-if ! grep -qE '<Location\s+/admin(|/conf)\s*>' conf/cupsd.conf.in; then
-	echo "Couldn't edit cupsd.conf - keyword Location / not found"
-	exit 1
-fi
 perl -p -i -e 's:(<Location\s+/admin(|/conf)\s*>):$1\n  Allow \@LOCAL:' conf/cupsd.conf.in
+
+# Log to the system journal by default (bug #1078781).
+sed -i -e 's,^ErrorLog .*$,ErrorLog journal,' conf/cups-files.conf.in
+
+# Let's look at the compilation command lines.
+perl -pi -e "s,^.SILENT:,," Makedefs.in
+
+# Set CUPS users and groups
+perl -p -i -e 's:(LogLevel\s+.*)$:$1\nGroup lp\nUser lp:' conf/cupsd.conf.in
+
 
 # Replace the PAM configuration file
 cat << EOF > scheduler/cups.pam
@@ -358,12 +356,6 @@ perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" scheduler/Makefile
 perl -p -i -e "s/ -o \\$.CUPS_USER.//" systemv/Makefile
 perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" systemv/Makefile
 
-# Work around bug on Mandriva compilation cluster (32-bit machine has
-# /usr/lib64 directory)
-perl -p -i -e 's:(libdir=")\$exec_prefix/lib64("):$1%{_libdir}$2:' config-scripts/cups-directories.m4 configure
-
-# Let's look at the compilation command lines.
-perl -p -i -e "s,^.SILENT:,," Makedefs.in
 
 # Load additional tools
 cp %{SOURCE1} poll_ppd_base.c
@@ -398,12 +390,18 @@ export CXXFLAGS="-g"
 # cups uses $DSOFLAGS instead of $LDFLAGS for shared libs
 export DSOFLAGS="$LDFLAGS"
 %configure \
+    --with-cupsd-file-perm=0755 \
+    --with-log-file-perm=0600 \
 %if !%{with dnsd}
     --enable-avahi \
 %endif
 %if %{debug}
     --enable-debug=yes \
 %endif
+    --with-dbusdir=%{_sysconfdir}/dbus-1 \
+    --enable-threads \
+    --enable-gnutls \
+    --enable-webif \
     --disable-libpaper \
     --enable-raw-printing \
     --enable-ssl \
@@ -445,12 +443,8 @@ EOF
 %if %{debug}
 export DONT_STRIP=1
 %endif
-make install BUILDROOT=%{buildroot} \
-             DOCDIR=%{buildroot}%{_datadir}/cups/doc \
-             CHOWN=":" CHGRP=":" STRIP="$STRIP" \
-             LOGDIR=%{buildroot}%{_var}/log/cups \
-             REQUESTS=%{buildroot}%{_var}/spool/cups \
-             STATEDIR=%{buildroot}%{_var}/run/cups
+make BUILDROOT=%{buildroot} install
+
 
 rm -f %{buildroot}%{_libdir}/lib*.la
 # Make a directory for PPD generators
@@ -492,9 +486,7 @@ install -m 755 cjktexttops %{buildroot}%{_prefix}/lib/cups/filter/
 install -c -m 644 %{SOURCE9} %{buildroot}%{_sysconfdir}/logrotate.d/cups
 
 %if %{with systemd}
-# systemd
-#mkdir -p %{buildroot}/lib/systemd/system
-#install -m644 cups.service %{buildroot}/lib/systemd/system
+mkdir -p %{buildroot}%{_unitdir}
 %endif
 
 # Set link to test page in /usr/share/printer-testpages
@@ -731,6 +723,11 @@ fi
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/snmp.conf
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/dbus*/system.d/cups.conf
 %{_tmpfilesdir}/*.conf
+%if %{with systemd}
+%{_unitdir}/*.path
+%{_unitdir}/*.service
+%{_unitdir}/*.socket
+%endif
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
 %{_sysconfdir}/udev/rules.d/*
@@ -776,9 +773,7 @@ fi
 # Compatibility link, will be removed soon
 %{_libdir}/cups
 %endif
-%if %{with systemd}
-/lib/systemd/system/org.cups.*
-%endif
+
 
 %files common
 %dir %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups

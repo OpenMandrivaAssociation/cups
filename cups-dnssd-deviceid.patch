@@ -1,5 +1,6 @@
---- cups-2.0.0/backend/dnssd.c.1028~	2014-06-30 16:27:01.000000000 +0200
-+++ cups-2.0.0/backend/dnssd.c	2014-10-06 20:26:10.024533176 +0200
+diff -up cups-2.0rc1/backend/dnssd.c.dnssd-deviceid cups-2.0rc1/backend/dnssd.c
+--- cups-2.0rc1/backend/dnssd.c.dnssd-deviceid	2014-06-30 16:27:01.000000000 +0200
++++ cups-2.0rc1/backend/dnssd.c	2014-09-12 14:08:38.624252208 +0200
 @@ -1196,15 +1196,22 @@ query_callback(
    if (device->device_id)
      free(device->device_id);
