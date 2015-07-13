@@ -633,6 +633,14 @@ install -c -m 644 %{SOURCE20} %{buildroot}%{_sysconfdir}/udev/rules.d/
 rm -f %{buildroot}%{_datadir}/cups/banners/{classified,confidential,secret,standard,topsecret,unclassified}
 rm -f %{buildroot}%{_datadir}/cups/data/testprint
 
+# (tpg) rename units to meet old name scheme
+mv %{buildroot}%{_unitdir}/org.cups.cupsd.path %{buildroot}%{_unitdir}/cups.path
+mv %{buildroot}%{_unitdir}/org.cups.cupsd.service %{buildroot}%{_unitdir}/cups.service
+mv %{buildroot}%{_unitdir}/org.cups.cupsd.socket %{buildroot}%{_unitdir}/cups.socket
+mv %{buildroot}%{_unitdir}/org.cups.cups-lpd.socket %{buildroot}%{_unitdir}/cups-lpd.socket
+mv %{buildroot}%{_unitdir}/org.cups.cups-lpd@.service %{buildroot}%{_unitdir}/cups-lpd@.service
+sed -i -e "s,org.cups.cupsd,cups,g" %{buildroot}%{_unitdir}/cups.service
+
 %pre
 %ifarch x86_64
 # Fix /usr/lib/cups directory, so that updates can be done
@@ -713,9 +721,9 @@ fi
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/snmp.conf
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/dbus*/system.d/cups.conf
 %{_tmpfilesdir}/*.conf
-%{_unitdir}/*.path
-%{_unitdir}/*.service
-%{_unitdir}/*.socket
+%{_unitdir}/cups*.path
+%{_unitdir}/cups*.service
+%{_unitdir}/cups*.socket
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
 %{_sysconfdir}/udev/rules.d/*
