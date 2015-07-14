@@ -11,6 +11,8 @@
 # Define to %nil for release builds
 %define beta %nil
 
+%define _disable_lto 1
+
 %bcond_without	dnssd
 %bcond_without	bootstrap
 
@@ -20,7 +22,7 @@ Version:	2.0.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	3
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
