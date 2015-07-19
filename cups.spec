@@ -22,7 +22,7 @@ Version:	2.0.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	3
+Release:	4
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
