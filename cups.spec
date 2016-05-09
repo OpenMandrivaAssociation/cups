@@ -18,11 +18,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.0.3
+Version:	2.1.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	4
+Release:	1
 %endif
 Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
 Source1000:	%{name}.rpmlintrc
@@ -48,7 +48,7 @@ Source11:	http://www.hornclan.com/~mark/cups/nprint.2002011801
 Source12:	http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-backend.tar.bz2
 Source13:	http://www.oeh.uni-linz.ac.at/~rupi/pap/pap-docu.pdf.bz2
 Source14:	http://www.linuxprinting.org/download/printing/photo_print
-Source15:	http://printing.kde.org/downloads/pdfdistiller
+Source15:	http://download.kde.org/printing/pdfdistiller
 Source16:	cjktexttops
 # Nice level for now. bug #16387
 Source18:	cups.sysconfig
@@ -66,7 +66,6 @@ Patch32:	cups-1.5.3-permissions.patch
 Patch1000:	cups-no-gzip-man.patch
 Patch1001:	cups-system-auth.patch
 Patch1002:	cups-multilib.patch
-Patch1003:	cups-str4538.patch
 Patch1004:	cups-banners.patch
 Patch1005:	cups-serverbin-compat.patch
 Patch1006:	cups-no-export-ssllibs.patch
@@ -89,7 +88,6 @@ Patch1021:	cups-hp-deviceid-oid.patch
 Patch1022:	cups-dnssd-deviceid.patch
 Patch1023:	cups-ricoh-deviceid-oid.patch
 Patch1024:	cups-systemd-socket.patch
-Patch1025:	cups-str4646.patch
 Patch1026:	cups-avahi-address.patch
 Patch1027:	cups-enum-all.patch
 Patch1028:	cups-dymo-deviceid.patch
@@ -100,8 +98,8 @@ Patch1032:	cups-use-ipp1.1.patch
 Patch1033:	cups-avahi-no-threaded.patch
 Patch1034:	cups-ipp-multifile.patch
 Patch1035:	cups-web-devices-timeout.patch
-Patch1036:	cups-journal.patch
 Patch1037:	cups-synconclose.patch
+Patch1038:	cups-lspp.patch
 # End fedora patches
 
 
@@ -366,7 +364,8 @@ bzcat %{SOURCE13} > pap-docu.pdf
 # Load the "photo_print" utility
 cp %{SOURCE14} photo_print
 # Load the "pdfdistiller" utility
-cp %{SOURCE15} pdf
+sed -i -e 's,/tmp/pdf.log,/dev/null,g' %{SOURCE15} >pdf
+chmod +x pdf
 # Load the "cjktexttops" filter
 cp %{SOURCE16} cjktexttops
 
@@ -403,6 +402,7 @@ export DSOFLAGS="$LDFLAGS"
     --enable-raw-printing \
     --enable-ssl \
     --disable-static \
+    --disable-lspp \
     --with-cups-group=lp \
     --with-cups-user=lp \
     --with-docdir=%{_datadir}/cups/doc \
@@ -711,6 +711,8 @@ fi
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/cupsd.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/cups/cups-files.conf
+%config(noreplace) %attr(-,root,root) %{_sysconfdir}/cups/cups-files.conf.default
+%config(noreplace) %attr(-,root,root) %{_sysconfdir}/cups/snmp.conf.default
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/sysconfig/cups
 %ghost %config(noreplace) %{_sysconfdir}/cups/printers.conf
 %ghost %config(noreplace) %{_sysconfdir}/cups/classes.conf
