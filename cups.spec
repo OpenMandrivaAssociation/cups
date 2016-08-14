@@ -9,7 +9,7 @@
 %define enable_check 0
 
 # Define to %nil for release builds
-%define beta %nil
+%define beta rc1
 
 %define _disable_lto 1
 
@@ -18,13 +18,13 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.1.3
+Version:	2.2
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
 Release:	1
 %endif
-Source0:	http://cups.org/software/%version%beta/cups-%version%beta-source.tar.bz2
+Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
@@ -63,45 +63,47 @@ Patch10:	cups-1.4.0-recommended.patch
 Patch32:	cups-1.5.3-permissions.patch
 
 # Fedora patches
-Patch1000:	cups-no-gzip-man.patch
-Patch1001:	cups-system-auth.patch
-Patch1002:	cups-multilib.patch
-Patch1004:	cups-banners.patch
-Patch1005:	cups-serverbin-compat.patch
-Patch1006:	cups-no-export-ssllibs.patch
-Patch1007:	cups-direct-usb.patch
-Patch1008:	cups-lpr-help.patch
-Patch1009:	cups-peercred.patch
-Patch1010:	cups-pid.patch
-Patch1011:	cups-eggcups.patch
-Patch1012:	cups-driverd-timeout.patch
-Patch1013:	cups-strict-ppd-line-length.patch
-Patch1014:	cups-logrotate.patch
-Patch1015:	cups-usb-paperout.patch
-Patch1016:	cups-res_init.patch
-Patch1017:	cups-filter-debug.patch
-Patch1018:	cups-uri-compat.patch
-Patch1019:	cups-str3382.patch
+Patch1000:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-gzip-man.patch
+Patch1001:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-system-auth.patch
+Patch1002:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-multilib.patch
+Patch1004:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-banners.patch
+Patch1005:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-serverbin-compat.patch
+Patch1006:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-export-ssllibs.patch
+Patch1007:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-direct-usb.patch
+Patch1008:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lpr-help.patch
+Patch1009:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-peercred.patch
+Patch1010:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-pid.patch
+Patch1011:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-eggcups.patch
+Patch1012:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-driverd-timeout.patch
+Patch1013:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-strict-ppd-line-length.patch
+Patch1014:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-logrotate.patch
+Patch1015:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-usb-paperout.patch
+Patch1016:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-res_init.patch
+Patch1017:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-filter-debug.patch
+Patch1018:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-uri-compat.patch
+Patch1019:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-str3382.patch
 #same as mdv patch cups-1.4-permissions.patch
-#Patch1020:	cups-0755.patch
-Patch1021:	cups-hp-deviceid-oid.patch
-Patch1022:	cups-dnssd-deviceid.patch
-Patch1023:	cups-ricoh-deviceid-oid.patch
-Patch1024:	cups-systemd-socket.patch
-Patch1026:	cups-avahi-address.patch
-Patch1027:	cups-enum-all.patch
-Patch1028:	cups-dymo-deviceid.patch
-Patch1029:	cups-freebind.patch
-Patch1030:	cups-no-gcry.patch
-Patch1031:	cups-libusb-quirks.patch
-Patch1032:	cups-use-ipp1.1.patch
-Patch1033:	cups-avahi-no-threaded.patch
-Patch1034:	cups-ipp-multifile.patch
-Patch1035:	cups-web-devices-timeout.patch
-Patch1037:	cups-synconclose.patch
-Patch1038:	cups-lspp.patch
+#Patch1020:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-0755.patch
+Patch1021:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-hp-deviceid-oid.patch
+Patch1022:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dnssd-deviceid.patch
+Patch1023:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ricoh-deviceid-oid.patch
+Patch1024:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-socket.patch
+Patch1026:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-address.patch
+Patch1027:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-enum-all.patch
+Patch1028:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
+Patch1029:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
+Patch1030:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-gcry.patch
+Patch1031:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-libusb-quirks.patch
+Patch1032:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-use-ipp1.1.patch
+Patch1033:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-no-threaded.patch
+Patch1034:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ipp-multifile.patch
+Patch1035:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-web-devices-timeout.patch
+Patch1037:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-synconclose.patch
+Patch1038:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lspp.patch
 # End fedora patches
 
+# Fixes for breakages in Fedora patches
+Patch1050:	cups-serverbin-compat-for-aarch64-too.patch
 
 # Requires /etc/tmpfiles.d (bug #656566)
 Requires:	systemd >= 208
@@ -130,9 +132,7 @@ BuildRequires:	pkgconfig(libssl)
 BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	pkgconfig(libsystemd-daemon)
 BuildRequires:	pkgconfig(libsystemd)
-BuildRequires:	pkgconfig(libsystemd-journal)
 
 Requires:	%{name}-common >= %{version}-%{release}
 Requires:	net-tools
@@ -717,7 +717,6 @@ fi
 %ghost %config(noreplace) %{_sysconfdir}/cups/printers.conf
 %ghost %config(noreplace) %{_sysconfdir}/cups/classes.conf
 %attr(-,root,sys) %{_sysconfdir}/cups/cupsd.conf.default
-%config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/interfaces
 #%config(noreplace) %attr(644,root,lp) %{_sysconfdir}/cups/mime.convs
 #%config(noreplace) %attr(644,root,lp) %{_sysconfdir}/cups/mime.types
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/ppd
