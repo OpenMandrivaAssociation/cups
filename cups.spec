@@ -9,7 +9,7 @@
 %define enable_check 0
 
 # Define to %nil for release builds
-%define beta rc1
+%define beta %{nil}
 
 %define _disable_lto 1
 
@@ -18,7 +18,7 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.2
+Version:	2.2.1
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
