@@ -1,6 +1,5 @@
-diff -up cups-2.2b2/scheduler/main.c.systemd-socket cups-2.2b2/scheduler/main.c
---- cups-2.2b2/scheduler/main.c.systemd-socket	2016-06-27 15:12:24.930881404 +0200
-+++ cups-2.2b2/scheduler/main.c	2016-06-27 15:19:38.118234985 +0200
+--- cups-2.2.2/scheduler/main.c.1024~	2017-01-19 23:42:31.777187707 +0100
++++ cups-2.2.2/scheduler/main.c	2017-01-19 23:42:31.851188317 +0100
 @@ -690,8 +690,15 @@ main(int  argc,				/* I - Number of comm
  
  #if defined(HAVE_ONDEMAND)
@@ -18,11 +17,10 @@ diff -up cups-2.2b2/scheduler/main.c.systemd-socket cups-2.2b2/scheduler/main.c
  #endif /* HAVE_ONDEMAND */
    if (fg)
      cupsdAddEvent(CUPSD_EVENT_SERVER_STARTED, NULL, NULL, "Scheduler started in foreground.");
-diff -up cups-2.2b2/scheduler/org.cups.cupsd.path.in.systemd-socket cups-2.2b2/scheduler/org.cups.cupsd.path.in
---- cups-2.2b2/scheduler/org.cups.cupsd.path.in.systemd-socket	2016-06-24 17:43:35.000000000 +0200
-+++ cups-2.2b2/scheduler/org.cups.cupsd.path.in	2016-06-27 15:12:24.930881404 +0200
-@@ -2,7 +2,7 @@
- Description=CUPS Scheduler
+--- cups-2.2.2/scheduler/org.cups.cupsd.path.in.1024~	2017-01-19 23:42:31.851188317 +0100
++++ cups-2.2.2/scheduler/org.cups.cupsd.path.in	2017-01-19 23:43:32.054699473 +0100
+@@ -3,7 +3,7 @@ Description=CUPS Scheduler
+ PartOf=org.cups.cupsd.service
  
  [Path]
 -PathExists=@CUPS_CACHEDIR@/org.cups.cupsd
@@ -30,9 +28,8 @@ diff -up cups-2.2b2/scheduler/org.cups.cupsd.path.in.systemd-socket cups-2.2b2/s
  
  [Install]
  WantedBy=multi-user.target
-diff -up cups-2.2b2/scheduler/org.cups.cupsd.service.in.systemd-socket cups-2.2b2/scheduler/org.cups.cupsd.service.in
---- cups-2.2b2/scheduler/org.cups.cupsd.service.in.systemd-socket	2016-06-24 17:43:35.000000000 +0200
-+++ cups-2.2b2/scheduler/org.cups.cupsd.service.in	2016-06-27 15:12:24.930881404 +0200
+--- cups-2.2.2/scheduler/org.cups.cupsd.service.in.1024~	2017-01-17 20:27:22.000000000 +0100
++++ cups-2.2.2/scheduler/org.cups.cupsd.service.in	2017-01-19 23:42:31.852188325 +0100
 @@ -1,10 +1,11 @@
  [Unit]
  Description=CUPS Scheduler
