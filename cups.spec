@@ -22,7 +22,7 @@ Version:	2.2.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	1
+Release:	2
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -569,9 +569,6 @@ install -m644 cups/debug-private.h  %{buildroot}%{_includedir}/cups/
 install -m644 cups/string-private.h %{buildroot}%{_includedir}/cups/
 install -m644 config.h %{buildroot}%{_includedir}/cups/
 
-# Multiarch fixes
-%multiarch_includes %{buildroot}%{_includedir}/cups/config.h
-
 # Create dummy config files /etc/cups/printers.conf,
 # /etc/cups/classes.conf, and /etc/cups/client.conf
 touch %{buildroot}%{_sysconfdir}/cups/printers.conf
@@ -817,8 +814,6 @@ fi
 %files -n %{devname}
 %dir %{_includedir}/cups
 %{_includedir}/cups/*
-%dir %{multiarch_includedir}/cups
-%{multiarch_includedir}/cups/*
 %{_libdir}/*.so
 %{_bindir}/cups-config
 
