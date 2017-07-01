@@ -18,11 +18,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.2.3
+Version:	2.2.4
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	1
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -59,8 +59,6 @@ Source20:	10-cups_device_usb.rules
 
 Patch1:		cups-dbus-utf8.patch
 Patch10:	cups-1.4.0-recommended.patch
-# fhimpe: make installed binary files writeable as root
-Patch32:	cups-1.5.3-permissions.patch
 
 # Fedora patches
 Patch1000:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-gzip-man.patch
@@ -89,7 +87,6 @@ Patch1022:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dnssd-dev
 Patch1023:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ricoh-deviceid-oid.patch
 Patch1024:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-socket.patch
 Patch1026:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-address.patch
-Patch1027:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-enum-all.patch
 Patch1028:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
 Patch1029:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
 Patch1030:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-gcry.patch
@@ -607,6 +604,7 @@ EOF
 sed -i s/htmlview/xdg-open/ %{buildroot}%{_datadir}/applications/*.desktop
 
 ## Hide desktop file
+chmod 0755 %{buildroot}%{_datadir}/applications/cups.desktop
 echo -e '\nHidden=true' >> %{buildroot}%{_datadir}/applications/cups.desktop
 
 # http://qa.mandriva.com/show_bug.cgi?id=28383
