@@ -1,5 +1,5 @@
---- cups-2.2.4/scheduler/avahi.c.1033~	2017-07-01 09:36:19.538204321 +0200
-+++ cups-2.2.4/scheduler/avahi.c	2017-07-01 09:36:19.538204321 +0200
+--- cups-2.2.5/scheduler/avahi.c.1033~	2017-10-14 13:05:00.101147992 +0200
++++ cups-2.2.5/scheduler/avahi.c	2017-10-14 13:05:00.101147992 +0200
 @@ -0,0 +1,441 @@
 +/*
 + * "$Id$"
@@ -442,8 +442,8 @@
 +/*
 + * End of "$Id$".
 + */
---- cups-2.2.4/scheduler/avahi.h.1033~	2017-07-01 09:36:19.538204321 +0200
-+++ cups-2.2.4/scheduler/avahi.h	2017-07-01 09:36:19.538204321 +0200
+--- cups-2.2.5/scheduler/avahi.h.1033~	2017-10-14 13:05:00.101147992 +0200
++++ cups-2.2.5/scheduler/avahi.h	2017-10-14 13:05:00.101147992 +0200
 @@ -0,0 +1,69 @@
 +/*
 + * "$Id$"
@@ -514,8 +514,8 @@
 +/*
 + * End of "$Id$".
 + */
---- cups-2.2.4/scheduler/cupsd.h.1033~	2017-06-30 17:44:38.000000000 +0200
-+++ cups-2.2.4/scheduler/cupsd.h	2017-07-01 09:36:19.538204321 +0200
+--- cups-2.2.5/scheduler/cupsd.h.1033~	2017-10-13 20:22:26.000000000 +0200
++++ cups-2.2.5/scheduler/cupsd.h	2017-10-14 13:05:00.101147992 +0200
 @@ -118,6 +118,7 @@ extern const char *cups_hstrerror(int);
  #include "colorman.h"
  #include "conf.h"
@@ -567,8 +567,8 @@
 +extern void     cupsdRemoveTimeout (cupsd_timeout_t *timeout);
 +#endif /* HAVE_AVAHI */
 \ No newline at end of file
---- cups-2.2.4/scheduler/dirsvc.c.1033~	2017-06-30 17:44:38.000000000 +0200
-+++ cups-2.2.4/scheduler/dirsvc.c	2017-07-01 09:36:19.538204321 +0200
+--- cups-2.2.5/scheduler/dirsvc.c.1033~	2017-10-13 20:22:26.000000000 +0200
++++ cups-2.2.5/scheduler/dirsvc.c	2017-10-14 13:05:32.400045815 +0200
 @@ -193,7 +193,7 @@ cupsdStartBrowsing(void)
      cupsdUpdateDNSSDName();
  
@@ -600,7 +600,7 @@
      }
  #  endif /* HAVE_DNSSD */
    }
-@@ -606,7 +604,7 @@ dnssdClientCallback(
+@@ -635,7 +633,7 @@ dnssdClientCallback(
  	  * Renew Avahi client...
  	  */
  
@@ -609,21 +609,21 @@
  
  	  if (!DNSSDClient)
  	  {
-@@ -670,13 +668,7 @@ dnssdDeregisterInstance(
-   DNSServiceRefDeallocate(*srv);
- 
+@@ -701,13 +699,7 @@ dnssdDeregisterInstance(
  #  else /* HAVE_AVAHI */
--  if (!from_callback)
--    avahi_threaded_poll_lock(DNSSDMaster);
+   if (*srv)
+   {
+-    if (!from_callback)
+-      avahi_threaded_poll_lock(DNSSDMaster);
 -
-   avahi_entry_group_free(*srv);
+     avahi_entry_group_free(*srv);
 -
--  if (!from_callback)
--    avahi_threaded_poll_unlock(DNSSDMaster);
+-    if (!from_callback)
+-      avahi_threaded_poll_unlock(DNSSDMaster);
+   }
  #  endif /* HAVE_DNSSD */
  
-   *srv = NULL;
-@@ -997,16 +989,10 @@ dnssdRegisterInstance(
+@@ -1029,16 +1021,10 @@ dnssdRegisterInstance(
    (void)commit;
  
  #  else /* HAVE_AVAHI */
@@ -640,7 +640,7 @@
      cupsdLogMessage(CUPSD_LOG_WARN, "DNS-SD registration of \"%s\" failed: %s",
                      name, dnssdErrorString(avahi_client_errno(DNSSDClient)));
      return (0);
-@@ -1121,9 +1107,6 @@ dnssdRegisterInstance(
+@@ -1153,9 +1139,6 @@ dnssdRegisterInstance(
        cupsdLogMessage(CUPSD_LOG_DEBUG, "DNS-SD commit of \"%s\" failed.",
                        name);
    }
@@ -650,7 +650,7 @@
  #  endif /* HAVE_DNSSD */
  
    if (error)
-@@ -1294,9 +1277,6 @@ dnssdStop(void)
+@@ -1326,9 +1309,6 @@ dnssdStop(void)
    DNSSDMaster = NULL;
  
  #  else /* HAVE_AVAHI */
@@ -660,7 +660,7 @@
    if (DNSSDClient)
    {
      avahi_client_free(DNSSDClient);
-@@ -1305,7 +1285,7 @@ dnssdStop(void)
+@@ -1337,7 +1317,7 @@ dnssdStop(void)
  
    if (DNSSDMaster)
    {
@@ -669,8 +669,8 @@
      DNSSDMaster = NULL;
    }
  #  endif /* HAVE_DNSSD */
---- cups-2.2.4/scheduler/dirsvc.h.1033~	2017-06-30 17:44:38.000000000 +0200
-+++ cups-2.2.4/scheduler/dirsvc.h	2017-07-01 09:36:19.538204321 +0200
+--- cups-2.2.5/scheduler/dirsvc.h.1033~	2017-10-13 20:22:26.000000000 +0200
++++ cups-2.2.5/scheduler/dirsvc.h	2017-10-14 13:05:00.101147992 +0200
 @@ -49,7 +49,7 @@ VAR cups_array_t	*DNSSDPrinters	VALUE(NU
  VAR DNSServiceRef	DNSSDMaster	VALUE(NULL);
  					/* Master DNS-SD service reference */
@@ -680,9 +680,9 @@
  					/* Master polling interface for Avahi */
  VAR AvahiClient		*DNSSDClient	VALUE(NULL);
  					/* Client information */
---- cups-2.2.4/scheduler/main.c.1033~	2017-07-01 09:36:19.400207452 +0200
-+++ cups-2.2.4/scheduler/main.c	2017-07-01 09:37:07.445114601 +0200
-@@ -133,7 +133,10 @@ main(int  argc,				/* I - Number of comm
+--- cups-2.2.5/scheduler/main.c.1033~	2017-10-14 13:05:00.089148030 +0200
++++ cups-2.2.5/scheduler/main.c	2017-10-14 13:05:00.101147992 +0200
+@@ -131,7 +131,10 @@ main(int  argc,				/* I - Number of comm
    int			service_idle_exit;
  					/* Idle exit on select timeout? */
  #endif /* HAVE_ONDEMAND */
@@ -694,7 +694,7 @@
  
  #ifdef HAVE_GETEUID
   /*
-@@ -611,6 +614,14 @@ main(int  argc,				/* I - Number of comm
+@@ -610,6 +613,14 @@ main(int  argc,				/* I - Number of comm
  
    httpInitialize();
  
@@ -758,8 +758,8 @@
   /*
    * Check whether we are accepting new connections...
    */
---- cups-2.2.4/scheduler/Makefile.1033~	2017-06-30 17:44:38.000000000 +0200
-+++ cups-2.2.4/scheduler/Makefile	2017-07-01 09:36:19.539204298 +0200
+--- cups-2.2.5/scheduler/Makefile.1033~	2017-10-13 20:22:26.000000000 +0200
++++ cups-2.2.5/scheduler/Makefile	2017-10-14 13:05:00.101147992 +0200
 @@ -15,6 +15,7 @@ include ../Makedefs
  
  CUPSDOBJS =	\
@@ -778,8 +778,8 @@
  LIBOBJS =	\
  		filter.o \
  		mime.o \
---- cups-2.2.4/scheduler/timeout.c.1033~	2017-07-01 09:36:19.539204298 +0200
-+++ cups-2.2.4/scheduler/timeout.c	2017-07-01 09:36:19.539204298 +0200
+--- cups-2.2.5/scheduler/timeout.c.1033~	2017-10-14 13:05:00.102147988 +0200
++++ cups-2.2.5/scheduler/timeout.c	2017-10-14 13:05:00.102147988 +0200
 @@ -0,0 +1,235 @@
 +/*
 + * "$Id$"

@@ -18,7 +18,7 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.2.4
+Version:	2.2.5
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
@@ -89,7 +89,6 @@ Patch1024:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-s
 Patch1026:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-address.patch
 Patch1028:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
 Patch1029:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
-Patch1030:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-gcry.patch
 Patch1031:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-libusb-quirks.patch
 Patch1032:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-use-ipp1.1.patch
 Patch1033:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-no-threaded.patch
