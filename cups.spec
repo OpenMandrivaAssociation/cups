@@ -129,6 +129,7 @@ BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libsystemd)
+BuildRequires:	pkgconfig(com_err)
 
 Requires:	%{name}-common >= %{version}-%{release}
 Requires:	net-tools
@@ -144,9 +145,9 @@ Requires:	xdg-utils
 %rename		cupsddk-drivers
 
 %description
-The Common Unix Printing System provides a portable printing layer for 
-UNIX(TM) operating systems. It has been developed by Easy Software Products 
-to promote a standard printing solution for all UNIX vendors and users. 
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. It has been developed by Easy Software Products
+to promote a standard printing solution for all UNIX vendors and users.
 CUPS provides the System V and Berkeley command-line interfaces.
 This is the main package needed for CUPS servers (machines where a
 printer is connected to or which host a queue for a network
@@ -174,7 +175,7 @@ printing and administration (lpr, lpq, lprm, lpadmin, lpc, ...), man
 pages, locales, and a sample configuration file for daemon-less CUPS
 clients (%{_sysconfdir}/cups/client.conf).
 
-This package you need for both CUPS clients and servers. 
+This package you need for both CUPS clients and servers.
 
 %define	cupsmajor	2
 %define	libcups		%mklibname cups %{cupsmajor}
