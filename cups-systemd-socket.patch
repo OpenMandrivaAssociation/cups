@@ -1,5 +1,6 @@
---- cups-2.2.5/scheduler/main.c.1024~	2017-10-14 13:01:52.418760893 +0200
-+++ cups-2.2.5/scheduler/main.c	2017-10-14 13:03:50.500371211 +0200
+diff -up cups-2.2.7/scheduler/main.c.1024~ cups-2.2.7/scheduler/main.c
+--- cups-2.2.7/scheduler/main.c.1024~	2018-04-30 00:46:26.754047189 +0200
++++ cups-2.2.7/scheduler/main.c	2018-04-30 00:46:26.765046928 +0200
 @@ -690,9 +690,15 @@ main(int  argc,				/* I - Number of comm
    */
  
@@ -18,8 +19,9 @@
  #endif /* HAVE_ONDEMAND */
    if (fg)
      cupsdAddEvent(CUPSD_EVENT_SERVER_STARTED, NULL, NULL, "Scheduler started in foreground.");
---- cups-2.2.5/scheduler/org.cups.cupsd.path.in.1024~	2017-10-13 20:22:26.000000000 +0200
-+++ cups-2.2.5/scheduler/org.cups.cupsd.path.in	2017-10-14 13:01:52.418760893 +0200
+diff -up cups-2.2.7/scheduler/org.cups.cupsd.path.in.1024~ cups-2.2.7/scheduler/org.cups.cupsd.path.in
+--- cups-2.2.7/scheduler/org.cups.cupsd.path.in.1024~	2018-03-23 04:48:36.000000000 +0100
++++ cups-2.2.7/scheduler/org.cups.cupsd.path.in	2018-04-30 00:46:26.765046928 +0200
 @@ -3,7 +3,7 @@ Description=CUPS Scheduler
  PartOf=org.cups.cupsd.service
  
@@ -29,8 +31,9 @@
  
  [Install]
  WantedBy=multi-user.target
---- cups-2.2.5/scheduler/org.cups.cupsd.service.in.1024~	2017-10-13 20:22:26.000000000 +0200
-+++ cups-2.2.5/scheduler/org.cups.cupsd.service.in	2017-10-14 13:01:52.418760893 +0200
+diff -up cups-2.2.7/scheduler/org.cups.cupsd.service.in.1024~ cups-2.2.7/scheduler/org.cups.cupsd.service.in
+--- cups-2.2.7/scheduler/org.cups.cupsd.service.in.1024~	2018-04-30 00:46:26.765046928 +0200
++++ cups-2.2.7/scheduler/org.cups.cupsd.service.in	2018-04-30 00:47:26.811622413 +0200
 @@ -1,10 +1,11 @@
  [Unit]
  Description=CUPS Scheduler
@@ -41,6 +44,6 @@
  ExecStart=@sbindir@/cupsd -l
 -Type=simple
 +Type=notify
+ Restart=always
  
  [Install]
- Also=org.cups.cupsd.socket org.cups.cupsd.path

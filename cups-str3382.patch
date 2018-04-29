@@ -1,7 +1,7 @@
-diff -up cups-2.0rc1/cups/tempfile.c.str3382 cups-2.0rc1/cups/tempfile.c
---- cups-2.0rc1/cups/tempfile.c.str3382	2014-07-31 02:58:00.000000000 +0200
-+++ cups-2.0rc1/cups/tempfile.c	2014-09-12 14:06:42.560887827 +0200
-@@ -27,6 +27,7 @@
+diff -up cups-2.2.7/cups/tempfile.c.1019~ cups-2.2.7/cups/tempfile.c
+--- cups-2.2.7/cups/tempfile.c.1019~	2018-03-23 04:48:36.000000000 +0100
++++ cups-2.2.7/cups/tempfile.c	2018-04-30 00:46:08.799473304 +0200
+@@ -25,6 +25,7 @@
  #  include <io.h>
  #else
  #  include <unistd.h>
@@ -9,16 +9,21 @@ diff -up cups-2.0rc1/cups/tempfile.c.str3382 cups-2.0rc1/cups/tempfile.c
  #endif /* WIN32 || __EMX__ */
  
  
-@@ -48,7 +49,7 @@ cupsTempFd(char *filename,		/* I - Point
-   char		tmppath[1024];		/* Windows temporary directory */
-   DWORD		curtime;		/* Current time */
- #else
+@@ -45,12 +46,7 @@ cupsTempFd(char *filename,		/* I - Point
+ #if defined(__APPLE__) || defined(WIN32)
+   char		tmppath[1024];		/* Temporary directory */
+ #endif /* __APPLE__ || WIN32 */
+-#ifdef WIN32
+-  DWORD		curtime;		/* Current time */
+-#else
 -  struct timeval curtime;		/* Current time */
+-#endif /* WIN32 */
+-
 +  mode_t	old_umask;		/* Old umask before using mkstemp() */
- #endif /* WIN32 */
  
- 
-@@ -98,32 +99,24 @@ cupsTempFd(char *filename,		/* I - Point
+  /*
+   * See if TMPDIR is defined...
+@@ -114,32 +110,24 @@ cupsTempFd(char *filename,		/* I - Point
      */
  
      snprintf(filename, (size_t)len - 1, "%s/%05lx%08lx", tmpdir, GetCurrentProcessId(), curtime);

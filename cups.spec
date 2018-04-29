@@ -18,11 +18,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.2.5
+Version:	2.2.7
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	3
+Release:	1
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -89,7 +89,6 @@ Patch1024:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-s
 Patch1026:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-address.patch
 Patch1028:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
 Patch1029:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
-Patch1031:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-libusb-quirks.patch
 Patch1032:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-use-ipp1.1.patch
 Patch1033:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-no-threaded.patch
 Patch1034:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ipp-multifile.patch
@@ -139,7 +138,9 @@ Suggests:	avahi
 Requires:	printer-testpages
 # Take care that device files are created with correct permissions
 Requires:	udev
+%if ! %{with bootstrap}
 Requires:	cups-filters
+%endif
 # For desktop menus
 Requires:	xdg-utils
 %rename		cupsddk-drivers
