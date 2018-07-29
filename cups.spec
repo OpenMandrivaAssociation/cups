@@ -8,7 +8,7 @@
 %define debug 0
 %define enable_check 0
 
-# Define to %nil for release builds
+# Define to %{nil} for release builds
 %define beta %{nil}
 
 %define _disable_lto 1
@@ -18,11 +18,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.2.7
+Version:	2.2.8
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	1
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -587,8 +587,8 @@ EOF
 # install /usr/lib/tmpfiles.d/cups.conf (bug #656566)
 mkdir -p %{buildroot}%{_tmpfilesdir}
 cat > %{buildroot}%{_tmpfilesdir}/cups.conf <<EOF
-d %{_localstatedir}/run/cups 0755 root lp -
-d %{_localstatedir}/run/cups/certs 0511 lp lp -
+d /run/cups 0755 root lp -
+d /run/cups/certs 0511 lp lp -
 EOF
 
 # /usr/lib/tmpfiles.d/cups-lp.conf (bug #812641)
