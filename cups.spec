@@ -22,7 +22,7 @@ Version:	2.2.8
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	1
+Release:	2
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -58,6 +58,7 @@ Source19:	10-cups_device_links.rules
 Source20:	10-cups_device_usb.rules
 
 Patch1:		cups-dbus-utf8.patch
+Patch2:		https://github.com/heftig/cups/commit/455c52a027ab3548953372a0b7bdb0008420e9ba.patch
 Patch10:	cups-1.4.0-recommended.patch
 
 # Fedora patches
