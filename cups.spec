@@ -22,7 +22,7 @@ Version:	2.2.8
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	3
+Release:	2
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
