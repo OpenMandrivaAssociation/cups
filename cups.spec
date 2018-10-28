@@ -145,6 +145,7 @@ Requires:	cups-filters
 # For desktop menus
 Requires:	xdg-utils
 %rename		cupsddk-drivers
+Obsoletes: php-cups < %{EVRD}
 
 %description
 The Common Unix Printing System provides a portable printing layer for
@@ -307,12 +308,6 @@ UNIX(TM) operating systems. This is the development package for
 creating additional printer drivers, printing software, and other CUPS
 services using the main CUPS library "libcups".
 
-%package -n php-cups
-Summary: PHP bindings for the libcups library
-Group: Development/PHP
-
-%description -n php-cups
-Provides bindings to the functions of libcups, to give direct access
 
 %prep
 %setup -q -n %{name}-%{version}%{beta}
@@ -579,12 +574,6 @@ touch %{buildroot}%{_sysconfdir}/cups/printers.conf
 touch %{buildroot}%{_sysconfdir}/cups/classes.conf
 touch %{buildroot}%{_sysconfdir}/cups/client.conf
 
-# Create .ini file for the PHP bindings
-install -d %{buildroot}%{_sysconfdir}/php.d
-cat > %{buildroot}%{_sysconfdir}/php.d/A20_cups.ini << EOF
-extension = phpcups.so
-EOF
-
 # install /usr/lib/tmpfiles.d/cups.conf (bug #656566)
 mkdir -p %{buildroot}%{_tmpfilesdir}
 cat > %{buildroot}%{_tmpfilesdir}/cups.conf <<EOF
@@ -826,5 +815,3 @@ fi
 %{_libdir}/*.so
 %{_bindir}/cups-config
 
-%files -n php-cups
-%{_sysconfdir}/php.d/A20_cups.ini
