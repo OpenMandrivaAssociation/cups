@@ -22,7 +22,7 @@ Version:	2.2.9
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	1
+Release:	2
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -485,6 +485,7 @@ popd
 pushd %{buildroot}%{_mandir}/man1
   mv lprm.1 lprm-cups.1
   mv lp.1 lp-cups.1
+  mv lpq.1 lpq-cups.1
   mv cancel.1 cancel-cups.1
   mv lpstat.1 lpstat-cups.1
 popd
