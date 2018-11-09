@@ -8,7 +8,7 @@
 %define debug 0
 %define enable_check 0
 
-# Define to %nil for release builds
+# Define to %{nil} for release builds
 %define beta %{nil}
 
 %define _disable_lto 1
@@ -18,11 +18,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.2.5
+Version:	2.2.9
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	5
+Release:	1
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -58,6 +58,7 @@ Source19:	10-cups_device_links.rules
 Source20:	10-cups_device_usb.rules
 
 Patch1:		cups-dbus-utf8.patch
+Patch2:		https://github.com/heftig/cups/commit/455c52a027ab3548953372a0b7bdb0008420e9ba.patch
 Patch10:	cups-1.4.0-recommended.patch
 
 # Fedora patches
@@ -89,7 +90,6 @@ Patch1024:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-s
 Patch1026:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-address.patch
 Patch1028:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
 Patch1029:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
-Patch1031:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-libusb-quirks.patch
 Patch1032:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-use-ipp1.1.patch
 Patch1033:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-no-threaded.patch
 Patch1034:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ipp-multifile.patch
@@ -129,6 +129,7 @@ BuildRequires:	pkgconfig(libusb) < 1.0
 BuildRequires:	pkgconfig(libusb-1.0)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libsystemd)
+BuildRequires:	pkgconfig(com_err)
 
 Requires:	%{name}-common >= %{version}-%{release}
 Requires:	net-tools
@@ -138,16 +139,25 @@ Suggests:	avahi
 Requires:	printer-testpages
 # Take care that device files are created with correct permissions
 Requires:	udev
+%if ! %{with bootstrap}
 Requires:	cups-filters
+%endif
 # For desktop menus
 Requires:	xdg-utils
 %rename		cupsddk-drivers
 Obsoletes: php-cups < %{EVRD}
+# No longer existing old libraries
+%define	libcupscgi	%mklibname cupscgi 1
+Obsoletes:	%{libcupscgi} < %{EVRD}
+%define	libcupsmime	%mklibname cupsmime 1
+Obsoletes:	%{libcupsmime} < %{EVRD}
+%define	libcupsppdc	%mklibname cupsppdc 1
+Obsoletes:	%{libcupsppdc} < %{EVRD}
 
 %description
-The Common Unix Printing System provides a portable printing layer for 
-UNIX(TM) operating systems. It has been developed by Easy Software Products 
-to promote a standard printing solution for all UNIX vendors and users. 
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. It has been developed by Easy Software Products
+to promote a standard printing solution for all UNIX vendors and users.
 CUPS provides the System V and Berkeley command-line interfaces.
 This is the main package needed for CUPS servers (machines where a
 printer is connected to or which host a queue for a network
@@ -175,7 +185,7 @@ printing and administration (lpr, lpq, lprm, lpadmin, lpc, ...), man
 pages, locales, and a sample configuration file for daemon-less CUPS
 clients (%{_sysconfdir}/cups/client.conf).
 
-This package you need for both CUPS clients and servers. 
+This package you need for both CUPS clients and servers.
 
 %define	cupsmajor	2
 %define	libcups		%mklibname cups %{cupsmajor}
@@ -187,27 +197,6 @@ Group:		System/Libraries
 Obsoletes:	%{_lib}cups3 < 1.6.1-2
 
 %description -n	%{libcups}
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
-The Common Unix Printing System provides a portable printing layer for
-UNIX(TM) operating systems. This package contains the CUPS API library
-which contains common functions used by both the CUPS daemon and all
-CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
-
-This package you need for both CUPS clients and servers. It is also
-needed by Samba.
-
-%define	cupscgimajor	1
-%define	libcupscgi	%mklibname cupscgi %{cupscgimajor}
-
-%package -n	%{libcupscgi}
-Summary:	Common Unix Printing System - CUPSCGI library
-License:	LGPLv2
-Group:		System/Libraries
-Conflicts:	%{libcups} < 1.6.1-2
-
-%description -n	%{libcupscgi}
 CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
 with software built against CUPS-1.1 libraries.
 
@@ -240,58 +229,13 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%define	cupsmimemajor	1
-%define	libcupsmime	%mklibname cupsmime %{cupsmimemajor}
-
-%package -n	%{libcupsmime}
-Summary:	Common Unix Printing System - CUPS library
-License:	LGPLv2
-Group:		System/Libraries
-Conflicts:	%{libcups} < 1.6.1-2
-
-%description -n	%{libcupsmime}
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
-The Common Unix Printing System provides a portable printing layer for
-UNIX(TM) operating systems. This package contains the CUPS API library
-which contains common functions used by both the CUPS daemon and all
-CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
-
-This package you need for both CUPS clients and servers. It is also
-needed by Samba.
-
-%define	cupsppdcmajor	1
-%define	libcupsppdc	%mklibname cupsppdc %{cupsppdcmajor}
-
-%package -n	%{libcupsppdc}
-Summary:	Common Unix Printing System - CUPSPPDC library
-License:	LGPLv2
-Group:		System/Libraries
-Conflicts:	%{libcups} < 1.6.1-2
-
-%description -n	%{libcupsppdc}
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
-The Common Unix Printing System provides a portable printing layer for
-UNIX(TM) operating systems. This package contains the CUPS API library
-which contains common functions used by both the CUPS daemon and all
-CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
-
-This package you need for both CUPS clients and servers. It is also
-needed by Samba.
-
 %define	devname	%mklibname %{name} -d
 %package -n	%{devname}
 Summary:	Common Unix Printing System - Development environment "libcups"
 License:	LGPLv2
 Group:		Development/C
 Requires:	%{libcups} >= %{version}-%{release}
-Requires:	%{libcupscgi} >= %{version}-%{release}
 Requires:	%{libcupsimage} >= %{version}-%{release}
-Requires:	%{libcupsmime} >= %{version}-%{release}
-Requires:	%{libcupsppdc} >= %{version}-%{release}
 
 Provides:	cups-devel
 Obsoletes:	%mklibname %{name}2 -d
@@ -572,7 +516,6 @@ touch %{buildroot}%{_sysconfdir}/cups/printers.conf
 touch %{buildroot}%{_sysconfdir}/cups/classes.conf
 touch %{buildroot}%{_sysconfdir}/cups/client.conf
 
-
 # install /usr/lib/tmpfiles.d/cups.conf (bug #656566)
 mkdir -p %{buildroot}%{_tmpfilesdir}
 cat > %{buildroot}%{_tmpfilesdir}/cups.conf <<EOF
@@ -794,15 +737,6 @@ fi
 
 %files -n %{libcupsimage}
 %{_libdir}/libcupsimage.so.%{cupsimagemajor}*
-
-%files -n %{libcupscgi}
-%{_libdir}/libcupscgi.so.%{cupscgimajor}*
-
-%files -n %{libcupsmime}
-%{_libdir}/libcupsmime.so.%{cupsmimemajor}*
-
-%files -n %{libcupsppdc}
-%{_libdir}/libcupsppdc.so.%{cupsppdcmajor}*
 
 %files -n %{devname}
 %dir %{_includedir}/cups
