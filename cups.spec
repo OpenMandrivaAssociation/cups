@@ -180,9 +180,6 @@ Requires:	net-tools
 Provides:	lpddaemon
 
 %description	common
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. It contains the command line utilities for
 printing and administration (lpr, lpq, lprm, lpadmin, lpc, ...), man
@@ -201,9 +198,6 @@ Group:		System/Libraries
 Obsoletes:	%{_lib}cups3 < 1.6.1-2
 
 %description -n	%{libcups}
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This package contains the CUPS API library
 which contains common functions used by both the CUPS daemon and all
@@ -222,9 +216,6 @@ Group:		System/Libraries
 Conflicts:	%{libcups} < 1.6.1-2
 
 %description -n	%{libcupsimage}
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This package contains the CUPS API library
 which contains common functions used by both the CUPS daemon and all
@@ -245,9 +236,6 @@ Provides:	cups-devel
 Obsoletes:	%mklibname %{name}2 -d
 
 %description -n	%{devname}
-CUPS 1.4 is fully compatible with CUPS-1.1 machines in the network and
-with software built against CUPS-1.1 libraries.
-
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This is the development package for
 creating additional printer drivers, printing software, and other CUPS
