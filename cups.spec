@@ -14,7 +14,7 @@
 %define _disable_lto 1
 
 %bcond_without	dnssd
-%bcond_without	bootstrap
+%bcond_with	bootstrap
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
@@ -153,9 +153,6 @@ Obsoletes:	%{libcupscgi} < %{EVRD}
 Obsoletes:	%{libcupsmime} < %{EVRD}
 %define	libcupsppdc	%mklibname cupsppdc 1
 Obsoletes:	%{libcupsppdc} < %{EVRD}
-%if !%{with bootstrap}
-Requires:	cups-filters
-%endif
 
 
 %description
