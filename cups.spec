@@ -22,7 +22,7 @@ Version:	2.2.10
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	3
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -228,6 +228,8 @@ License:	LGPLv2
 Group:		Development/C
 Requires:	%{libcups} >= %{version}-%{release}
 Requires:	%{libcupsimage} >= %{version}-%{release}
+Requires:	pkgconfig(krb5)
+Requires:	pkgconfig(com_err)
 
 Provides:	cups-devel
 Obsoletes:	%mklibname %{name}2 -d
