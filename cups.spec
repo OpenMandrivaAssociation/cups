@@ -243,7 +243,7 @@ services using the main CUPS library "libcups".
 
 %prep
 %setup -q -n %{name}-%{version}%{beta}
-%apply_patches
+%autopatch -p1
 
 # Let local printers be broadcasted in the local network(s)
 perl -p -i -e 's:(Listen\s+)localhost:$1*:' conf/cupsd.conf.in
