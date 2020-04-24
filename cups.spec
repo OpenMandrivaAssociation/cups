@@ -18,11 +18,11 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.2.12
+Version:	2.3.1
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	3
+Release:	1
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -62,44 +62,31 @@ Patch2:		https://github.com/heftig/cups/commit/455c52a027ab3548953372a0b7bdb0008
 Patch10:	cups-1.4.0-recommended.patch
 
 # Fedora patches
-Patch1000:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-gzip-man.patch
 Patch1001:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-system-auth.patch
 Patch1002:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-multilib.patch
-Patch1004:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-banners.patch
-Patch1005:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-serverbin-compat.patch
-Patch1006:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-export-ssllibs.patch
-Patch1007:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-direct-usb.patch
-Patch1008:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lpr-help.patch
-Patch1009:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-peercred.patch
-Patch1010:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-pid.patch
-Patch1011:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-eggcups.patch
-Patch1012:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-driverd-timeout.patch
-Patch1013:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-strict-ppd-line-length.patch
-Patch1014:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-logrotate.patch
-Patch1015:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-usb-paperout.patch
-Patch1016:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-res_init.patch
-Patch1017:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-filter-debug.patch
-Patch1018:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-uri-compat.patch
-Patch1019:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-str3382.patch
-#same as mdv patch cups-1.4-permissions.patch
-#Patch1020:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-0755.patch
-Patch1021:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-hp-deviceid-oid.patch
-Patch1022:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dnssd-deviceid.patch
-Patch1023:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ricoh-deviceid-oid.patch
-Patch1024:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-socket.patch
-Patch1026:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-address.patch
-Patch1028:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
-Patch1029:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
-Patch1032:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-use-ipp1.1.patch
-Patch1033:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-avahi-no-threaded.patch
-Patch1034:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ipp-multifile.patch
-Patch1035:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-web-devices-timeout.patch
-Patch1037:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-synconclose.patch
-Patch1038:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lspp.patch
+Patch1003:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-banners.patch
+Patch1004:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-export-ssllibs.patch
+Patch1005:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-direct-usb.patch
+Patch1006:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-eggcups.patch
+Patch1007:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-driverd-timeout.patch
+Patch1008:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-logrotate.patch
+Patch1009:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-usb-paperout.patch
+Patch1010:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-uri-compat.patch
+Patch1011:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-hp-deviceid-oid.patch
+Patch1012:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ricoh-deviceid-oid.patch
+Patch1013:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-socket.patch
+Patch1014:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
+Patch1015:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ipp-multifile.patch
+Patch1016:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-web-devices-timeout.patch
+Patch1017:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-synconclose.patch
+Patch1018:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ypbind.patch
+Patch1019:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-failover-backend.patch
+Patch1020:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-filter-debug.patch
+Patch1021:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
+Patch1022:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-autostart-when-enabled.patch
+Patch1100:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lspp.patch
+Patch1023:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ppdopen-heap-overflow.patch
 # End fedora patches
-
-# Fixes for breakages in Fedora patches
-Patch1050:	cups-serverbin-compat-for-aarch64-too.patch
 
 # Requires /etc/tmpfiles.d (bug #656566)
 Requires:	systemd >= 208
@@ -171,7 +158,6 @@ need to be assigned to a specific CUPS server by an
 Summary:	Common Unix Printing System - Common stuff
 License:	GPLv2
 Group:		System/Printing
-Requires(post,preun): update-alternatives
 Requires:	net-tools
 # To satisfy LSB/FHS
 Provides:	lpddaemon
@@ -242,8 +228,7 @@ services using the main CUPS library "libcups".
 
 
 %prep
-%setup -q -n %{name}-%{version}%{beta}
-%autopatch -p1
+%autosetup -p1 -n %{name}-%{version}%{beta}
 
 # Let local printers be broadcasted in the local network(s)
 perl -p -i -e 's:(Listen\s+)localhost:$1*:' conf/cupsd.conf.in
@@ -312,32 +297,42 @@ export CXXFLAGS="-g"
 # cups uses $DSOFLAGS instead of $LDFLAGS for shared libs
 export DSOFLAGS="$LDFLAGS"
 %configure \
-    --with-cupsd-file-perm=0755 \
-    --with-log-file-perm=0600 \
+%if %{with lspp}
+	--enable-lspp \
+%else
+	--disable-lspp \
+%endif
+	--with-exe-file-perm=0755 \
+	--with-cupsd-file-perm=0755 \
+	--with-log-file-perm=0600 \
+	--enable-relro \
+	--with-dbusdir=%{_sysconfdir}/dbus-1 \
+	--with-php=%{_bindir}/php \
 %if !%{with dnsd}
-    --enable-avahi \
+	--enable-avahi \
 %endif
+	--enable-threads \
+	--enable-gnutls \
+	--enable-webif \
+	--without-xinetd \
+	--with-access-log-level=actions \
+	--enable-page-logging \
+	--with-rundir=/run/cups \
 %if %{debug}
-    --enable-debug=yes \
+	--enable-debug=yes \
 %endif
-    --with-dbusdir=%{_sysconfdir}/dbus-1 \
-    --enable-threads \
-    --enable-gnutls \
-    --enable-webif \
-    --disable-libpaper \
-    --enable-raw-printing \
-    --enable-ssl \
-    --disable-static \
-    --disable-lspp \
-    --with-cups-group=lp \
-    --with-cups-user=lp \
-    --with-docdir=%{_datadir}/cups/doc \
-    --with-icondir=%{_datadir}/icons \
-    --with-system-groups="lpadmin root" \
-    --with-php=%{_bindir}/php \
-    --enable-relro \
-    --without-xinetd \
-    --without-rcdir
+	--disable-libpaper \
+	--enable-raw-printing \
+	--enable-ssl \
+	--disable-static \
+	--disable-lspp \
+	--with-cups-group=lp \
+	--with-cups-user=lp \
+	--with-docdir=%{_datadir}/cups/doc \
+	--with-icondir=%{_datadir}/icons \
+	--with-system-groups="lpadmin root" \
+	--without-rcdir \
+	localedir=%{_datadir}/locale
 
 # Remove "-s" (stripping) option from "install" command used for binaries
 # by "make install"
@@ -434,72 +429,16 @@ chmod a+rx ./cleanppd.pl
 # Do the clean-up
 find %{buildroot}%{_datadir}/cups/model -name "*.ppd" -exec ./cleanppd.pl '{}' \;
 
-# RPM breaking it. Links need to be deleted and afterwards regenerated
-rm -f %{buildroot}%{_mandir}/man8/cupsdisable.8
-rm -f %{buildroot}%{_mandir}/man8/reject.8
-
-# Set compatibility links for the man pages and executables
-ln -s %{_sbindir}/cupsenable %{buildroot}%{_bindir}/enable
-ln -s %{_sbindir}/cupsdisable %{buildroot}%{_bindir}/disable
-ln -s %{_sbindir}/cupsenable %{buildroot}%{_sbindir}/enable
-ln -s %{_sbindir}/cupsdisable %{buildroot}%{_sbindir}/disable
-ln -s %{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/cupsdisable.8
-ln -s %{_mandir}/man8/cupsdisable.8 %{buildroot}%{_mandir}/man8/disable.8
-ln -s %{_mandir}/man8/cupsenable.8 %{buildroot}%{_mandir}/man8/enable.8
-ln -s %{_mandir}/man8/accept.8 %{buildroot}%{_mandir}/man8/reject.8
-
 %ifarch x86_64
 # This one will be removed soon, when all other packages are
 # modified appropriately
 ln -s %{_prefix}/lib/cups %{buildroot}%{_libdir}/cups
 %endif
 
-# prepare the commands conflicting with LPD for the update-alternatives
-# treatment
-pushd %{buildroot}%{_bindir}
-  mv lpr lpr-cups
-  mv lpq lpq-cups
-  mv lprm lprm-cups
-  mv lp lp-cups
-  mv cancel cancel-cups
-  mv lpstat lpstat-cups
-popd
-pushd %{buildroot}%{_sbindir}
-  mv accept accept-cups
-  mv disable disable-cups
-  mv enable enable-cups
-  mv lpc lpc-cups
-  mv lpmove lpmove-cups
-  mv reject reject-cups
-popd
-pushd %{buildroot}%{_mandir}/man1
-  mv lprm.1 lprm-cups.1
-  mv lp.1 lp-cups.1
-  mv lpq.1 lpq-cups.1
-  mv cancel.1 cancel-cups.1
-  mv lpstat.1 lpstat-cups.1
-popd
-pushd %{buildroot}%{_mandir}/man8
-  mv accept.8 accept-cups.8
-  mv disable.8 disable-cups.8
-  mv enable.8 enable-cups.8
-  mv lpc.8 lpc-cups.8
-  mv lpmove.8 lpmove-cups.8
-  mv reject.8 reject-cups.8
-popd
-ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/reject-cups
-ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsdisable
-ln -sf %{_sbindir}/accept-cups %{buildroot}%{_sbindir}/cupsenable
-
 # Install missing headers (Thanks to Oden Eriksson)
 install -m644 cups/debug-private.h  %{buildroot}%{_includedir}/cups/
 install -m644 cups/string-private.h %{buildroot}%{_includedir}/cups/
 install -m644 config.h %{buildroot}%{_includedir}/cups/
-
-%if %{mdvver} <= 3000000
-# Multiarch fixes
-%multiarch_includes %{buildroot}%{_includedir}/cups/config.h
-%endif
 
 # Create dummy config files /etc/cups/printers.conf,
 # /etc/cups/classes.conf, and /etc/cups/client.conf
@@ -593,45 +532,10 @@ do
 done
 # End of 28383
 
-%post common
-# The lpc updates-alternative links were not correctly set in older CUPS
-# packages, therefore remove the entry before making a new one when updating
-%{_sbindir}/update-alternatives --remove lpc %{_sbindir}/lpc-cups || :
-# Set up update-alternatives entries
-%{_sbindir}/update-alternatives --install %{_bindir}/lpq lpq %{_bindir}/lpq-cups 10 --slave %{_mandir}/man1/lpq.1%{_extension} lpq.1%{_extension} %{_mandir}/man1/lpq-cups.1%{_extension}
-%{_sbindir}/update-alternatives --install %{_bindir}/lprm lprm %{_bindir}/lprm-cups 10 --slave %{_mandir}/man1/lprm.1%{_extension} lprm.1%{_extension} %{_mandir}/man1/lprm-cups.1%{_extension}
-%{_sbindir}/update-alternatives --install %{_bindir}/lp lp %{_bindir}/lp-cups 10 --slave %{_mandir}/man1/lp.1%{_extension} lp.1%{_extension} %{_mandir}/man1/lp-cups.1%{_extension}
-%{_sbindir}/update-alternatives --install %{_bindir}/cancel cancel %{_bindir}/cancel-cups 10 --slave %{_mandir}/man1/cancel.1%{_extension} cancel.1%{_extension} %{_mandir}/man1/cancel-cups.1%{_extension}
-%{_sbindir}/update-alternatives --install %{_bindir}/lpstat lpstat %{_bindir}/lpstat-cups 10 --slave %{_mandir}/man1/lpstat.1%{_extension} lpstat.1%{_extension} %{_mandir}/man1/lpstat-cups.1%{_extension}
-%{_sbindir}/update-alternatives --install %{_sbindir}/accept accept %{_sbindir}/accept-cups 10 --slave %{_mandir}/man8/accept.8%{_extension} accept.8%{_extension} %{_mandir}/man8/accept-cups.8%{_extension}
-%{_sbindir}/update-alternatives --install %{_sbindir}/disable disable %{_sbindir}/disable-cups 10 --slave %{_mandir}/man8/disable.8%{_extension} disable.8%{_extension} %{_mandir}/man8/disable-cups.8%{_extension}
-%{_sbindir}/update-alternatives --install %{_sbindir}/enable enable %{_sbindir}/enable-cups 10 --slave %{_mandir}/man8/enable.8%{_extension} enable.8%{_extension} %{_mandir}/man8/enable-cups.8%{_extension}
-%{_sbindir}/update-alternatives --install %{_sbindir}/lpc lpc %{_sbindir}/lpc-cups 10 --slave %{_mandir}/man8/lpc.8%{_extension} lpc.8%{_extension} %{_mandir}/man8/lpc-cups.8%{_extension}
-%{_sbindir}/update-alternatives --install %{_sbindir}/lpmove lpmove %{_sbindir}/lpmove-cups 10 --slave %{_mandir}/man8/lpmove.8%{_extension} lpmove.8%{_extension} %{_mandir}/man8/lpmove-cups.8%{_extension}
-%{_sbindir}/update-alternatives --install %{_sbindir}/reject reject %{_sbindir}/reject-cups 10 --slave %{_mandir}/man8/reject.8%{_extension} reject.8%{_extension} %{_mandir}/man8/reject-cups.8%{_extension}
-
-%preun common
-if [ "$1" = 0 ]; then
-# Remove update-alternatives entries
-  %{_sbindir}/update-alternatives --remove lpr %{_bindir}/lpr-cups
-  %{_sbindir}/update-alternatives --remove lpq %{_bindir}/lpq-cups
-  %{_sbindir}/update-alternatives --remove lprm %{_bindir}/lprm-cups
-  %{_sbindir}/update-alternatives --remove lp %{_bindir}/lp-cups
-  %{_sbindir}/update-alternatives --remove cancel %{_bindir}/cancel-cups
-  %{_sbindir}/update-alternatives --remove lpstat %{_bindir}/lpstat-cups
-  %{_sbindir}/update-alternatives --remove accept %{_sbindir}/accept-cups
-  %{_sbindir}/update-alternatives --remove disable %{_sbindir}/disable-cups
-  %{_sbindir}/update-alternatives --remove enable %{_sbindir}/enable-cups
-  %{_sbindir}/update-alternatives --remove lpc %{_sbindir}/lpc-cups
-  %{_sbindir}/update-alternatives --remove lpmove %{_sbindir}/lpmove-cups
-  %{_sbindir}/update-alternatives --remove reject %{_sbindir}/reject-cups
-fi
-
 %postun
 %_postun_groupdel lpadmin
 
 %files
-%doc *.txt
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/cupsd.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/cups/cups-files.conf
@@ -664,6 +568,7 @@ fi
 %if %{with dnssd}
 %{_prefix}/lib/cups/backend/dnssd
 %endif
+%{_prefix}/lib/cups/backend/failover
 %{_prefix}/lib/cups/backend/http
 %{_prefix}/lib/cups/backend/https
 %{_prefix}/lib/cups/backend/ipp
@@ -678,6 +583,9 @@ fi
 %{_prefix}/lib/cups/backend/socket
 %{_prefix}/lib/cups/backend/usb
 %{_prefix}/lib/cups/backend/pdf
+%dir %{_prefix}/lib/cups/command
+%{_prefix}/lib/cups/command/ippevepcl
+%{_prefix}/lib/cups/command/ippeveps
 %dir %{_prefix}/lib/cups/driver
 %{_datadir}/cups
 %attr(0755,root,lp) %{_var}/log/cups
@@ -702,10 +610,16 @@ fi
 %dir %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups
 %ghost %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups/client.conf
 %{_sbindir}/*
-%{_bindir}/*cups
+%{_bindir}/cancel
+%{_bindir}/lp
+%{_bindir}/lpq
+%{_bindir}/lpr
+%{_bindir}/lprm
+%{_bindir}/lpstat
 %if %{with dnssd}
 %{_bindir}/ippfind
 %endif
+%{_bindir}/ippeveprinter
 %{_bindir}/ipptool
 #%{_bindir}/lphelp
 %{_bindir}/lpoptions
@@ -717,9 +631,6 @@ fi
 %{_bindir}/ppdmerge
 %{_bindir}/ppdpo
 %{_bindir}/cupstestppd
-%{_bindir}/cupstestdsc
-%{_bindir}/enable
-%{_bindir}/disable
 %{_datadir}/locale/*/*.po
 %{_mandir}/man?/*
 
@@ -732,10 +643,6 @@ fi
 %files -n %{devname}
 %dir %{_includedir}/cups
 %{_includedir}/cups/*
-%if %{mdvver} <= 3000000
-%dir %{multiarch_includedir}/cups
-%{multiarch_includedir}/cups/*
-%endif
 %{_libdir}/*.so
 %{_bindir}/cups-config
 

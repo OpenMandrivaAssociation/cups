@@ -14,6 +14,7 @@
  #   Compile with: gcc -opoll_ppd_base -lcups poll_ppd_base.c
  #
  *   Copyright 2000 by Till Kamppeter
+ *   Ported to cups 2.3.x by Bernhard Rosenkränzer <bero@lindev.ch>
  *
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License as
@@ -48,12 +49,11 @@
 // IPP Request routines for getting the printer type, stolen from QTCUPS from
 // Michael Goffioul (file qtcups/cupshelper.cpp)
 
-ipp_t* newIppRequest()
+ipp_t* newIppRequest(ipp_op_t op)
 {
-  ipp_t *request;
+  ipp_t *request = ippNewRequest(op);
   cups_lang_t *lang;
-  request = ippNew();
-  request->request.op.request_id = 1;
+  ippSetRequestId(request, 1);
   lang = cupsLangDefault();
   ippAddString(request,IPP_TAG_OPERATION,IPP_TAG_CHARSET,"attributes-charset",NULL,cupsLangEncoding(lang));
   ippAddString(request,IPP_TAG_OPERATION,IPP_TAG_LANGUAGE,"attributes-natural-language",NULL,lang->language);
@@ -64,7 +64,7 @@ ipp_t* processRequest(ipp_t *req, const char *res)
 {
   http_t  *HTTP;
   ipp_t   *answer;
-  HTTP = httpConnect(cupsServer(),ippPort());
+  HTTP = httpConnect2(cupsServer(),ippPort(), NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
   if (!HTTP) {
     ippDelete(req);
     return 0;
@@ -72,7 +72,7 @@ ipp_t* processRequest(ipp_t *req, const char *res)
   answer = cupsDoRequest(HTTP,req,res);
   httpClose(HTTP);
   if (!answer) return 0;
-  if (answer->state == IPP_ERROR || answer->state == IPP_IDLE) {
+  if (ippGetState(answer) == IPP_ERROR || ippGetState(answer) == IPP_IDLE) {
     ippDelete(answer);
     return 0;
   }
@@ -81,12 +81,11 @@ ipp_t* processRequest(ipp_t *req, const char *res)
 
 ipp_t *getPPDList()
 {
-  ipp_t       *request = newIppRequest();
+  ipp_t       *request = newIppRequest(CUPS_GET_PPDS);
   char        str[1024];
   const char* server = cupsServer();
   int         port = ippPort();
 
-  request->request.op.operation_id = CUPS_GET_PPDS;
   if ((!server) || (port < 0)) return NULL;
   sprintf(str,"ipp://%s:%d/printers/",cupsServer(),ippPort());
   ippAddString(request,IPP_TAG_OPERATION,IPP_TAG_URI,"printer-uri",NULL,str);
@@ -113,7 +112,7 @@ main(int  argc,     /* I - Number of command-line arguments */
                                 /* request */
   ipp_attribute_t *attr,        /* Current attribute */
                 *last;          /* Last attribute */
-  char          *currmake,      /* current data read from PPD list */
+  const char    *currmake,      /* current data read from PPD list */
                 *currmod,
                 *currlang,
                 *currfile,
@@ -159,22 +158,23 @@ main(int  argc,     /* I - Number of command-line arguments */
   if ((all) || (makegiven)) { // list all PPDs or PPDs of given manufacturer
     ppdlist = getPPDList();
     if (!ppdlist) return 1;
-    for (attr = ppdlist->attrs; // go through all entries
+    for (attr = ippFirstAttribute(ppdlist); // go through all entries
          attr != NULL;
-         attr = attr->next)
-      if (attr->name) {
+         attr = ippNextAttribute(ppdlist)) {
+      const char *name = ippGetName(attr);
+      if (name) {
         // read data items
-        if (strcmp(attr->name, "ppd-name") == 0) {
-	  currfile = attr->values[0].string.text;
+        if (strcmp(name, "ppd-name") == 0) {
+	  currfile = ippGetString(attr, 0, NULL);
           lineprinted = 0;
-        } else if (strcmp(attr->name, "ppd-make") == 0) {
-          currmake = attr->values[0].string.text;
-        } else if (strcmp(attr->name, "ppd-make-and-model") == 0) {
-          currmod = attr->values[0].string.text;
-        } else if (strcmp(attr->name, "ppd-natural-language") == 0) {
-          currlang = attr->values[0].string.text;
-        } else if (strcmp(attr->name, "ppd-device-id") == 0) {
-          currid = attr->values[0].string.text;
+        } else if (strcmp(name, "ppd-make") == 0) {
+          currmake = ippGetString(attr, 0, NULL);
+        } else if (strcmp(name, "ppd-make-and-model") == 0) {
+          currmod = ippGetString(attr, 0, NULL);
+        } else if (strcmp(name, "ppd-natural-language") == 0) {
+          currlang = ippGetString(attr, 0, NULL);
+        } else if (strcmp(name, "ppd-device-id") == 0) {
+          currid = ippGetString(attr, 0, NULL);
         }
       } else { // attr->name = NULL ==> data set completed
         lineprinted = 1;
@@ -194,6 +194,7 @@ main(int  argc,     /* I - Number of command-line arguments */
 	currfile = NULL; currmake = NULL; currmod = NULL;
 	currlang = NULL; currid = NULL;
       }
+    }
     if (!lineprinted) {
       // Fill empty entries with some default stuff
       if (!currmod) currmod = "UNKNOWN";
@@ -212,20 +213,22 @@ main(int  argc,     /* I - Number of command-line arguments */
   } else if (makelist) { // list all manufacturers
     ppdlist = getPPDList(); 
     if (!ppdlist) return 1;
-    for (attr = ppdlist->attrs, last = NULL; // go through all entries
+    for (attr = ippFirstAttribute(ppdlist), last = NULL; // go through all entries
          attr != NULL;
-         attr = attr->next)
-      if (attr->name && strcmp(attr->name, "ppd-make") == 0)
+         attr = ippNextAttribute(ppdlist)) {
+      const char *name = ippGetName(attr);
+      if (name && strcmp(name, "ppd-make") == 0)
 	                    // only search for manufacturerer entriees
         if (last == NULL ||
-            strcasecmp(last->values[0].string.text,
-                       attr->values[0].string.text) != 0)
+            strcasecmp(ippGetString(last, 0, NULL),
+                       ippGetString(attr, 0, NULL)) != 0)
 	                    // Do not take the same manufacturer twice
           {
             // Put found manufacturer to stdout
-            printf("%s\n",attr->values[0].string.text);
+            printf("%s\n",ippGetString(attr, 0, NULL));
             last = attr;
           }
+    }
   } else { // Help!
     fprintf(stderr,"Usage:\n");
     fprintf(stderr,"------\n");
