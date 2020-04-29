@@ -18,7 +18,7 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.3.1
+Version:	2.3.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
@@ -85,7 +85,6 @@ Patch1020:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-filter-de
 Patch1021:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
 Patch1022:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-autostart-when-enabled.patch
 Patch1100:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lspp.patch
-Patch1023:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ppdopen-heap-overflow.patch
 # End fedora patches
 
 # Requires /etc/tmpfiles.d (bug #656566)
