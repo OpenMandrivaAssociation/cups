@@ -1,3 +1,8 @@
+# cups is used by wine as well as some of its dependencies
+%ifarch %{x86_64}
+%bcond_without compat32
+%endif
+
 # {_exec_prefix}/lib/cups is correct, even on x86_64.
 # It is not used for shared objects but for executables.
 # It's more of a libexec-style ({_libexecdir}) usage,
@@ -22,7 +27,7 @@ Version:	2.3.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	1
+Release:	2
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -140,6 +145,19 @@ Obsoletes:	%{libcupsmime} < %{EVRD}
 %define	libcupsppdc	%mklibname cupsppdc 1
 Obsoletes:	%{libcupsppdc} < %{EVRD}
 
+%if %{with compat32}
+BuildRequires:	devel(libz)
+BuildRequires:	devel(libsystemd)
+BuildRequires:	devel(libcom_err)
+BuildRequires:	devel(libusb-1.0)
+BuildRequires:	devel(libssl)
+BuildRequires:	devel(libgnutls)
+BuildRequires:	devel(libdbus-1)
+BuildRequires:	devel(libpng16)
+BuildRequires:	devel(libkrb5)
+BuildRequires:	libcrypt-devel
+%endif
+
 
 %description
 The Common Unix Printing System provides a portable printing layer for
@@ -225,6 +243,56 @@ UNIX(TM) operating systems. This is the development package for
 creating additional printer drivers, printing software, and other CUPS
 services using the main CUPS library "libcups".
 
+%if %{with compat32}
+%define	lib32cups		%mklib32name cups %{cupsmajor}
+
+%package -n	%{lib32cups}
+Summary:	Common Unix Printing System - CUPS library (32-bit)
+License:	LGPLv2
+Group:		System/Libraries
+
+%description -n	%{lib32cups}
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This package contains the CUPS API library
+which contains common functions used by both the CUPS daemon and all
+CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
+
+This package you need for both CUPS clients and servers. It is also
+needed by Samba.
+
+%define	lib32cupsimage	%mklib32name cupsimage %{cupsimagemajor}
+
+%package -n	%{lib32cupsimage}
+Summary:	Common Unix Printing System - CUPSimage library (32-bit)
+License:	LGPLv2
+Group:		System/Libraries
+Conflicts:	%{libcups} < 1.6.1-2
+
+%description -n	%{lib32cupsimage}
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This package contains the CUPS API library
+which contains common functions used by both the CUPS daemon and all
+CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
+
+This package you need for both CUPS clients and servers. It is also
+needed by Samba.
+
+%define	dev32name	%mklib32name %{name} -d
+%package -n	%{dev32name}
+Summary:	Common Unix Printing System - Development environment "libcups" (32-bit)
+License:	LGPLv2
+Group:		Development/C
+Requires:	%{devname} = %{EVRD}
+Requires:	%{lib32cups} = %{version}-%{release}
+Requires:	%{lib32cupsimage} = %{version}-%{release}
+
+%description -n	%{dev32name}
+The Common Unix Printing System provides a portable printing layer for
+UNIX(TM) operating systems. This is the development package for
+creating additional printer drivers, printing software, and other CUPS
+services using the main CUPS library "libcups".
+%endif
+
 
 %prep
 %autosetup -p1 -n %{name}-%{version}%{beta}
@@ -287,6 +355,43 @@ autoconf -I config-scripts
 # for the PHP module
 %define _disable_ld_no_undefined 1
 #setup_compile_flags
+
+%if %{with compat32}
+export DSOFLAGS="$(echo %{ldflags} |sed -e 's,-m64,,g;s,-mx32,,g;s,-flto,,g') -m32"
+%configure32 \
+	--with-exe-file-perm=0755 \
+	--with-cupsd-file-perm=0755 \
+	--with-log-file-perm=0600 \
+	--enable-relro \
+	--with-dbusdir=%{_sysconfdir}/dbus-1 \
+	--enable-threads \
+	--enable-gnutls \
+	--enable-webif \
+	--without-xinetd \
+	--with-access-log-level=actions \
+	--enable-page-logging \
+	--with-rundir=/run/cups \
+%if %{debug}
+	--enable-debug=yes \
+%endif
+	--disable-libpaper \
+	--enable-raw-printing \
+	--enable-ssl \
+	--disable-static \
+	--disable-lspp \
+	--with-cups-group=lp \
+	--with-cups-user=lp \
+	--with-docdir=%{_datadir}/cups/doc \
+	--with-icondir=%{_datadir}/icons \
+	--with-system-groups="lpadmin root" \
+	--without-rcdir \
+	localedir=%{_datadir}/locale
+%make_build
+mkdir lib32
+mv cups/*.so* lib32/
+make distclean
+%endif
+
 %if %{debug}
 # Debug mode
 export DONT_STRIP=1
@@ -505,6 +610,10 @@ mv %{buildroot}%{_unitdir}/org.cups.cups-lpd.socket %{buildroot}%{_unitdir}/cups
 mv %{buildroot}%{_unitdir}/org.cups.cups-lpd@.service %{buildroot}%{_unitdir}/cups-lpd@.service
 sed -i -e "s,org.cups.cupsd,cups,g" %{buildroot}%{_unitdir}/cups.service
 
+%if %{with compat32}
+cp -a lib32/* %{buildroot}%{_prefix}/lib/
+%endif
+
 %pre
 %ifarch x86_64
 # Fix /usr/lib/cups directory, so that updates can be done
@@ -645,3 +754,13 @@ done
 %{_libdir}/*.so
 %{_bindir}/cups-config
 
+%if %{with compat32}
+%files -n %{lib32cups}
+%{_prefix}/lib/libcups.so.%{cupsmajor}*
+
+%files -n %{lib32cupsimage}
+%{_prefix}/lib/libcupsimage.so.%{cupsimagemajor}*
+
+%files -n %{dev32name}
+%{_prefix}/lib/*.so
+%endif
