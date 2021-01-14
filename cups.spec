@@ -665,9 +665,9 @@ done
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/dbus*/system.d/cups.conf
 %{_tmpfilesdir}/*.conf
 %{_presetdir}/86-%{name}.preset
-%{_unitdir}/cups*.path
-%{_unitdir}/cups*.service
-%{_unitdir}/cups*.socket
+%{_unitdir}/*.path
+%{_unitdir}/*.service
+%{_unitdir}/*.socket
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
 %{_sysconfdir}/udev/rules.d/*
@@ -717,7 +717,6 @@ done
 # Compatibility link, will be removed soon
 %{_libdir}/cups
 %endif
-
 
 %files common
 %dir %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups
