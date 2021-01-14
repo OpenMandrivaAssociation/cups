@@ -27,7 +27,7 @@ Version:	2.3.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	3
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -101,13 +101,13 @@ BuildRequires:	htmldoc
 BuildRequires:	php-cli
 BuildRequires:	xdg-utils
 BuildRequires:	acl-devel
-BuildRequires:	jpeg-devel
+BuildRequires:	pkgconfig(libjpeg)
 BuildRequires:	krb5-devel
 BuildRequires:	openldap-devel
 BuildRequires:	openslp-devel
 BuildRequires:	pam-devel
 BuildRequires:	php-devel >= 5.1.0
-BuildRequires:	tiff-devel
+BuildRequires:	pkgconfig(libtiff-4)
 %if %{with dnssd}
 BuildRequires:	pkgconfig(avahi-compat-libdns_sd)
 %endif
@@ -158,7 +158,6 @@ BuildRequires:	devel(libkrb5)
 BuildRequires:	libcrypt-devel
 %endif
 
-
 %description
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. It has been developed by Easy Software Products
@@ -171,7 +170,7 @@ up broadcasted printer information from other CUPS servers and do not
 need to be assigned to a specific CUPS server by an
 %{_sysconfdir}/cups/client.conf file.
 
-%package	common
+%package common
 Summary:	Common Unix Printing System - Common stuff
 License:	GPLv2
 Group:		System/Printing
@@ -179,7 +178,7 @@ Requires:	net-tools
 # To satisfy LSB/FHS
 Provides:	lpddaemon
 
-%description	common
+%description common
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. It contains the command line utilities for
 printing and administration (lpr, lpq, lprm, lpadmin, lpc, ...), man
@@ -188,16 +187,16 @@ clients (%{_sysconfdir}/cups/client.conf).
 
 This package you need for both CUPS clients and servers.
 
-%define	cupsmajor	2
-%define	libcups		%mklibname cups %{cupsmajor}
+%define cupsmajor 2
+%define libcups %mklibname cups %{cupsmajor}
 
-%package -n	%{libcups}
+%package -n %{libcups}
 Summary:	Common Unix Printing System - CUPS library
 License:	LGPLv2
 Group:		System/Libraries
 Obsoletes:	%{_lib}cups3 < 1.6.1-2
 
-%description -n	%{libcups}
+%description -n %{libcups}
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This package contains the CUPS API library
 which contains common functions used by both the CUPS daemon and all
@@ -206,16 +205,16 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%define	cupsimagemajor	2
-%define	libcupsimage	%mklibname cupsimage %{cupsimagemajor}
+%define cupsimagemajor 2
+%define libcupsimage %mklibname cupsimage %{cupsimagemajor}
 
-%package -n	%{libcupsimage}
+%package -n %{libcupsimage}
 Summary:	Common Unix Printing System - CUPSimage library
 License:	LGPLv2
 Group:		System/Libraries
 Conflicts:	%{libcups} < 1.6.1-2
 
-%description -n	%{libcupsimage}
+%description -n %{libcupsimage}
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This package contains the CUPS API library
 which contains common functions used by both the CUPS daemon and all
@@ -224,8 +223,9 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%define	devname	%mklibname %{name} -d
-%package -n	%{devname}
+%define devname %mklibname %{name} -d
+
+%package -n %{devname}
 Summary:	Common Unix Printing System - Development environment "libcups"
 License:	LGPLv2
 Group:		Development/C
@@ -237,21 +237,21 @@ Requires:	pkgconfig(com_err)
 Provides:	cups-devel
 Obsoletes:	%mklibname %{name}2 -d
 
-%description -n	%{devname}
+%description -n %{devname}
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This is the development package for
 creating additional printer drivers, printing software, and other CUPS
 services using the main CUPS library "libcups".
 
 %if %{with compat32}
-%define	lib32cups		%mklib32name cups %{cupsmajor}
+%define lib32cups %mklib32name cups %{cupsmajor}
 
-%package -n	%{lib32cups}
+%package -n %{lib32cups}
 Summary:	Common Unix Printing System - CUPS library (32-bit)
 License:	LGPLv2
 Group:		System/Libraries
 
-%description -n	%{lib32cups}
+%description -n %{lib32cups}
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This package contains the CUPS API library
 which contains common functions used by both the CUPS daemon and all
@@ -260,15 +260,15 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%define	lib32cupsimage	%mklib32name cupsimage %{cupsimagemajor}
+%define lib32cupsimage %mklib32name cupsimage %{cupsimagemajor}
 
-%package -n	%{lib32cupsimage}
+%package -n %{lib32cupsimage}
 Summary:	Common Unix Printing System - CUPSimage library (32-bit)
 License:	LGPLv2
 Group:		System/Libraries
 Conflicts:	%{libcups} < 1.6.1-2
 
-%description -n	%{lib32cupsimage}
+%description -n %{lib32cupsimage}
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This package contains the CUPS API library
 which contains common functions used by both the CUPS daemon and all
@@ -277,8 +277,9 @@ CUPS frontends (lpr-cups, xpp, qtcups, kups, ...).
 This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
-%define	dev32name	%mklib32name %{name} -d
-%package -n	%{dev32name}
+%define dev32name %mklib32name %{name} -d
+
+%package -n %{dev32name}
 Summary:	Common Unix Printing System - Development environment "libcups" (32-bit)
 License:	LGPLv2
 Group:		Development/C
@@ -286,13 +287,12 @@ Requires:	%{devname} = %{EVRD}
 Requires:	%{lib32cups} = %{version}-%{release}
 Requires:	%{lib32cupsimage} = %{version}-%{release}
 
-%description -n	%{dev32name}
+%description -n %{dev32name}
 The Common Unix Printing System provides a portable printing layer for
 UNIX(TM) operating systems. This is the development package for
 creating additional printer drivers, printing software, and other CUPS
 services using the main CUPS library "libcups".
 %endif
-
 
 %prep
 %autosetup -p1 -n %{name}-%{version}%{beta}
@@ -328,7 +328,6 @@ perl -p -i -e "s/ -o \\$.CUPS_USER.//" scheduler/Makefile
 perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" scheduler/Makefile
 perl -p -i -e "s/ -o \\$.CUPS_USER.//" systemv/Makefile
 perl -p -i -e "s/ -g \\$.CUPS_GROUP.//" systemv/Makefile
-
 
 # Load additional tools
 cp %{SOURCE1} poll_ppd_base.c
@@ -603,12 +602,17 @@ rm -f %{buildroot}%{_datadir}/cups/banners/{classified,confidential,secret,stand
 rm -f %{buildroot}%{_datadir}/cups/data/testprint
 
 # (tpg) rename units to meet old name scheme
-mv %{buildroot}%{_unitdir}/org.cups.cupsd.path %{buildroot}%{_unitdir}/cups.path
-mv %{buildroot}%{_unitdir}/org.cups.cupsd.service %{buildroot}%{_unitdir}/cups.service
-mv %{buildroot}%{_unitdir}/org.cups.cupsd.socket %{buildroot}%{_unitdir}/cups.socket
-mv %{buildroot}%{_unitdir}/org.cups.cups-lpd.socket %{buildroot}%{_unitdir}/cups-lpd.socket
-mv %{buildroot}%{_unitdir}/org.cups.cups-lpd@.service %{buildroot}%{_unitdir}/cups-lpd@.service
-sed -i -e "s,org.cups.cupsd,cups,g" %{buildroot}%{_unitdir}/cups.service
+ln -sf %{_unitdir}/org.cups.cupsd.path %{buildroot}%{_unitdir}/cups.path
+ln -sf %{_unitdir}/org.cups.cupsd.service %{buildroot}%{_unitdir}/cups.service
+ln -sf %{_unitdir}/org.cups.cupsd.socket %{buildroot}%{_unitdir}/cups.socket
+ln -sf %{_unitdir}/org.cups.cups-lpd.socket %{buildroot}%{_unitdir}/cups-lpd.socket
+ln -sf %{_unitdir}/org.cups.cups-lpd@.service %{buildroot}%{_unitdir}/cups-lpd@.service
+
+install -d %{buildroot}%{_presetdir}
+cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
+enable org.cups.cupsd.socket
+enable org.cups.cupsd.path
+EOF
 
 %if %{with compat32}
 cp -a lib32/* %{buildroot}%{_prefix}/lib/
@@ -619,7 +623,7 @@ cp -a lib32/* %{buildroot}%{_prefix}/lib/
 # Fix /usr/lib/cups directory, so that updates can be done
 if [ -d %{_libdir}/cups ] && ! [ -h %{_libdir}/cups ]; then
     if [ -h %{_prefix}/lib/cups ]; then
-        rm -f %{_prefix}/lib/cups
+	rm -f %{_prefix}/lib/cups
 	mv %{_libdir}/cups %{_prefix}/lib/cups
     else
 	mv %{_libdir}/cups %{_libdir}/cups.rpmsave
@@ -660,6 +664,7 @@ done
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/snmp.conf
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/dbus*/system.d/cups.conf
 %{_tmpfilesdir}/*.conf
+%{_presetdir}/86-%{name}.preset
 %{_unitdir}/cups*.path
 %{_unitdir}/cups*.service
 %{_unitdir}/cups*.socket
