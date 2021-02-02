@@ -27,7 +27,7 @@ Version:	2.3.3
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	3
+Release:	4
 %endif
 Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -643,9 +643,14 @@ do
   [ ! -e $d ] && mkdir -p $d || :
 done
 # End of 28383
+%systemd_post org.cups.cupsd.socket org.cups.cupsd.path
+
+%preun
+%systemd_preun org.cups.cupsd.socket org.cups.cupsd.path
 
 %postun
 %_postun_groupdel lpadmin
+%systemd_postun_with_restart org.cups.cupsd.socket org.cups.cupsd.path
 
 %files
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
