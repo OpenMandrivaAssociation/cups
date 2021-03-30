@@ -23,13 +23,13 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.3.3
+Version:	2.3.3op2
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	4
+Release:	1
 %endif
-Source0:	https://github.com/apple/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
+Source0:	https://github.com/openprinting/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
@@ -72,17 +72,11 @@ Patch1004:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-export
 Patch1005:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-direct-usb.patch
 Patch1006:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-eggcups.patch
 Patch1007:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-driverd-timeout.patch
-Patch1008:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-logrotate.patch
 Patch1009:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-usb-paperout.patch
 Patch1010:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-uri-compat.patch
-Patch1011:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-hp-deviceid-oid.patch
-Patch1012:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ricoh-deviceid-oid.patch
-Patch1013:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-systemd-socket.patch
 Patch1014:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
 Patch1015:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ipp-multifile.patch
 Patch1016:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-web-devices-timeout.patch
-Patch1017:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-synconclose.patch
-Patch1018:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ypbind.patch
 Patch1019:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-failover-backend.patch
 Patch1020:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-filter-debug.patch
 Patch1021:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
@@ -599,6 +593,7 @@ install -c -m 644 %{SOURCE20} %{buildroot}%{_sysconfdir}/udev/rules.d/
 rm -f %{buildroot}%{_datadir}/cups/banners/{classified,confidential,secret,standard,topsecret,unclassified}
 rm -f %{buildroot}%{_datadir}/cups/data/testprint
 
+if [ -e %{buildroot}%{_unitdir}/org.cups.cupsd.service ]; then
 # (tpg) rename units to meet old name scheme
 ln -sf %{_unitdir}/org.cups.cupsd.path %{buildroot}%{_unitdir}/cups.path
 ln -sf %{_unitdir}/org.cups.cupsd.service %{buildroot}%{_unitdir}/cups.service
@@ -611,6 +606,13 @@ cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
 enable org.cups.cupsd.socket
 enable org.cups.cupsd.path
 EOF
+else
+install -d %{buildroot}%{_presetdir}
+cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
+enable cups.socket
+enable cups.path
+EOF
+fi
 
 %if %{with compat32}
 cp -a lib32/* %{buildroot}%{_prefix}/lib/
