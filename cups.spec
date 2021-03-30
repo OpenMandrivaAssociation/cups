@@ -64,10 +64,8 @@ Source20:	10-cups_device_usb.rules
 
 Patch1:		cups-dbus-utf8.patch
 Patch2:		https://github.com/heftig/cups/commit/455c52a027ab3548953372a0b7bdb0008420e9ba.patch
-Patch10:	cups-1.4.0-recommended.patch
 
 # Fedora patches
-Patch1001:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-system-auth.patch
 Patch1002:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-multilib.patch
 Patch1003:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-banners.patch
 Patch1004:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-export-ssllibs.patch
