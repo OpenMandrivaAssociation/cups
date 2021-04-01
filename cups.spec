@@ -27,7 +27,7 @@ Version:	2.3.3op2
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	1
+Release:	2
 %endif
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -593,26 +593,12 @@ install -c -m 644 %{SOURCE20} %{buildroot}%{_sysconfdir}/udev/rules.d/
 rm -f %{buildroot}%{_datadir}/cups/banners/{classified,confidential,secret,standard,topsecret,unclassified}
 rm -f %{buildroot}%{_datadir}/cups/data/testprint
 
-if [ -e %{buildroot}%{_unitdir}/org.cups.cupsd.service ]; then
-# (tpg) rename units to meet old name scheme
-ln -sf %{_unitdir}/org.cups.cupsd.path %{buildroot}%{_unitdir}/cups.path
-ln -sf %{_unitdir}/org.cups.cupsd.service %{buildroot}%{_unitdir}/cups.service
-ln -sf %{_unitdir}/org.cups.cupsd.socket %{buildroot}%{_unitdir}/cups.socket
-ln -sf %{_unitdir}/org.cups.cups-lpd.socket %{buildroot}%{_unitdir}/cups-lpd.socket
-ln -sf %{_unitdir}/org.cups.cups-lpd@.service %{buildroot}%{_unitdir}/cups-lpd@.service
-
-install -d %{buildroot}%{_presetdir}
-cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
-enable org.cups.cupsd.socket
-enable org.cups.cupsd.path
-EOF
-else
 install -d %{buildroot}%{_presetdir}
 cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
 enable cups.socket
+enable cups.service
 enable cups.path
 EOF
-fi
 
 %if %{with compat32}
 cp -a lib32/* %{buildroot}%{_prefix}/lib/
@@ -643,14 +629,14 @@ do
   [ ! -e $d ] && mkdir -p $d || :
 done
 # End of 28383
-%systemd_post org.cups.cupsd.socket org.cups.cupsd.path
+%systemd_post %{name}.path %{name}.socket %{name}.service %{name}-lpd.socket
 
 %preun
-%systemd_preun org.cups.cupsd.socket org.cups.cupsd.path
+%systemd_preun %{name}.path %{name}.socket %{name}.service %{name}-lpd.socket
 
 %postun
 %_postun_groupdel lpadmin
-%systemd_postun_with_restart org.cups.cupsd.socket org.cups.cupsd.path
+%systemd_postun_with_restart %{name}.path %{name}.socket %{name}.service %{name}-lpd.socket
 
 %files
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
