@@ -27,7 +27,7 @@ Version:	2.3.3op2
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
-Release:	2
+Release:	3
 %endif
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -92,7 +92,7 @@ Requires(postun):	rpm-helper
 BuildRequires:	htmldoc
 BuildRequires:	php-cli
 BuildRequires:	xdg-utils
-BuildRequires:	acl-devel
+BuildRequires:	pkgconfig(libacl)
 BuildRequires:	pkgconfig(libjpeg)
 BuildRequires:	krb5-devel
 BuildRequires:	openldap-devel
