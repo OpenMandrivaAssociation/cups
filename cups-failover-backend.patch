@@ -1,6 +1,6 @@
-diff -up cups-2.3.0/backend/failover.c.failover cups-2.3.0/backend/failover.c
---- cups-2.3.0/backend/failover.c.failover	2019-10-07 12:22:17.158626746 +0200
-+++ cups-2.3.0/backend/failover.c	2019-10-07 12:22:17.158626746 +0200
+diff -up cups-2.4rc1/backend/failover.c.14~ cups-2.4rc1/backend/failover.c
+--- cups-2.4rc1/backend/failover.c.14~	2021-11-25 20:09:33.108061854 +0100
++++ cups-2.4rc1/backend/failover.c	2021-11-25 20:09:33.108061854 +0100
 @@ -0,0 +1,837 @@
 +/*
 + * Failover Backend for the Common UNIX Printing System (CUPS).
@@ -839,17 +839,17 @@ diff -up cups-2.3.0/backend/failover.c.failover cups-2.3.0/backend/failover.c
 +  else
 +    return (NULL);
 +}
-diff -up cups-2.3.0/backend/Makefile.failover cups-2.3.0/backend/Makefile
---- cups-2.3.0/backend/Makefile.failover	2019-10-07 12:22:17.067627388 +0200
-+++ cups-2.3.0/backend/Makefile	2019-10-07 12:24:17.046780985 +0200
-@@ -22,6 +22,7 @@ include ../Makedefs
+diff -up cups-2.4rc1/backend/Makefile.14~ cups-2.4rc1/backend/Makefile
+--- cups-2.4rc1/backend/Makefile.14~	2021-11-25 20:09:33.093061795 +0100
++++ cups-2.4rc1/backend/Makefile	2021-11-25 20:09:54.824147930 +0100
+@@ -24,6 +24,7 @@ include ../Makedefs
  RBACKENDS =	\
  		ipp \
  		lpd \
 +		failover \
+ 		usb \
  		$(DNSSD_BACKEND)
  UBACKENDS =	\
- 		snmp \
 @@ -45,6 +46,7 @@ LIBOBJS	=	\
  OBJS	=	\
  		ipp.o \
@@ -858,7 +858,7 @@ diff -up cups-2.3.0/backend/Makefile.failover cups-2.3.0/backend/Makefile
  		dnssd.o \
  		snmp.o \
  		socket.o \
-@@ -274,6 +276,13 @@ lpd:	lpd.o ../cups/$(LIBCUPS) libbackend
+@@ -262,6 +264,13 @@ lpd:	lpd.o ../cups/$(LIBCUPS) libbackend
  	$(LD_CC) $(ALL_LDFLAGS) -o lpd lpd.o libbackend.a $(LINKCUPS)
  	$(CODE_SIGN) -s "$(CODE_SIGN_IDENTITY)" $@
  

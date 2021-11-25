@@ -14,7 +14,7 @@
 %define enable_check 0
 
 # Define to %{nil} for release builds
-%define beta %{nil}
+%define beta rc1
 
 %define _disable_lto 1
 
@@ -23,7 +23,7 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.3.3op2
+Version:	2.4
 %if "%beta" != ""
 Release:	0.%beta.1
 %else
@@ -80,8 +80,7 @@ Patch1016:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-web-devic
 Patch1019:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-failover-backend.patch
 Patch1020:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-filter-debug.patch
 Patch1021:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
-Patch1022:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-autostart-when-enabled.patch
-Patch1100:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lspp.patch
+#Patch1100:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lspp.patch
 # End fedora patches
 
 # Requires /etc/tmpfiles.d (bug #656566)
@@ -350,6 +349,7 @@ autoconf -I config-scripts
 %if %{with compat32}
 export DSOFLAGS="$(echo %{ldflags} |sed -e 's,-m64,,g;s,-mx32,,g;s,-flto,,g') -m32"
 %configure32 \
+	--with-pkgconfpath=%{_prefix}/lib/pkgconfig \
 	--with-exe-file-perm=0755 \
 	--with-cupsd-file-perm=0755 \
 	--with-log-file-perm=0600 \
@@ -392,6 +392,7 @@ export CXXFLAGS="-g"
 # cups uses $DSOFLAGS instead of $LDFLAGS for shared libs
 export DSOFLAGS="$LDFLAGS"
 %configure \
+	--with-pkgconfpath=%{_libdir}/pkgconfig \
 %if %{with lspp}
 	--enable-lspp \
 %else
@@ -748,6 +749,7 @@ done
 %{_includedir}/cups/*
 %{_libdir}/*.so
 %{_bindir}/cups-config
+%{_libdir}/pkgconfig/cups.pc
 
 %if %{with compat32}
 %files -n %{lib32cups}
