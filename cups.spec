@@ -13,8 +13,8 @@
 %define debug 0
 %define enable_check 0
 
-# Define to %{nil} for release builds
-%define beta rc1
+# Undefine for release builds
+#define beta rc1
 
 %define _disable_lto 1
 
@@ -23,13 +23,9 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.4
-%if "%beta" != ""
-Release:	0.%beta.1
-%else
-Release:	3
-%endif
-Source0:	https://github.com/openprinting/cups/releases/download/v%version%beta/cups-%version%beta-source.tar.gz
+Version:	2.4.0
+Release:	%{?beta:0.%{beta}.}1
+Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
@@ -286,7 +282,7 @@ services using the main CUPS library "libcups".
 %endif
 
 %prep
-%autosetup -p1 -n %{name}-%{version}%{beta}
+%autosetup -p1 -n %{name}-%{version}%{?beta:%{beta}}
 
 # Let local printers be broadcasted in the local network(s)
 perl -p -i -e 's:(Listen\s+)localhost:$1*:' conf/cupsd.conf.in
@@ -326,7 +322,7 @@ cp %{SOURCE2} lphelp.c
 # Load nprint backend
 cp %{SOURCE11} nprint
 # Load AppleTalk "pap" backend
-%setup -q -T -D -a 12 -n %{name}-%{version}%{beta}
+%setup -q -T -D -a 12 -n %{name}-%{version}%{?beta:%{beta}}
 # Load the "pap" documentation
 bzcat %{SOURCE13} > pap-docu.pdf
 # Load the "photo_print" utility
