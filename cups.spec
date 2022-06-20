@@ -23,8 +23,8 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.4.1
-Release:	%{?beta:0.%{beta}.}4
+Version:	2.4.2
+Release:	%{?beta:0.%{beta}.}1
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
@@ -709,7 +709,18 @@ done
 %files common
 %dir %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups
 %ghost %config(noreplace) %attr(-,lp,lp) %{_sysconfdir}/cups/client.conf
-%{_sbindir}/*
+%{_sbindir}/correctcupsconfig
+%{_sbindir}/cupsaccept
+%{_sbindir}/cupsctl
+%{_sbindir}/cupsd
+%{_sbindir}/cupsdisable
+%{_sbindir}/cupsenable
+%{_sbindir}/cupsfilter
+%{_sbindir}/cupsreject
+%{_sbindir}/lpadmin
+%{_sbindir}/lpc
+%{_sbindir}/lpinfo
+%{_sbindir}/lpmove
 %{_bindir}/cancel
 %{_bindir}/lp
 %{_bindir}/lpq
