@@ -29,7 +29,7 @@ Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
 Group:		System/Printing
-Url:		http://www.cups.org
+Url:		https://openprinting.github.io/cups/
 
 # Small C program to get list of all installed PPD files
 Source1:	poll_ppd_base.c
