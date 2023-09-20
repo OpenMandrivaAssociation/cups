@@ -23,7 +23,7 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.4.6
+Version:	2.4.7
 Release:	%{?beta:0.%{beta}.}1
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
@@ -90,7 +90,7 @@ BuildRequires:	xdg-utils
 BuildRequires:	pkgconfig(libacl)
 BuildRequires:	pkgconfig(libjpeg)
 BuildRequires:	krb5-devel
-BuildRequires:	openldap-devel
+BuildRequires:	pkgconfig(ldap)
 BuildRequires:	openslp-devel
 BuildRequires:	pam-devel
 BuildRequires:	php-devel >= 5.1.0
