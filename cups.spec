@@ -24,7 +24,7 @@
 Summary:	Common Unix Printing System - Server package
 Name:		cups
 Version:	2.4.7
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
@@ -162,6 +162,8 @@ Summary:	Common Unix Printing System - Common stuff
 License:	GPLv2
 Group:		System/Printing
 Requires:	net-tools
+# For now -- needed by LOTS of printers
+Requires:	libcupsfilters
 # To satisfy LSB/FHS
 Provides:	lpddaemon
 
@@ -175,13 +177,15 @@ clients (%{_sysconfdir}/cups/client.conf).
 This package you need for both CUPS clients and servers.
 
 %define cupsmajor 2
-%define libcups %mklibname cups %{cupsmajor}
+%define oldlibcups %mklibname cups 2
+%define libcups %mklibname cups
 
 %package -n %{libcups}
 Summary:	Common Unix Printing System - CUPS library
 License:	LGPLv2
 Group:		System/Libraries
 Obsoletes:	%{_lib}cups3 < 1.6.1-2
+%rename %{oldlibcups}
 
 %description -n %{libcups}
 The Common Unix Printing System provides a portable printing layer for
@@ -193,13 +197,15 @@ This package you need for both CUPS clients and servers. It is also
 needed by Samba.
 
 %define cupsimagemajor 2
-%define libcupsimage %mklibname cupsimage %{cupsimagemajor}
+%define oldlibcupsimage %mklibname cupsimage 2
+%define libcupsimage %mklibname cupsimage
 
 %package -n %{libcupsimage}
 Summary:	Common Unix Printing System - CUPSimage library
 License:	LGPLv2
 Group:		System/Libraries
 Conflicts:	%{libcups} < 1.6.1-2
+%rename %{oldlibcupsimage}
 
 %description -n %{libcupsimage}
 The Common Unix Printing System provides a portable printing layer for
