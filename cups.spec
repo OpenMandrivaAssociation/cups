@@ -607,20 +607,11 @@ EOF
 cp -a lib32/* %{buildroot}%{_prefix}/lib/
 %endif
 
-%pre
-%ifarch x86_64
-# Fix /usr/lib/cups directory, so that updates can be done
-if [ -d %{_libdir}/cups ] && ! [ -h %{_libdir}/cups ]; then
-    if [ -h %{_prefix}/lib/cups ]; then
-	rm -f %{_prefix}/lib/cups
-	mv %{_libdir}/cups %{_prefix}/lib/cups
-    else
-	mv %{_libdir}/cups %{_libdir}/cups.rpmsave
-	#echo 'Moved %{_libdir}/cups to %{_libdir}/cups.rpmsave' 1>&2
-    fi
-fi
-%endif
-%_pre_groupadd lpadmin
+# Create the lpadmin group
+mkdir -p %{buildroot}%{_sysusersdir}
+cat >%{buildroot}%{_sysusersdir}/lpadmin.conf <<EOF
+g lpadmin - -
+EOF
 
 %post
 # Make sure group ownerships are correct
@@ -638,10 +629,10 @@ done
 %systemd_preun %{name}.path %{name}.socket %{name}.service %{name}-lpd.socket
 
 %postun
-%_postun_groupdel lpadmin
 %systemd_postun_with_restart %{name}.path %{name}.socket %{name}.service %{name}-lpd.socket
 
 %files
+%{_sysusersdir}/lpadmin.conf
 %attr(511,lp,lpadmin) %{_var}/run/cups/certs
 %config(noreplace) %attr(-,root,lp) %{_sysconfdir}/cups/cupsd.conf
 %config(noreplace) %attr(-,root,root) %{_sysconfdir}/cups/cups-files.conf
