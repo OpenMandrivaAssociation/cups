@@ -23,8 +23,8 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.4.7
-Release:	%{?beta:0.%{beta}.}2
+Version:	2.4.8
+Release:	%{?beta:0.%{beta}.}1
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
