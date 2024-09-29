@@ -24,7 +24,7 @@
 Summary:	Common Unix Printing System - Server package
 Name:		cups
 Version:	2.4.10
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
@@ -62,21 +62,29 @@ Patch1:		cups-dbus-utf8.patch
 Patch2:		https://github.com/heftig/cups/commit/455c52a027ab3548953372a0b7bdb0008420e9ba.patch
 
 # Fedora patches
-Patch1002:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-multilib.patch
-Patch1003:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-banners.patch
-Patch1004:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-no-export-ssllibs.patch
-Patch1005:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-direct-usb.patch
-Patch1006:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-eggcups.patch
-Patch1007:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-driverd-timeout.patch
-Patch1009:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-usb-paperout.patch
-Patch1010:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-uri-compat.patch
-Patch1014:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-freebind.patch
-Patch1015:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-ipp-multifile.patch
-Patch1016:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-web-devices-timeout.patch
-Patch1019:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-failover-backend.patch
-Patch1020:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-filter-debug.patch
-Patch1021:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-dymo-deviceid.patch
-#Patch1100:	http://pkgs.fedoraproject.org/cgit/rpms/cups.git/plain/cups-lspp.patch
+Patch1002:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-multilib.patch
+Patch1003:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-banners.patch
+Patch1004:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-no-export-ssllibs.patch
+Patch1005:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-direct-usb.patch
+Patch1006:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-eggcups.patch
+Patch1007:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-driverd-timeout.patch
+Patch1009:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-usb-paperout.patch
+Patch1010:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-uri-compat.patch
+Patch1014:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-freebind.patch
+Patch1015:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-ipp-multifile.patch
+Patch1016:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-web-devices-timeout.patch
+Patch1019:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-failover-backend.patch
+Patch1020:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-filter-debug.patch
+Patch1021:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-dymo-deviceid.patch
+Patch1022:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-Fix-IPP-everywhere-printer-setup-Issue-1033.patch
+Patch1023:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-cgi-Fix-checkbox-support-fixes-1008.patch
+Patch1024:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-fix-warnings-for-unused-vars.patch
+Patch1025:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-mirror-ipp-everywhere-printer-changes-from-master.patch
+Patch1026:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-ppdize-preset-and-template-names.patch
+Patch1027:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-quote-ppd-localized-strings.patch
+Patch1028:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-refactor-make-and-model-code.patch
+Patch1029:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-fix-device-uri-in-webui.patch
+#Patch1100:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-lspp.patch
 # End fedora patches
 
 # Requires /etc/tmpfiles.d (bug #656566)
