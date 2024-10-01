@@ -23,8 +23,8 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.4.10
-Release:	%{?beta:0.%{beta}.}2
+Version:	2.4.11
+Release:	%{?beta:0.%{beta}.}1
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
@@ -76,14 +76,6 @@ Patch1016:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-web-device
 Patch1019:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-failover-backend.patch
 Patch1020:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-filter-debug.patch
 Patch1021:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-dymo-deviceid.patch
-Patch1022:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-Fix-IPP-everywhere-printer-setup-Issue-1033.patch
-Patch1023:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-cgi-Fix-checkbox-support-fixes-1008.patch
-Patch1024:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-fix-warnings-for-unused-vars.patch
-Patch1025:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-mirror-ipp-everywhere-printer-changes-from-master.patch
-Patch1026:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-ppdize-preset-and-template-names.patch
-Patch1027:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-quote-ppd-localized-strings.patch
-Patch1028:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/0001-refactor-make-and-model-code.patch
-Patch1029:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-fix-device-uri-in-webui.patch
 #Patch1100:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-lspp.patch
 # End fedora patches
 
@@ -660,6 +652,7 @@ done
 %{_presetdir}/86-%{name}.preset
 %{_unitdir}/*.path
 %{_unitdir}/*.service
+%{_unitdir}/*.slice
 %{_unitdir}/*.socket
 %config(noreplace) %{_sysconfdir}/pam.d/cups
 %config(noreplace) %{_sysconfdir}/logrotate.d/cups
