@@ -84,6 +84,11 @@ Requires:	systemd >= 208
 Requires(post):	rpm-helper >= 0.24.1
 Requires(preun):	rpm-helper >= 0.24.1
 Requires(postun):	rpm-helper
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	htmldoc
 BuildRequires:	php-cli
 BuildRequires:	xdg-utils
