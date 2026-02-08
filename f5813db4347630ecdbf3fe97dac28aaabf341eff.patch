@@ -1,0 +1,62 @@
+From f5813db4347630ecdbf3fe97dac28aaabf341eff Mon Sep 17 00:00:00 2001
+From: Michael R Sweet <msweet@msweet.org>
+Date: Fri, 5 Dec 2025 10:34:14 -0500
+Subject: [PATCH] Don't follow symlinks when cleaning out the temporary
+ directory (Issue #1448)
+
+---
+ CHANGES.md       | 7 +++++++
+ scheduler/file.c | 7 ++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/CHANGES.md b/CHANGES.md
+index 78a9a947ff..bf7b338594 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -2,6 +2,13 @@ CHANGES - OpenPrinting CUPS
+ ===========================
+ 
+ 
++Changes in CUPS v2.4.17 (YYYY-MM-DD)
++------------------------------------
++
++- The scheduler followed symbolic links when cleaning out its temporary
++  directory (Issue #1448)
++
++
+ Changes in CUPS v2.4.16 (2025-12-04)
+ ------------------------------------
+ 
+diff --git a/scheduler/file.c b/scheduler/file.c
+index e0a5a45401..5082295f14 100644
+--- a/scheduler/file.c
++++ b/scheduler/file.c
+@@ -35,6 +35,7 @@ cupsdCleanFiles(const char *path,	/* I - Directory to clean */
+   cups_dir_t	*dir;			/* Directory */
+   cups_dentry_t	*dent;			/* Directory entry */
+   char		filename[1024];		/* Filename */
++  struct stat	fileinfo;		/* File link information */
+   int		status;			/* Status from unlink/rmdir */
+ 
+ 
+@@ -57,15 +58,19 @@ cupsdCleanFiles(const char *path,	/* I - Directory to clean */
+       continue;
+ 
+     snprintf(filename, sizeof(filename), "%s/%s", path, dent->filename);
++    if (lstat(filename, &fileinfo))
++      continue;
+ 
+-    if (S_ISDIR(dent->fileinfo.st_mode))
++    if (S_ISDIR(fileinfo.st_mode))
+     {
+       cupsdCleanFiles(filename, pattern);
+ 
+       status = rmdir(filename);
+     }
+     else
++    {
+       status = cupsdUnlinkOrRemoveFile(filename);
++    }
+ 
+     if (status)
+       cupsdLogMessage(CUPSD_LOG_ERROR, "Unable to remove \"%s\" - %s", filename,

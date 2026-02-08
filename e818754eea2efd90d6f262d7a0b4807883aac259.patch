@@ -1,0 +1,65 @@
+From e818754eea2efd90d6f262d7a0b4807883aac259 Mon Sep 17 00:00:00 2001
+From: Michael R Sweet <msweet@msweet.org>
+Date: Wed, 21 Jan 2026 12:13:09 -0500
+Subject: [PATCH] Update the printer/class CGI name check.
+
+---
+ CHANGES.md         |  1 +
+ scheduler/client.c | 10 +++++-----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/CHANGES.md b/CHANGES.md
+index 86ac8459c..44dec29c0 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -7,6 +7,7 @@ Changes in CUPS v2.4.17 (YYYY-MM-DD)
+ 
+ - The scheduler followed symbolic links when cleaning out its temporary
+   directory (Issue #1448)
++- Fixed an issue with the class/printer CGI name checking.
+ - Fixed notifier logging bug that would result in nul bytes getting into the
+   log (Issue #1450)
+ - Fixed possible use-after-free in `cupsdReadClient()` (Issue #1454)
+diff --git a/scheduler/client.c b/scheduler/client.c
+index 9971a9281..51be34f44 100644
+--- a/scheduler/client.c
++++ b/scheduler/client.c
+@@ -1,7 +1,7 @@
+ /*
+  * Client routines for the CUPS scheduler.
+  *
+- * Copyright © 2020-2024 by OpenPrinting.
++ * Copyright © 2020-2026 by OpenPrinting.
+  * Copyright © 2007-2021 by Apple Inc.
+  * Copyright © 1997-2007 by Easy Software Products, all rights reserved.
+  *
+@@ -1163,12 +1163,12 @@ cupsdReadClient(cupsd_client_t *con)	/* I - Client to read from */
+ 		  {
+ 		    unsigned int i = 0;	// Array index
+ 
+-		    for (ptr = con->uri + 9; *ptr && *ptr != '?' && i < sizeof(name);)
++		    for (ptr = con->uri + 9; *ptr && *ptr != '?' && i < (sizeof(name) - 1);)
+ 		      name[i++] = *ptr++;
+ 
+ 		    name[i] = '\0';
+ 
+-		    if (!cupsdFindClass(name))
++		    if ((*ptr && *ptr != '?') || !cupsdFindClass(name))
+ 		    {
+ 		      if (!cupsdSendError(con, HTTP_STATUS_NOT_FOUND, CUPSD_AUTH_NONE))
+ 		      {
+@@ -1203,12 +1203,12 @@ cupsdReadClient(cupsd_client_t *con)	/* I - Client to read from */
+ 		  {
+ 		    unsigned int i = 0;	// Array index
+ 
+-		    for (ptr = con->uri + 10; *ptr && *ptr != '?' && i < sizeof(name);)
++		    for (ptr = con->uri + 10; *ptr && *ptr != '?' && i < (sizeof(name) - 1);)
+ 		      name[i++] = *ptr++;
+ 
+ 		    name[i] = '\0';
+ 
+-		    if (!cupsdFindPrinter(name))
++		    if ((*ptr && *ptr != '?') || !cupsdFindPrinter(name))
+ 		    {
+ 		      if (!cupsdSendError(con, HTTP_STATUS_NOT_FOUND, CUPSD_AUTH_NONE))
+ 		      {

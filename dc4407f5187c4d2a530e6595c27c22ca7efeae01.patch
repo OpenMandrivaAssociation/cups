@@ -1,0 +1,45 @@
+From dc4407f5187c4d2a530e6595c27c22ca7efeae01 Mon Sep 17 00:00:00 2001
+From: Michael R Sweet <msweet@msweet.org>
+Date: Mon, 19 Jan 2026 11:39:52 -0500
+Subject: [PATCH] Fix possible corruption of previous pointer in ipp_t linked
+ list.
+
+---
+ CHANGES.md | 1 +
+ cups/ipp.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/CHANGES.md b/CHANGES.md
+index 308b3e5022..f20fa41149 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -8,6 +8,7 @@ Changes in CUPS v2.4.17 (YYYY-MM-DD)
+ - The scheduler followed symbolic links when cleaning out its temporary
+   directory (Issue #1448)
+ - Fixed possible use-after-free in `cupsdReadClient()` (Issue #1454)
++- Fixed a bug when then `ippFindXxx` and `ippSetXxx` functions were mixed.
+ 
+ 
+ Changes in CUPS v2.4.16 (2025-12-04)
+diff --git a/cups/ipp.c b/cups/ipp.c
+index e1e361b2ca..e1a11c853d 100644
+--- a/cups/ipp.c
++++ b/cups/ipp.c
+@@ -1,7 +1,7 @@
+ /*
+  * Internet Printing Protocol functions for CUPS.
+  *
+- * Copyright © 2022-2025 by OpenPrinting.
++ * Copyright © 2022-2026 by OpenPrinting.
+  * Copyright © 2007-2021 by Apple Inc.
+  * Copyright © 1997-2007 by Easy Software Products, all rights reserved.
+  *
+@@ -6780,7 +6780,7 @@ ipp_set_value(ipp_t           *ipp,	/* IO - IPP message */
+ #endif /* !__clang_analyzer__ */
+     DEBUG_printf(("4debug_alloc: %p %s %s%s (%d)", (void *)temp, temp->name, temp->num_values > 1 ? "1setOf " : "", ippTagString(temp->value_tag), temp->num_values));
+ 
+-    if (ipp->current == *attr && ipp->prev)
++    if (ipp->current == *attr && ipp->prev && ipp->prev->next == *attr)
+     {
+      /*
+       * Use current "previous" pointer...

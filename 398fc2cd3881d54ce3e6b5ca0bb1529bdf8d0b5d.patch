@@ -1,0 +1,39 @@
+From 398fc2cd3881d54ce3e6b5ca0bb1529bdf8d0b5d Mon Sep 17 00:00:00 2001
+From: Zdenek Dohnal <zdohnal@redhat.com>
+Date: Fri, 12 Dec 2025 08:03:38 +0100
+Subject: [PATCH] scheduler: Fix possible use_after_free in cupsdReadClient()
+
+If cupsdSendHeader() fails, we free the connection and return -1, but in
+that case we try to free the connection again in cupsdReadClient().
+---
+ CHANGES.md         | 1 +
+ scheduler/client.c | 3 ---
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/CHANGES.md b/CHANGES.md
+index bf7b33859..308b3e502 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -7,6 +7,7 @@ Changes in CUPS v2.4.17 (YYYY-MM-DD)
+ 
+ - The scheduler followed symbolic links when cleaning out its temporary
+   directory (Issue #1448)
++- Fixed possible use-after-free in `cupsdReadClient()` (Issue #1454)
+ 
+ 
+ Changes in CUPS v2.4.16 (2025-12-04)
+diff --git a/scheduler/client.c b/scheduler/client.c
+index d961c15db..9971a9281 100644
+--- a/scheduler/client.c
++++ b/scheduler/client.c
+@@ -2752,10 +2752,7 @@ check_start_tls(cupsd_client_t *con)	/* I - Client connection */
+     httpSetField(con->http, HTTP_FIELD_CONTENT_LENGTH, "0");
+ 
+     if (!cupsdSendHeader(con, HTTP_STATUS_OK, NULL, CUPSD_AUTH_NONE))
+-    {
+-      cupsdCloseClient(con);
+       return (-1);
+-    }
+   }
+ 
+   return (1);
