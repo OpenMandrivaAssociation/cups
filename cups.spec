@@ -140,6 +140,14 @@ Obsoletes:	%{libcupsmime} < %{EVRD}
 Obsoletes:	%{libcupsppdc} < %{EVRD}
 
 %if %{with compat32}
+# clang -m32 uses --sysroot /usr/i686-openmandriva-linux-gnu. The build
+# root does not install that sysroot unless it is a build dependency,
+# and %configure32 then fails with "C compiler cannot create executables".
+BuildRequires:	cross-i686-openmandriva-linux-gnu-clang
+BuildRequires:	cross-i686-openmandriva-linux-gnu-libc
+BuildRequires:	cross-i686-openmandriva-linux-gnu-gcc
+BuildRequires:	cross-i686-openmandriva-linux-gnu-binutils
+BuildRequires:	cross-i686-openmandriva-linux-gnu-kernel-headers
 BuildRequires:	devel(libz)
 BuildRequires:	devel(libsystemd)
 BuildRequires:	devel(libcom_err)
