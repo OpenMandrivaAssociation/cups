@@ -23,8 +23,8 @@
 
 Summary:	Common Unix Printing System - Server package
 Name:		cups
-Version:	2.4.16
-Release:	%{?beta:0.%{beta}.}4
+Version:	2.4.20
+Release:	%{?beta:0.%{beta}.}1
 Source0:	https://github.com/openprinting/cups/releases/download/v%version%{?beta:%{beta}}/cups-%version%{?beta:%{beta}}-source.tar.gz
 Source1000:	%{name}.rpmlintrc
 License:	GPLv2 and LGPLv2
@@ -64,13 +64,6 @@ Patch2:		https://github.com/heftig/cups/commit/455c52a027ab3548953372a0b7bdb0008
 # assumptions (cups devel requiring gnutls devel) while our
 # variant is a far more obvious solution.
 Patch3:		cups-multilib.patch
-
-# Upstream patches
-Patch500:	https://github.com/OpenPrinting/cups/commit/f5813db4347630ecdbf3fe97dac28aaabf341eff.patch
-Patch501:	https://github.com/OpenPrinting/cups/commit/398fc2cd3881d54ce3e6b5ca0bb1529bdf8d0b5d.patch
-Patch502:	https://github.com/OpenPrinting/cups/commit/dc4407f5187c4d2a530e6595c27c22ca7efeae01.patch
-Patch503:	https://github.com/OpenPrinting/cups/commit/39eb57614c0b3bf744c1d540038d3de8a27a690b.patch
-Patch504:	https://github.com/OpenPrinting/cups/commit/e818754eea2efd90d6f262d7a0b4807883aac259.patch
 
 # Fedora patches
 Patch1003:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-banners.patch
