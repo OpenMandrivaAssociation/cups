@@ -79,6 +79,10 @@ Patch1016:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-web-device
 Patch1019:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-failover-backend.patch
 Patch1020:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-filter-debug.patch
 Patch1021:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-dymo-deviceid.patch
+# cups_enum_dests() stores local queues in num_local/local_dests even
+# when DNS-SD is disabled. Those fields existed only on the DNS-SD
+# struct, so the 32-bit build (which does not find Avahi) failed in dest.c.
+Patch1022:	cups-nodnssd-local-dests.patch
 #Patch1100:	https://src.fedoraproject.org/rpms/cups/raw/rawhide/f/cups-lspp.patch
 # End fedora patches
 
